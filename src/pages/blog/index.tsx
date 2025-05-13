@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useBlogPosts } from '@/hooks/use-blog-posts';
 import BlogPostCard from '@/components/blog/BlogPostCard';
@@ -83,16 +82,9 @@ const BlogIndexPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts?.map((post) => (
-              <Link key={post.id} to={`/blog/${post.slug}`} className="block hover:no-underline">
-                <BlogPostCard 
-                  title={post.title} 
-                  excerpt={post.excerpt} 
-                  imageSrc={post.coverImage} 
-                  date={post.publishedAt} 
-                  author={post.author}
-                  category={post.category}
-                />
-              </Link>
+              <div key={post.id} className="block hover:no-underline">
+                <BlogPostCard post={post} />
+              </div>
             ))}
           </div>
         )}
