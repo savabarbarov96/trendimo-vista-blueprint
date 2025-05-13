@@ -134,6 +134,54 @@ export type Database = {
         }
         Relationships: []
       }
+      sell_requests: {
+        Row: {
+          address: string
+          consultation_date: string | null
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          name: string
+          phone: string
+          price: number | null
+          property_type: string
+          status: string
+          title: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address: string
+          consultation_date?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          name: string
+          phone: string
+          price?: number | null
+          property_type: string
+          status?: string
+          title?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string
+          consultation_date?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          name?: string
+          phone?: string
+          price?: number | null
+          property_type?: string
+          status?: string
+          title?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       viewings: {
         Row: {
           created_at: string

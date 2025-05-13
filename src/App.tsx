@@ -1,39 +1,40 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Profile from "./pages/Profile";
-import PropertiesPage from "./pages/PropertiesPage";
-import PropertyDetail from "./pages/PropertyDetail";
-import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./hooks/use-auth";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import './App.css';
 
-const queryClient = new QueryClient();
+// Pages
+import Index from './pages/Index';
+import Auth from './pages/Auth';
+import PropertiesPage from './pages/PropertiesPage';
+import PropertyDetail from './pages/PropertyDetail';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+import SellPage from './pages/SellPage';
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/properties" element={<PropertiesPage />} />
-            <Route path="/properties/:id" element={<PropertyDetail />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </TooltipProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+// Components
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
+function App() {
+  return (
+    <Router>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/properties" element={<PropertiesPage />} />
+          <Route path="/properties/:id" element={<PropertyDetail />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/sell" element={<SellPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+      <Footer />
+      <Toaster position="top-right" />
+    </Router>
+  );
+}
 
 export default App;
