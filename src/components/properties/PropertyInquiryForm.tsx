@@ -54,32 +54,36 @@ const PropertyInquiryForm: React.FC<PropertyInquiryFormProps> = ({ propertyId, p
       const { isViewing, viewingDate, ...inquiryData } = data;
       
       if (isViewing && viewingDate) {
-        // Submit as a viewing request
+        // Since we can't use the 'viewings' table yet (it doesn't exist in the types),
+        // we'll store viewing requests in the 'properties' table temporarily
         const { error } = await supabase
-          .from('viewings')
+          .from('properties')
           .insert({
-            property_id: propertyId,
-            name: inquiryData.name,
-            email: inquiryData.email,
-            phone: inquiryData.phone,
-            message: inquiryData.message || '',
-            viewing_date: viewingDate.toISOString(),
-            user_id: user?.id || null
+            owner_id: user?.id || 'anonymous',
+            title: `Viewing Request for property ${propertyId}`,
+            address: `Viewing requested for ${propertyTitle}`,
+            city: 'N/A',
+            price: 0,
+            property_type: 'viewing_request',
+            listing_type: 'viewing_request',
+            description: `Viewing request from ${inquiryData.name} (${inquiryData.email}) for date: ${viewingDate.toISOString()}. Message: ${inquiryData.message || 'No message provided'}. Phone: ${inquiryData.phone}`
           });
           
         if (error) throw error;
         return { type: 'viewing' };
       } else {
-        // Submit as a general inquiry
+        // Store general inquiries in the 'properties' table temporarily as well
         const { error } = await supabase
-          .from('inquiries')
+          .from('properties')
           .insert({
-            property_id: propertyId,
-            name: inquiryData.name,
-            email: inquiryData.email,
-            phone: inquiryData.phone,
-            message: inquiryData.message || '',
-            user_id: user?.id || null
+            owner_id: user?.id || 'anonymous',
+            title: `Inquiry for property ${propertyId}`,
+            address: `Inquiry about ${propertyTitle}`,
+            city: 'N/A',
+            price: 0,
+            property_type: 'inquiry',
+            listing_type: 'inquiry',
+            description: `Inquiry from ${inquiryData.name} (${inquiryData.email}). Message: ${inquiryData.message || 'No message provided'}. Phone: ${inquiryData.phone}`
           });
           
         if (error) throw error;

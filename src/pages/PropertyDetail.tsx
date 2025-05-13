@@ -22,9 +22,10 @@ import { toast } from "sonner";
 const PropertyDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { mapSupabasePropertyToProperty } = usePropertyMapper();
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const [property, setProperty] = useState<Property | null>(null);
   const [showInquiryForm, setShowInquiryForm] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   
   // Fetch property data
   const { data: propertyData, isLoading, error } = useQuery({
@@ -44,6 +45,25 @@ const PropertyDetail = () => {
       return data as SupabaseProperty;
     },
   });
+
+  // Fetch user role if user is logged in
+  useEffect(() => {
+    if (user?.id) {
+      const fetchUserRole = async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        
+        if (!error && data) {
+          setUserRole(data.role);
+        }
+      };
+      
+      fetchUserRole();
+    }
+  }, [user]);
   
   // Map Supabase property to our application's Property type
   useEffect(() => {
@@ -84,7 +104,7 @@ const PropertyDetail = () => {
     );
   }
   
-  const isAgent = profile?.role === 'agent';
+  const isAgent = userRole === 'agent';
   
   return (
     <div className="min-h-screen bg-background">
