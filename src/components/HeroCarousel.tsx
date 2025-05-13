@@ -1,9 +1,10 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi
 } from '@/components/ui/carousel';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
@@ -17,24 +18,43 @@ const propertyImages = [
 
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [api, setApi] = useState<CarouselApi | null>(null);
+
+  // Update current slide when API changes
+  const onSelect = useCallback(() => {
+    if (!api) return;
+    setCurrentSlide(api.selectedScrollSnap());
+  }, [api]);
+
+  // Subscribe to carousel changes
+  useEffect(() => {
+    if (!api) return;
+    api.on("select", onSelect);
+    return () => {
+      api.off("select", onSelect);
+    };
+  }, [api, onSelect]);
 
   // Auto-advance the carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % propertyImages.length);
+      if (api) {
+        const nextSlide = (currentSlide + 1) % propertyImages.length;
+        api.scrollTo(nextSlide);
+      }
     }, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [api, currentSlide]);
 
   return (
     <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-[1]"></div>
       
-      <Carousel className="w-full h-full" 
-        value={{ selectedIndex: currentSlide }}
-        onValueChange={(value) => setCurrentSlide(value.selectedIndex)}>
+      <Carousel 
+        className="w-full h-full"
+        setApi={setApi}>
         <CarouselContent className="h-full">
           {propertyImages.map((image, index) => (
             <CarouselItem key={index} className="h-full">
@@ -58,7 +78,7 @@ const HeroCarousel = () => {
             className={`w-3 h-3 rounded-full transition-all ${
               currentSlide === index ? "bg-white scale-110" : "bg-white/50"
             }`}
-            onClick={() => setCurrentSlide(index)}
+            onClick={() => api?.scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
