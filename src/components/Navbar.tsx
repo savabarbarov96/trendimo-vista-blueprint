@@ -21,6 +21,7 @@ const mainNavItems = [
   { title: "Продай", href: "/sell" },
   { title: "За нас", href: "/about" },
   { title: "Кариери", href: "/careers" },
+  { title: "Блог", href: "/blog" },
 ];
 
 const Navbar = () => {
@@ -37,11 +38,13 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-background border-b">
+    <div className="bg-background border-b sticky top-0 z-50">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <img src={logo} alt="Trendimo Logo" width="40" height="40" />
-          <span className="font-bold">Trendimo</span>
+          <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent transform hover:scale-105 transition-transform duration-300">
+            Trendimo
+          </span>
         </Link>
         <div className="hidden md:flex items-center space-x-6">
           {mainNavItems.map((item) => (
@@ -49,8 +52,8 @@ const Navbar = () => {
               key={item.href}
               to={item.href}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:text-foreground/80 ${
-                  isActive ? "text-foreground" : "text-muted-foreground"
+                `text-sm font-medium transition-colors hover:text-primary ${
+                  isActive ? "text-primary font-bold" : "text-muted-foreground"
                 }`
               }
             >
@@ -93,8 +96,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block text-sm font-medium transition-colors hover:text-foreground/80 ${
-                      isActive ? "text-foreground" : "text-muted-foreground"
+                    `block text-sm font-medium transition-colors hover:text-primary ${
+                      isActive ? "text-primary font-bold" : "text-muted-foreground"
                     }`
                   }
                 >

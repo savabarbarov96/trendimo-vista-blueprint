@@ -11,10 +11,12 @@ import SellPage from './pages/SellPage';
 import CareersPage from './pages/CareersPage';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
-import PrivateRoute from './components/PrivateRoute';
 import ServicesPage from './pages/ServicesPage';
 import BlogIndexPage from './pages/blog/index';
 import BlogPostPage from './pages/blog/[slug]';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import CookiesPage from './pages/CookiesPage';
 
 function App() {
   return (
@@ -31,6 +33,9 @@ function App() {
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/blog" element={<BlogIndexPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/cookies" element={<CookiesPage />} />
           <Route path="/profile" element={
             <PrivateRoute>
               <Profile />

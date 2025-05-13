@@ -6,6 +6,28 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { siteContent } from '../data/content';
 
+// Custom TikTok icon since it's not available in lucide-react
+const TikTokIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+    <path d="M16 8v8"/>
+    <path d="M12 16v-8"/>
+    <path d="M18 8a4 4 0 0 0-4-4"/>
+    <path d="M16 4h-4"/>
+    <path d="M16 8a4 4 0 0 1 4 4v1"/>
+  </svg>
+);
+
 const Footer = () => {
   const { footer, nav } = siteContent;
 
@@ -20,16 +42,19 @@ const Footer = () => {
               {footer.aboutText}
             </p>
             <div className="flex space-x-4">
-              <a href="https://facebook.com" className="text-white hover:text-secondary" aria-label="Facebook">
+              <a href="https://facebook.com" className="text-white hover:text-secondary transition-colors" aria-label="Facebook">
                 <Facebook />
               </a>
-              <a href="https://instagram.com" className="text-white hover:text-secondary" aria-label="Instagram">
+              <a href="https://instagram.com" className="text-white hover:text-secondary transition-colors" aria-label="Instagram">
                 <Instagram />
               </a>
-              <a href="https://twitter.com" className="text-white hover:text-secondary" aria-label="Twitter">
+              <a href="https://tiktok.com" className="text-white hover:text-secondary transition-colors" aria-label="TikTok">
+                <TikTokIcon />
+              </a>
+              <a href="https://twitter.com" className="text-white hover:text-secondary transition-colors" aria-label="Twitter">
                 <Twitter />
               </a>
-              <a href="https://linkedin.com" className="text-white hover:text-secondary" aria-label="LinkedIn">
+              <a href="https://linkedin.com" className="text-white hover:text-secondary transition-colors" aria-label="LinkedIn">
                 <Linkedin />
               </a>
             </div>
@@ -47,6 +72,11 @@ const Footer = () => {
               <li>
                 <Link to="/properties" className="text-gray-300 hover:text-white transition-colors">
                   {nav.properties}
+                </Link>
+              </li>
+              <li>
+                <Link to="/services" className="text-gray-300 hover:text-white transition-colors">
+                  {nav.services}
                 </Link>
               </li>
               <li>
@@ -120,6 +150,9 @@ const Footer = () => {
             </Link>
             <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
               {footer.privacy}
+            </Link>
+            <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">
+              {footer.cookies}
             </Link>
           </div>
         </div>
