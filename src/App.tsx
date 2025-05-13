@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import './App.css';
+import { AuthProvider } from './hooks/use-auth';
 
 // Pages
 import Index from './pages/Index';
@@ -19,20 +20,22 @@ import Footer from './components/Footer';
 function App() {
   return (
     <Router>
-      <Navbar />
-      <main>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/properties" element={<PropertiesPage />} />
-          <Route path="/properties/:id" element={<PropertyDetail />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/sell" element={<SellPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
-      <Toaster position="top-right" />
+      <AuthProvider>
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/properties" element={<PropertiesPage />} />
+            <Route path="/properties/:id" element={<PropertyDetail />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/sell" element={<SellPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+        <Toaster position="top-right" />
+      </AuthProvider>
     </Router>
   );
 }
