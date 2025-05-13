@@ -60,29 +60,29 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links - Redesigned as a grid */}
+          {/* Quick Links - Redesigned as pills/buttons */}
           <div>
             <h3 className="text-xl font-bold mb-4">{footer.quickLinks}</h3>
-            <div className="grid grid-cols-2 gap-2">
-              <Link to="/" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+            <div className="flex flex-wrap gap-2">
+              <Link to="/" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.home}
               </Link>
-              <Link to="/properties" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/properties" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.properties}
               </Link>
-              <Link to="/services" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/services" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.services}
               </Link>
-              <Link to="/sell" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/sell" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.sell}
               </Link>
-              <Link to="/about" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/about" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.about}
               </Link>
-              <Link to="/careers" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/careers" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.careers}
               </Link>
-              <Link to="/blog" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+              <Link to="/blog" className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full text-sm transition-colors">
                 {nav.blog}
               </Link>
             </div>
@@ -116,7 +116,7 @@ const Footer = () => {
               <Input
                 type="email"
                 placeholder={footer.newsletter.placeholder}
-                className="bg-white/10 border-gray-600 text-white"
+                className="bg-white/10 border-gray-600 text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent"
               />
               <Button className="ml-2 bg-secondary hover:bg-secondary-dark">
                 {footer.newsletter.buttonText}
@@ -128,7 +128,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 mb-4 md:mb-0">
-            {footer.copyright}
+            © 2025 Trendimo. {footer.copyright.split('© 2023 Trendimo. ')[1] || 'Всички права запазени.'}
           </div>
           <div className="flex space-x-6">
             <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">

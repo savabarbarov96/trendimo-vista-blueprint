@@ -1,133 +1,75 @@
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Home, Calendar, Pencil, DollarSign, Info } from "lucide-react";
+import { CheckCircle2, Clock, Home, MessageSquare, BarChart2, FileCheck } from "lucide-react";
 
 const SalesProcessInfo: React.FC = () => {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Info className="mr-2 h-5 w-5" />
-            Защо да продадете с Trendimo?
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p>
-            Trendimo е лидер на пазара на недвижими имоти в България с над 15 години опит. 
-            Ние предлагаме персонализиран подход към всеки клиент и гарантираме:
-          </p>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>Експертна оценка на пазарната стойност на вашия имот</li>
-            <li>Професионални фотографии и 3D виртуални обиколки</li>
-            <li>Мощна онлайн и офлайн рекламна стратегия</li>
-            <li>Достъп до базата ни от предварително одобрени купувачи</li>
-            <li>Юридическо съдействие по време на цялата сделка</li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Calendar className="mr-2 h-5 w-5" />
-            Процесът на продажба
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">
-                1
-              </div>
-              <div>
-                <h4 className="font-medium">Безплатна консултация</h4>
-                <p className="text-sm text-muted-foreground">
-                  Наш агент ще ви посети и ще направи оценка на имота ви без ангажимент
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">
-                2
-              </div>
-              <div>
-                <h4 className="font-medium">Маркетинг стратегия</h4>
-                <p className="text-sm text-muted-foreground">
-                  Създаваме персонализирана стратегия за маркетинг на вашия имот
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">
-                3
-              </div>
-              <div>
-                <h4 className="font-medium">Огледи и преговори</h4>
-                <p className="text-sm text-muted-foreground">
-                  Организираме огледи само с качествени купувачи и водим преговорите
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <div className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center shrink-0">
-                4
-              </div>
-              <div>
-                <h4 className="font-medium">Сделка и документи</h4>
-                <p className="text-sm text-muted-foreground">
-                  Помагаме с всички правни документи до успешното приключване на сделката
-                </p>
-              </div>
-            </div>
+    <div className="p-6">
+      <div className="space-y-8">
+        <div className="relative pl-8 border-l-2 border-blue-100 pb-8">
+          <div className="absolute -left-3 top-0 bg-primary rounded-full p-1 shadow-md">
+            <Clock className="h-4 w-4 text-white" />
           </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <DollarSign className="mr-2 h-5 w-5" />
-            Комисиона
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            Нашата комисиона е конкурентна на пазара и се определя индивидуално спрямо типа и стойността на имота.
-            Стандартната ни комисиона е 2% от продажната цена, но се заплаща само при успешна продажба.
+          <h3 className="font-semibold text-lg mb-2 text-neutral-dark">Безплатна оценка</h3>
+          <p className="text-neutral">
+            Ще направим професионална оценка на вашия имот, базирана на локацията, 
+            състоянието и пазарните условия.
           </p>
-          <p className="mt-2 font-medium">
-            Не дължите нищо, ако не продадем вашия имот!
+        </div>
+        
+        <div className="relative pl-8 border-l-2 border-blue-100 pb-8">
+          <div className="absolute -left-3 top-0 bg-primary rounded-full p-1 shadow-md">
+            <Home className="h-4 w-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-lg mb-2 text-neutral-dark">Подготовка на имота</h3>
+          <p className="text-neutral">
+            Нашите експерти ще ви посъветват как да подготвите имота за продажба 
+            и ще организират професионална фотосесия.
           </p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Pencil className="mr-2 h-5 w-5" />
-            Контакти
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <p className="flex items-center gap-2">
-            <Home className="h-4 w-4" />
-            <span>ул. Витоша 16, София 1000</span>
+        </div>
+        
+        <div className="relative pl-8 border-l-2 border-blue-100 pb-8">
+          <div className="absolute -left-3 top-0 bg-primary rounded-full p-1 shadow-md">
+            <BarChart2 className="h-4 w-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-lg mb-2 text-neutral-dark">Маркетингова стратегия</h3>
+          <p className="text-neutral">
+            Създаваме персонализирана маркетингова стратегия, включваща качествени снимки, 
+            видео обиколки и реклама в нашите канали.
           </p>
-          <p className="flex items-center gap-2">
-            <span className="i-lucide-phone h-4 w-4" />
-            <span>+359 2 954 3344</span>
+        </div>
+        
+        <div className="relative pl-8 border-l-2 border-blue-100 pb-8">
+          <div className="absolute -left-3 top-0 bg-primary rounded-full p-1 shadow-md">
+            <MessageSquare className="h-4 w-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-lg mb-2 text-neutral-dark">Огледи и преговори</h3>
+          <p className="text-neutral">
+            Организираме огледи с потенциални купувачи и водим преговорите от ваше име, 
+            за да получите най-добрата цена.
           </p>
-          <p className="flex items-center gap-2">
-            <span className="i-lucide-mail h-4 w-4" />
-            <span>sales@trendimo.bg</span>
+        </div>
+        
+        <div className="relative pl-8 pb-0">
+          <div className="absolute -left-3 top-0 bg-secondary rounded-full p-1 shadow-md">
+            <FileCheck className="h-4 w-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-lg mb-2 text-neutral-dark">Финализиране на сделката</h3>
+          <p className="text-neutral">
+            Осигуряваме правна помощ за цялата документация и ви придружаваме 
+            до успешното финализиране на сделката.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+      
+      <div className="mt-8 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+        <div className="flex items-center">
+          <CheckCircle2 className="h-6 w-6 text-primary mr-3 flex-shrink-0" />
+          <p className="text-neutral-dark font-medium">
+            98% от имотите в нашия портфейл се продават успешно в рамките на 90 дни.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

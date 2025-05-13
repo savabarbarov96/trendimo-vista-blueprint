@@ -35,13 +35,13 @@ const Index = () => {
           
           {/* Toggle and Search Bar */}
           <div className="max-w-4xl mx-auto glass-effect rounded-lg p-4 animate-fade-in">
-            <div className="bg-white p-2 rounded-t-lg inline-flex mb-0">
+            <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/30 p-2 rounded-t-lg inline-flex mb-0">
               <button 
                 onClick={() => setSearchMode('buy')}
                 className={`px-6 py-3 font-medium rounded-lg transition-colors ${
                   searchMode === 'buy' 
-                    ? 'bg-primary text-white' 
-                    : 'text-neutral-dark hover:bg-gray-100'
+                    ? 'bg-primary text-white shadow-md' 
+                    : 'text-white hover:bg-white/20'
                 }`}
               >
                 Купи
@@ -50,8 +50,8 @@ const Index = () => {
                 onClick={() => setSearchMode('rent')}
                 className={`px-6 py-3 font-medium rounded-lg transition-colors ${
                   searchMode === 'rent' 
-                    ? 'bg-primary text-white' 
-                    : 'text-neutral-dark hover:bg-gray-100'
+                    ? 'bg-primary text-white shadow-md' 
+                    : 'text-white hover:bg-white/20'
                 }`}
               >
                 Под наем
@@ -63,7 +63,7 @@ const Index = () => {
           
           <div className="mt-12">
             <Link to="/properties">
-              <Button size="lg" className="bg-secondary hover:bg-secondary-dark shadow-lg hover:shadow-xl transition-all">
+              <Button size="lg" className="bg-gradient-to-r from-secondary/90 to-secondary hover:from-secondary hover:to-secondary-dark transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-secondary-light/30">
                 Разгледай всички имоти
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
