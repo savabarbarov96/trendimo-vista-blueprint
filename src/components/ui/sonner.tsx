@@ -1,4 +1,6 @@
 
+// This is a compatibility layer for applications using sonner
+// It redirects to our custom toast implementation
 import { toast } from "@/hooks/use-toast";
 
 // Re-export toast from our shadcn implementation for backward compatibility
