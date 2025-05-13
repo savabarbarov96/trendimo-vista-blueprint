@@ -11,9 +11,14 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({ name, description, icon, isHighlighted = false }: ServiceCardProps) => {
-  // Dynamically get icon from Lucide
-  const IconComponent = (LucideIcons as Record<string, React.ComponentType<any>>)[icon] || 
-                       (LucideIcons as Record<string, React.ComponentType<any>>)["HelpCircle"];
+  // Safely get the icon component from Lucide
+  // Cast the type correctly to fix the TypeScript error
+  let IconComponent: React.ElementType = LucideIcons.HelpCircle;
+  
+  // Check if the icon exists in Lucide icons
+  if (icon && Object.prototype.hasOwnProperty.call(LucideIcons, icon)) {
+    IconComponent = (LucideIcons as any)[icon];
+  }
   
   return (
     <Card className={`h-full transition-all ${isHighlighted ? 'shadow-lg border-primary border-2' : 'hover:shadow-md'}`}>
