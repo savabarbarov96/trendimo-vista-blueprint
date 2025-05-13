@@ -36,7 +36,8 @@ export const useBlogPosts = (category?: string) => {
         throw new Error('Failed to fetch blog posts');
       }
 
-      return data || [];
+      // Cast the data to BlogPost[] to ensure type compatibility
+      return (data as unknown as BlogPost[]) || [];
     },
   });
 };
@@ -56,7 +57,8 @@ export const useBlogPostBySlug = (slug: string) => {
         throw new Error('Failed to fetch blog post');
       }
 
-      return data;
+      // Cast the data to BlogPost to ensure type compatibility
+      return data as unknown as BlogPost;
     },
     enabled: !!slug,
   });

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Facebook, Instagram, TikTok } from 'lucide-react';
+import { Facebook, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 
@@ -72,7 +72,26 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
         className="rounded-full"
         onClick={() => handleShare('tiktok')}
       >
-        <TikTok className="h-4 w-4" />
+        {/* Custom TikTok icon since it's not available in lucide-react */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-4 w-4"
+        >
+          <path d="M9 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+          <path d="M16 8v8"/>
+          <path d="M12 16v-8"/>
+          <path d="M18 8a4 4 0 0 0-4-4"/>
+          <path d="M16 4h-4"/>
+          <path d="M16 8a4 4 0 0 1 4 4v1"/>
+        </svg>
         <span className="sr-only">TikTok</span>
       </Button>
       <Button
