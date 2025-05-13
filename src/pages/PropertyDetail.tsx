@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -128,23 +127,23 @@ const PropertyDetail = () => {
         
         {/* Property title and price */}
         <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold">{property.title}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">{property?.title}</h1>
           <div className="flex items-center mt-2">
             <MapPin className="h-5 w-5 text-neutral" />
             <span className="ml-2 text-lg text-neutral-dark">
-              {property.address}
+              {property?.address}
             </span>
           </div>
           <div className="mt-4">
             <span className="text-3xl font-bold text-primary">
-              {formatPrice(property.price)}
+              {property ? formatPrice(property.price) : ''}
             </span>
           </div>
         </div>
         
         {/* Image carousel */}
         <div className="mb-8">
-          <PropertyCarousel images={property.images} />
+          {property && <PropertyCarousel images={property.images} />}
         </div>
         
         {/* Main content grid */}
@@ -157,64 +156,68 @@ const PropertyDetail = () => {
                 <h2 className="text-2xl font-semibold">Property Details</h2>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                  <div className="flex items-center">
-                    <Bed className="h-5 w-5 mr-2 text-primary" />
+                {property && (
+                  <>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                      <div className="flex items-center">
+                        <Bed className="h-5 w-5 mr-2 text-primary" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Bedrooms</p>
+                          <p className="font-medium">{property.bedrooms}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <Bath className="h-5 w-5 mr-2 text-primary" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Bathrooms</p>
+                          <p className="font-medium">{property.bathrooms}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center">
+                        <Maximize className="h-5 w-5 mr-2 text-primary" />
+                        <div>
+                          <p className="text-sm text-muted-foreground">Area</p>
+                          <p className="font-medium">{property.area} sq.m</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Separator className="my-4" />
+                    
+                    {/* Description */}
                     <div>
-                      <p className="text-sm text-muted-foreground">Bedrooms</p>
-                      <p className="font-medium">{property.bedrooms}</p>
+                      <h3 className="font-medium mb-2">Description</h3>
+                      <p className="text-neutral-dark whitespace-pre-line">
+                        {property.description}
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Bath className="h-5 w-5 mr-2 text-primary" />
+                    
+                    <Separator className="my-6" />
+                    
+                    {/* Features and amenities */}
                     <div>
-                      <p className="text-sm text-muted-foreground">Bathrooms</p>
-                      <p className="font-medium">{property.bathrooms}</p>
+                      <h3 className="font-medium mb-3">Features & Amenities</h3>
+                      <div className="grid grid-cols-2 gap-y-2">
+                        <div className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
+                          <span>Property Type: {property.propertyType}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
+                          <span>City: {property.city}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
+                          <span>Location: {property.location}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
+                          <span>Status: {property.status}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center">
-                    <Maximize className="h-5 w-5 mr-2 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Area</p>
-                      <p className="font-medium">{property.area} sq.m</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <Separator className="my-4" />
-                
-                {/* Description */}
-                <div>
-                  <h3 className="font-medium mb-2">Description</h3>
-                  <p className="text-neutral-dark whitespace-pre-line">
-                    {property.description}
-                  </p>
-                </div>
-                
-                <Separator className="my-6" />
-                
-                {/* Features and amenities */}
-                <div>
-                  <h3 className="font-medium mb-3">Features & Amenities</h3>
-                  <div className="grid grid-cols-2 gap-y-2">
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                      <span>Property Type: {property.propertyType}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                      <span>City: {property.city}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                      <span>Location: {property.location}</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                      <span>Status: {property.status}</span>
-                    </div>
-                  </div>
-                </div>
+                  </>
+                )}
               </CardContent>
             </Card>
             
@@ -224,11 +227,13 @@ const PropertyDetail = () => {
                 <h2 className="text-2xl font-semibold">Location</h2>
               </CardHeader>
               <CardContent>
-                <PropertyMap 
-                  address={property.address} 
-                  location={property.location} 
-                  city={property.city} 
-                />
+                {property && (
+                  <PropertyMap 
+                    address={property.address} 
+                    location={property.location} 
+                    city={property.city} 
+                  />
+                )}
               </CardContent>
             </Card>
           </div>
@@ -257,9 +262,9 @@ const PropertyDetail = () => {
                   Schedule a Viewing
                 </Button>
                 
-                {showInquiryForm && (
+                {showInquiryForm && id && property && (
                   <div className="mt-4">
-                    <PropertyInquiryForm propertyId={id || ''} propertyTitle={property.title} />
+                    <PropertyInquiryForm propertyId={id} propertyTitle={property.title} />
                   </div>
                 )}
               </CardContent>
@@ -275,12 +280,14 @@ const PropertyDetail = () => {
         
         {/* Similar Properties */}
         <div className="mt-12">
-          <h2 className="text-2xl font-semibold mb-6">Similar Properties in {property.location}</h2>
-          <SimilarProperties 
-            currentPropertyId={parseInt(property.id.toString())} 
-            location={property.location}
-            city={property.city}
-          />
+          <h2 className="text-2xl font-semibold mb-6">Similar Properties {property?.location && `in ${property.location}`}</h2>
+          {property && (
+            <SimilarProperties 
+              currentPropertyId={parseInt(property.id.toString())} 
+              location={property.location}
+              city={property.city}
+            />
+          )}
         </div>
       </div>
     </div>

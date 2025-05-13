@@ -1,251 +1,212 @@
 
-import React from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
-import { CalendarIcon, Loader2 } from "lucide-react";
-import { format } from "date-fns";
-import { useMutation } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { CalendarIcon, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
-import { toast } from 'sonner';
-
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name is required' }),
-  email: z.string().email({ message: 'Invalid email address' }),
-  phone: z.string().min(6, { message: 'Phone number is required' }),
-  message: z.string().optional(),
-  viewingDate: z.date().optional(),
-  isViewing: z.boolean().default(false)
-});
-
-type FormValues = z.infer<typeof formSchema>;
+interface InquiryFormData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  viewingDate?: Date;
+}
 
 interface PropertyInquiryFormProps {
   propertyId: string;
   propertyTitle: string;
 }
 
-const PropertyInquiryForm: React.FC<PropertyInquiryFormProps> = ({ propertyId, propertyTitle }) => {
+const PropertyInquiryForm = ({ propertyId, propertyTitle }: PropertyInquiryFormProps) => {
   const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isViewingRequest, setIsViewingRequest] = useState(false);
+  const [viewingDate, setViewingDate] = useState<Date | undefined>(undefined);
   
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      email: user?.email || '',
-      phone: '',
-      message: `I'm interested in this property: ${propertyTitle}`,
-      isViewing: false
-    },
-  });
-
-  const submitInquiry = useMutation({
-    mutationFn: async (data: FormValues) => {
-      const { isViewing, viewingDate, ...inquiryData } = data;
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<InquiryFormData>();
+  
+  const onSubmit = async (data: InquiryFormData) => {
+    setIsLoading(true);
+    
+    try {
+      const formData = {
+        property_id: propertyId,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        message: data.message,
+        user_id: user?.id || null,
+      };
       
-      if (isViewing && viewingDate) {
-        // Since we can't use the 'viewings' table yet (it doesn't exist in the types),
-        // we'll store viewing requests in the 'properties' table temporarily
-        const { error } = await supabase
-          .from('properties')
+      let result;
+      
+      if (isViewingRequest && viewingDate) {
+        // Create a viewing request
+        const { data: viewingData, error: viewingError } = await supabase
+          .from('viewings')
           .insert({
-            owner_id: user?.id || 'anonymous',
-            title: `Viewing Request for property ${propertyId}`,
-            address: `Viewing requested for ${propertyTitle}`,
-            city: 'N/A',
-            price: 0,
-            property_type: 'viewing_request',
-            listing_type: 'viewing_request',
-            description: `Viewing request from ${inquiryData.name} (${inquiryData.email}) for date: ${viewingDate.toISOString()}. Message: ${inquiryData.message || 'No message provided'}. Phone: ${inquiryData.phone}`
-          });
-          
-        if (error) throw error;
-        return { type: 'viewing' };
+            ...formData,
+            viewing_date: viewingDate.toISOString(),
+          })
+          .select();
+        
+        if (viewingError) throw viewingError;
+        result = viewingData;
+        toast.success("Viewing request submitted successfully!");
       } else {
-        // Store general inquiries in the 'properties' table temporarily as well
-        const { error } = await supabase
-          .from('properties')
-          .insert({
-            owner_id: user?.id || 'anonymous',
-            title: `Inquiry for property ${propertyId}`,
-            address: `Inquiry about ${propertyTitle}`,
-            city: 'N/A',
-            price: 0,
-            property_type: 'inquiry',
-            listing_type: 'inquiry',
-            description: `Inquiry from ${inquiryData.name} (${inquiryData.email}). Message: ${inquiryData.message || 'No message provided'}. Phone: ${inquiryData.phone}`
-          });
-          
-        if (error) throw error;
-        return { type: 'inquiry' };
+        // Create a regular inquiry
+        const { data: inquiryData, error: inquiryError } = await supabase
+          .from('inquiries')
+          .insert(formData)
+          .select();
+        
+        if (inquiryError) throw inquiryError;
+        result = inquiryData;
+        toast.success("Inquiry sent successfully!");
       }
-    },
-    onSuccess: (data) => {
-      if (data.type === 'viewing') {
-        toast.success('Your viewing request has been scheduled!');
-      } else {
-        toast.success('Your inquiry has been sent!');
-      }
-      form.reset();
-    },
-    onError: (error) => {
-      console.error('Error submitting form:', error);
-      toast.error('There was an error sending your request. Please try again.');
+      
+      reset();
+      setViewingDate(undefined);
+      setIsViewingRequest(false);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to submit your request. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  });
-
-  const onSubmit = (data: FormValues) => {
-    submitInquiry.mutate(data);
   };
-
+  
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter your name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Card>
+      <CardContent className="p-4">
+        <h3 className="text-lg font-semibold mb-4">
+          {isViewingRequest 
+            ? `Schedule a viewing for: ${propertyTitle}` 
+            : `Inquire about: ${propertyTitle}`}
+        </h3>
         
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="your@email.com" type="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input placeholder="Your phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Message</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Your message" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="isViewing"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>I want to schedule a viewing</FormLabel>
-              </div>
-            </FormItem>
-          )}
-        />
-        
-        {form.watch('isViewing') && (
-          <FormField
-            control={form.control}
-            name="viewingDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Preferred Viewing Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => 
-                        date < new Date() || // Can't select dates in the past
-                        date > new Date(new Date().setMonth(new Date().getMonth() + 3)) // Limit to 3 months in the future
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Input
+              {...register('name', { required: 'Name is required' })}
+              placeholder="Full Name"
+              className={errors.name ? 'border-destructive' : ''}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
             )}
-          />
-        )}
-        
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={submitInquiry.isPending}
-        >
-          {submitInquiry.isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Sending...
-            </>
-          ) : (
-            'Submit Request'
+          </div>
+          
+          <div>
+            <Input
+              {...register('email', { 
+                required: 'Email is required',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Invalid email address'
+                }
+              })}
+              placeholder="Email"
+              type="email"
+              className={errors.email ? 'border-destructive' : ''}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+            )}
+          </div>
+          
+          <div>
+            <Input
+              {...register('phone', { 
+                required: 'Phone number is required' 
+              })}
+              placeholder="Phone Number"
+              type="tel"
+              className={errors.phone ? 'border-destructive' : ''}
+            />
+            {errors.phone && (
+              <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>
+            )}
+          </div>
+          
+          {isViewingRequest && (
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-medium">Select a Date for Viewing</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !viewingDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {viewingDate ? format(viewingDate, "PPP") : "Select date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={viewingDate}
+                    onSelect={setViewingDate}
+                    initialFocus
+                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
           )}
-        </Button>
-      </form>
-    </Form>
+          
+          <div>
+            <Textarea
+              {...register('message')}
+              placeholder={isViewingRequest ? "Any specific details about your visit?" : "How can we help you?"}
+              rows={4}
+              className={errors.message ? 'border-destructive' : ''}
+            />
+            {errors.message && (
+              <p className="text-sm text-destructive mt-1">{errors.message.message}</p>
+            )}
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button 
+              type="submit" 
+              disabled={isLoading || (isViewingRequest && !viewingDate)}
+              className="flex-1"
+            >
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isViewingRequest ? "Schedule Viewing" : "Send Inquiry"}
+            </Button>
+            
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={() => {
+                setIsViewingRequest(!isViewingRequest);
+                if (isViewingRequest) {
+                  setViewingDate(undefined);
+                }
+              }}
+              className="flex-1"
+            >
+              {isViewingRequest ? "Just Send Inquiry" : "Schedule a Viewing"}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
