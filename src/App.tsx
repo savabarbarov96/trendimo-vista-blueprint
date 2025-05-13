@@ -1,8 +1,8 @@
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Toaster } from 'sonner';
 import './App.css';
 import { AuthProvider } from './hooks/use-auth';
+import { Toaster } from "@/components/ui/toaster";
 
 // Pages
 import Index from './pages/Index';
@@ -34,7 +34,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
-        <Toaster position="top-right" />
+        <Toaster />
       </AuthProvider>
     </Router>
   );

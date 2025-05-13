@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/use-auth';
 import { InquiryFormData } from './types';
@@ -41,7 +41,10 @@ export const useInquirySubmission = (propertyId: string) => {
         
         if (viewingError) throw viewingError;
         result = viewingData;
-        toast.success("Viewing request submitted successfully!");
+        toast({
+          title: "Success",
+          description: "Viewing request submitted successfully!"
+        });
       } else {
         // Create a regular inquiry
         const { data: inquiryData, error: inquiryError } = await supabase
@@ -51,7 +54,10 @@ export const useInquirySubmission = (propertyId: string) => {
         
         if (inquiryError) throw inquiryError;
         result = inquiryData;
-        toast.success("Inquiry sent successfully!");
+        toast({
+          title: "Success",
+          description: "Inquiry sent successfully!"
+        });
       }
       
       reset();
@@ -59,7 +65,11 @@ export const useInquirySubmission = (propertyId: string) => {
       setIsViewingRequest(false);
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast.error("Failed to submit your request. Please try again.");
+      toast({
+        title: "Error",
+        description: "Failed to submit your request. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
