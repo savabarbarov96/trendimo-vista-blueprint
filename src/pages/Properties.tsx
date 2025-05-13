@@ -9,6 +9,8 @@ import ImageUploader from '@/components/ImageUploader';
 import ImageGallery from '@/components/ImageGallery';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
+import { Property } from '@/data/properties';
+import { getPropertyImages } from '@/utils/storageHelpers';
 
 // Define the Property type based on the Supabase schema
 export interface SupabaseProperty {
@@ -40,7 +42,7 @@ export interface FilterState {
 
 const Properties = () => {
   const navigate = useNavigate();
-  const [properties, setProperties] = useState<SupabaseProperty[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterState>({
@@ -56,6 +58,40 @@ const Properties = () => {
   useEffect(() => {
     fetchProperties();
   }, [filters]);
+
+  // Function to convert SupabaseProperty to Property
+  const mapSupabasePropertyToProperty = async (prop: SupabaseProperty): Promise<Property> => {
+    // Try to get images from storage, fallback to placeholders
+    let images: string[] = [];
+    try {
+      images = await getPropertyImages(prop.id);
+      if (images.length === 0) {
+        images = getPlaceholderImages();
+      }
+    } catch (err) {
+      console.error('Error fetching property images:', err);
+      images = getPlaceholderImages();
+    }
+
+    return {
+      id: parseInt(prop.id), // Convert string ID to number
+      title: prop.title,
+      description: prop.description || '',
+      price: prop.price,
+      area: prop.area || 0,
+      bedrooms: prop.bedrooms || 0,
+      bathrooms: prop.bathrooms || 0,
+      location: prop.address.split(',').pop()?.trim() || '',
+      city: prop.city,
+      address: prop.address,
+      propertyType: prop.property_type,
+      status: 'available',
+      featured: prop.is_featured || false,
+      imageUrl: images[0] || getPlaceholderMainImage(),
+      images: images,
+      createdAt: new Date().toISOString()
+    };
+  };
 
   const fetchProperties = async () => {
     try {
@@ -94,25 +130,10 @@ const Properties = () => {
         throw error;
       }
 
-      // Convert Supabase properties to the format expected by PropertyCard
-      const formattedProperties = data.map(prop => ({
-        id: parseInt(prop.id),
-        title: prop.title,
-        description: prop.description || '',
-        price: prop.price,
-        area: prop.area || 0,
-        bedrooms: prop.bedrooms || 0,
-        bathrooms: prop.bathrooms || 0,
-        location: prop.address.split(',').pop()?.trim() || '',
-        city: prop.city,
-        address: prop.address,
-        propertyType: prop.property_type,
-        status: 'available',
-        featured: prop.is_featured || false,
-        imageUrl: getPropertyMainImage(prop.id),
-        images: getPropertyImages(prop.id),
-        createdAt: new Date().toISOString()
-      }));
+      // Map Supabase properties to the format expected by PropertyCard
+      const formattedProperties = await Promise.all(
+        (data || []).map(mapSupabasePropertyToProperty)
+      );
 
       setProperties(formattedProperties);
       setError(null);
@@ -124,20 +145,18 @@ const Properties = () => {
     }
   };
 
-  // Helper function to get the main image for a property
-  const getPropertyMainImage = (propertyId: string) => {
-    // For now, return placeholder image. This will be updated when images are uploaded
-    return "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80";
-  };
-
-  // Helper function to get all images for a property
-  const getPropertyImages = (propertyId: string) => {
-    // For now, return placeholder images. This will be updated when images are uploaded
+  // Helper function to get placeholder images
+  const getPlaceholderImages = () => {
     return [
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80",
       "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2934&q=80",
       "https://images.unsplash.com/photo-1576941089067-2de3c901e126?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2986&q=80"
     ];
+  };
+
+  // Helper function to get placeholder main image
+  const getPlaceholderMainImage = () => {
+    return "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80";
   };
 
   const handleFilterChange = (newFilters: FilterState) => {
