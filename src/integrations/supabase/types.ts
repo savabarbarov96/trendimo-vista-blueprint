@@ -9,6 +9,83 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      careers: {
+        Row: {
+          created_at: string | null
+          department: string
+          description: string
+          id: string
+          is_active: boolean | null
+          location: string
+          requirements: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          department: string
+          description: string
+          id?: string
+          is_active?: boolean | null
+          location: string
+          requirements: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          department?: string
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string
+          requirements?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      careers_applications: {
+        Row: {
+          cover_letter: string | null
+          created_at: string | null
+          cv_url: string | null
+          email: string
+          full_name: string
+          id: string
+          phone: string
+          position_id: string | null
+          status: string | null
+        }
+        Insert: {
+          cover_letter?: string | null
+          created_at?: string | null
+          cv_url?: string | null
+          email: string
+          full_name: string
+          id?: string
+          phone: string
+          position_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          cover_letter?: string | null
+          created_at?: string | null
+          cv_url?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          position_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "careers_applications_position_id_fkey"
+            columns: ["position_id"]
+            isOneToOne: false
+            referencedRelation: "careers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inquiries: {
         Row: {
           created_at: string
