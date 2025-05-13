@@ -9,7 +9,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cities, propertyTypes } from '@/data/content';
-import { FilterState } from '@/pages/Properties';
+import { FilterState } from '@/components/properties/types';
 import { Filter, Search } from 'lucide-react';
 
 const formatPrice = (price: number): string => {
