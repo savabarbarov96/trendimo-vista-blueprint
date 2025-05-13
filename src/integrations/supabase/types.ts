@@ -259,6 +259,33 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          is_highlighted: boolean | null
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          is_highlighted?: boolean | null
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          is_highlighted?: boolean | null
+          name?: string
+        }
+        Relationships: []
+      }
       viewings: {
         Row: {
           created_at: string

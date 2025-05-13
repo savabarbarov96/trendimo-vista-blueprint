@@ -17,6 +17,7 @@ import logo from "../assets/trendimo-logo.svg";
 const mainNavItems = [
   { title: "Начало", href: "/" },
   { title: "Имоти", href: "/properties" },
+  { title: "Услуги", href: "/services" },
   { title: "Продай", href: "/sell" },
   { title: "За нас", href: "/about" },
   { title: "Кариери", href: "/careers" },
