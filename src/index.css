@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -96,6 +99,10 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-play;
   }
+}
+
+.property-card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
