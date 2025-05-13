@@ -46,14 +46,16 @@ const Navbar = () => {
             Trendimo
           </span>
         </Link>
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-4">
           {mainNavItems.map((item) => (
             <NavLink
               key={item.href}
               to={item.href}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:text-primary ${
-                  isActive ? "text-primary font-bold" : "text-muted-foreground"
+                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                  isActive 
+                    ? "text-primary border-b-2 border-primary shadow-sm" 
+                    : "text-gray-700 hover:text-primary"
                 }`
               }
             >
@@ -75,7 +77,11 @@ const Navbar = () => {
         ) : location.pathname === "/auth" ? null : (
           <div className="hidden md:flex items-center space-x-2">
             <Link to="/auth">
-              <Button variant="secondary" className="bg-primary text-white hover:bg-primary-dark transition-colors" size="sm">
+              <Button 
+                variant="secondary" 
+                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all" 
+                size="sm"
+              >
                 Вход
               </Button>
             </Link>
@@ -96,8 +102,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block text-sm font-medium transition-colors hover:text-primary ${
-                      isActive ? "text-primary font-bold" : "text-muted-foreground"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
                     }`
                   }
                 >
@@ -117,7 +123,11 @@ const Navbar = () => {
                 </>
               ) : location.pathname === "/auth" ? null : (
                 <Link to="/auth">
-                  <Button variant="secondary" size="sm" className="w-full justify-start bg-primary text-white hover:bg-primary-dark">
+                  <Button 
+                    variant="secondary" 
+                    size="sm" 
+                    className="w-full justify-start bg-primary text-white hover:bg-primary-dark shadow-md"
+                  >
                     Вход
                   </Button>
                 </Link>
