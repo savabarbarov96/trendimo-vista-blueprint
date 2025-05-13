@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
@@ -22,12 +23,15 @@ const mainNavItems = [
 ];
 
 const Navbar = () => {
-  const { isAuthenticated, user, signout } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Check if user exists to determine authentication status
+  const isAuthenticated = !!user;
 
   const handleSignout = async () => {
-    await signout();
+    await signOut();
     navigate("/auth");
   };
 
