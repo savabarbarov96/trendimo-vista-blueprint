@@ -20,8 +20,8 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Navbar />
         <main>
           <Routes>
@@ -37,8 +37,8 @@ function App() {
         </main>
         <Footer />
         <Toaster />
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
