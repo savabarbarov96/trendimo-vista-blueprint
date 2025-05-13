@@ -95,7 +95,7 @@ const SellPropertyForm: React.FC = () => {
           price: priceValue,
           address: data.address,
           property_type: data.property_type,
-          consultation_date: consultationDate,
+          consultation_date: consultationDate ? consultationDate.toISOString() : null,
           user_id: user?.id || null,
         })
         .select()
