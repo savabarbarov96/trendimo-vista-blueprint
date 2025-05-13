@@ -13,6 +13,8 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import PrivateRoute from './components/PrivateRoute';
 import ServicesPage from './pages/ServicesPage';
+import BlogIndexPage from './pages/blog/index';
+import BlogPostPage from './pages/blog/[slug]';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
           <Route path="/sell" element={<SellPage />} />
           <Route path="/careers" element={<CareersPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/blog" element={<BlogIndexPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/profile" element={
             <PrivateRoute>
               <Profile />
