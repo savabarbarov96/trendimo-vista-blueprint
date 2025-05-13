@@ -1,94 +1,93 @@
 
-import React from 'react';
-import { ArrowRight, Home, DollarSign, Key, Users } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
+import VideoBackground from '@/components/VideoBackground';
+import SearchBar from '@/components/SearchBar';
 import FeaturedProperties from '@/components/FeaturedProperties';
+import ViberBanner from '@/components/ViberBanner';
+import TestimonialsCarousel from '@/components/TestimonialsCarousel';
+import BlogPreview from '@/components/BlogPreview';
+import PropertySellForm from '@/components/PropertySellForm';
 import Footer from '@/components/Footer';
-import { siteContent } from '@/data/content';
 
 const Index = () => {
-  const { home } = siteContent;
-  
+  const [searchMode, setSearchMode] = useState<'buy' | 'rent'>('buy');
+
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
       <Navbar />
-      <Hero />
-      
-      <main>
-        {/* Featured Properties Section */}
-        <FeaturedProperties />
 
-        {/* Services Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-2">{home.services.title}</h2>
-              <p className="text-lg text-neutral">{home.services.subtitle}</p>
+      {/* Hero Section with Video Background */}
+      <section className="relative h-screen flex items-center justify-center text-white">
+        <VideoBackground />
+        
+        <div className="container mx-auto px-4 z-10 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Намерете своя перфектен дом
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+            Trendimo предлага най-добрите имоти в България. Независимо дали търсите нов дом или инвестиция, ние имаме решение за вас.
+          </p>
+          
+          {/* Toggle and Search Bar */}
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white p-2 rounded-t-lg inline-flex mb-0">
+              <button 
+                onClick={() => setSearchMode('buy')}
+                className={`px-6 py-3 font-medium rounded-lg transition-colors ${
+                  searchMode === 'buy' 
+                    ? 'bg-primary text-white' 
+                    : 'text-neutral-dark hover:bg-gray-100'
+                }`}
+              >
+                Купи
+              </button>
+              <button 
+                onClick={() => setSearchMode('rent')}
+                className={`px-6 py-3 font-medium rounded-lg transition-colors ${
+                  searchMode === 'rent' 
+                    ? 'bg-primary text-white' 
+                    : 'text-neutral-dark hover:bg-gray-100'
+                }`}
+              >
+                Под наем
+              </button>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-6 flex flex-col items-center text-center">
-                  <div className="rounded-full bg-blue-100 p-4 mb-4">
-                    <Home className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{home.services.buying.title}</h3>
-                  <p className="text-neutral-dark">{home.services.buying.description}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-6 flex flex-col items-center text-center">
-                  <div className="rounded-full bg-orange-100 p-4 mb-4">
-                    <DollarSign className="h-6 w-6 text-secondary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{home.services.selling.title}</h3>
-                  <p className="text-neutral-dark">{home.services.selling.description}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-6 flex flex-col items-center text-center">
-                  <div className="rounded-full bg-blue-100 p-4 mb-4">
-                    <Key className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{home.services.renting.title}</h3>
-                  <p className="text-neutral-dark">{home.services.renting.description}</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-lg">
-                <CardContent className="p-6 flex flex-col items-center text-center">
-                  <div className="rounded-full bg-orange-100 p-4 mb-4">
-                    <Users className="h-6 w-6 text-secondary" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">{home.services.consulting.title}</h3>
-                  <p className="text-neutral-dark">{home.services.consulting.description}</p>
-                </CardContent>
-              </Card>
-            </div>
+            
+            <SearchBar />
           </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-primary to-blue-700 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{home.cta.title}</h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto">{home.cta.description}</p>
-            <Link to="/contact">
-              <Button size="lg" className="bg-white text-primary hover:bg-gray-100">
-                {home.cta.buttonText}
-                <ArrowRight className="ml-2 h-4 w-4" />
+          
+          <div className="mt-12">
+            <Link to="/properties">
+              <Button size="lg" className="bg-secondary hover:bg-secondary-dark">
+                Разгледай всички имоти
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
+      {/* Viber Community Banner */}
+      <ViberBanner />
+      
+      {/* Featured Properties Section */}
+      <FeaturedProperties />
+      
+      {/* Testimonials Section */}
+      <TestimonialsCarousel />
+      
+      {/* Blog Preview Section */}
+      <BlogPreview />
+      
+      {/* Sell Your Property CTA Form */}
+      <PropertySellForm />
+
+      {/* Footer with placeholders */}
       <Footer />
     </div>
   );
