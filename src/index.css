@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -100,9 +100,48 @@
 
   body {
     @apply bg-background text-foreground font-play;
+    background: linear-gradient(to bottom, #f7fafc, #edf2f7);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
   }
 }
 
+/* Custom component styles */
 .property-card-shadow {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
+
+.section-alt {
+  @apply bg-blue-50;
+}
+
+.glass-effect {
+  @apply bg-white bg-opacity-80 backdrop-blur-sm border border-white border-opacity-20 shadow-lg;
+}
+
+/* Hero sections */
+.hero-section {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Page section styles */
+.page-section {
+  @apply py-12 md:py-16 lg:py-24;
+}
+
+.section-header {
+  @apply mb-12 text-center;
+}
+
+/* Form elements */
+.form-container {
+  @apply bg-white rounded-lg shadow-md p-6;
+}
+

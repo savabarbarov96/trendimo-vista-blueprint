@@ -17,7 +17,7 @@ const Index = () => {
   const [searchMode, setSearchMode] = useState<'buy' | 'rent'>('buy');
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
       {/* Navbar */}
       <Navbar />
 
@@ -26,15 +26,15 @@ const Index = () => {
         <VideoBackground />
         
         <div className="container mx-auto px-4 z-10 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg animate-fade-in">
             Намерете своя перфектен дом
           </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto drop-shadow-lg">
             Trendimo предлага най-добрите имоти в България. Независимо дали търсите нов дом или инвестиция, ние имаме решение за вас.
           </p>
           
           {/* Toggle and Search Bar */}
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto glass-effect rounded-lg p-4 animate-fade-in">
             <div className="bg-white p-2 rounded-t-lg inline-flex mb-0">
               <button 
                 onClick={() => setSearchMode('buy')}
@@ -63,7 +63,7 @@ const Index = () => {
           
           <div className="mt-12">
             <Link to="/properties">
-              <Button size="lg" className="bg-secondary hover:bg-secondary-dark">
+              <Button size="lg" className="bg-secondary hover:bg-secondary-dark shadow-lg hover:shadow-xl transition-all">
                 Разгледай всички имоти
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -79,15 +79,21 @@ const Index = () => {
       <FeaturedProperties />
       
       {/* Testimonials Section */}
-      <TestimonialsCarousel />
+      <section className="bg-blue-600 bg-opacity-10">
+        <TestimonialsCarousel />
+      </section>
       
       {/* Blog Preview Section */}
-      <BlogPreview />
+      <section className="bg-gradient-to-r from-gray-50 to-white">
+        <BlogPreview />
+      </section>
       
       {/* Sell Your Property CTA Form */}
-      <PropertySellForm />
+      <section className="bg-gradient-to-b from-white to-gray-50">
+        <PropertySellForm />
+      </section>
 
-      {/* Footer with placeholders */}
+      {/* Footer */}
       <Footer />
     </div>
   );

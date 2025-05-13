@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-background border-b sticky top-0 z-50">
+    <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <img src={logo} alt="Trendimo Logo" width="40" height="40" />
@@ -75,7 +75,7 @@ const Navbar = () => {
         ) : location.pathname === "/auth" ? null : (
           <div className="hidden md:flex items-center space-x-2">
             <Link to="/auth">
-              <Button variant="outline" size="sm">
+              <Button variant="secondary" className="bg-primary text-white hover:bg-primary-dark transition-colors" size="sm">
                 Вход
               </Button>
             </Link>
@@ -117,7 +117,7 @@ const Navbar = () => {
                 </>
               ) : location.pathname === "/auth" ? null : (
                 <Link to="/auth">
-                  <Button variant="outline" size="sm" className="w-full justify-start">
+                  <Button variant="secondary" size="sm" className="w-full justify-start bg-primary text-white hover:bg-primary-dark">
                     Вход
                   </Button>
                 </Link>
