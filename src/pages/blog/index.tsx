@@ -1,69 +1,110 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { useBlogPosts } from '@/hooks/use-blog-posts';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import BlogPostCard from '@/components/blog/BlogPostCard';
 import { Button } from '@/components/ui/button';
-
-const categories = [
-  { value: '', label: 'Всички' },
-  { value: 'Market Analysis', label: 'Пазарен анализ' },
-  { value: 'Tips & News', label: 'Съвети и новини' },
-  { value: 'Client Stories', label: 'Истории на клиенти' }
-];
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const BlogIndexPage = () => {
-  const [activeCategory, setActiveCategory] = useState('');
-  const { data: posts, isLoading, error } = useBlogPosts(activeCategory || undefined);
+  const { data: posts, isLoading, error } = useBlogPosts();
+  const [tabValue, setTabValue] = React.useState("all");
+
+  const categories = [
+    { value: "all", label: "Всички" },
+    { value: "market-trends", label: "Пазарни тенденции" },
+    { value: "investment", label: "Инвестиции" },
+    { value: "guides", label: "Наръчници" },
+  ];
+
+  const filteredPosts = tabValue === 'all' ? 
+    posts : 
+    posts?.filter(post => post.category === tabValue);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <Helmet>
+        <title>Блог | Trendimo</title>
+        <meta name="description" content="Статии, новини и съвети за недвижими имоти от експертите на Trendimo." />
+      </Helmet>
+      
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 py-16">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold mb-4">Блог</h1>
-          <p className="text-lg text-neutral-dark max-w-2xl mx-auto">
-            Актуални новини, полезни съвети и пазарни анализи от нашия експертен екип
+      <div className="container mx-auto py-12 px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent">
+            Нашият блог
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            Споделяме експертни съвети, пазарни анализи и статии от света на недвижимите имоти.
           </p>
         </div>
         
         <div className="mb-8">
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+          <Tabs defaultValue="all" onValueChange={setTabValue} className="w-full">
+            <div className="flex justify-center mb-8">
+              <TabsList className="bg-blue-50">
+                {categories.map((category) => (
+                  <TabsTrigger
+                    key={category.value}
+                    value={category.value}
+                    className="data-[state=active]:bg-white data-[state=active]:text-blue-700"
+                  >
+                    {category.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+            
             {categories.map((category) => (
-              <Button
-                key={category.value}
-                variant={activeCategory === category.value ? "default" : "outline"}
-                onClick={() => setActiveCategory(category.value)}
-                className="mb-2"
-              >
-                {category.label}
-              </Button>
+              <TabsContent 
+                key={category.value} 
+                value={category.value}
+                className="mt-0"
+              />
             ))}
-          </div>
+          </Tabs>
         </div>
-
+        
         {isLoading ? (
-          <div className="text-center py-16">Зареждане...</div>
-        ) : error ? (
-          <div className="text-center py-16 text-red-500">
-            Възникна грешка при зареждането на постове.
+          <div className="text-center p-12">
+            <p className="text-muted-foreground">Зареждане на статии...</p>
           </div>
-        ) : posts && posts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post) => (
-              <BlogPostCard key={post.id} post={post} />
-            ))}
+        ) : error ? (
+          <div className="text-center p-12 bg-red-50 rounded-xl">
+            <p className="text-destructive">Възникна грешка при зареждането на статиите.</p>
+            <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+              Опитайте отново
+            </Button>
           </div>
         ) : (
-          <div className="text-center py-16">
-            <p className="text-lg text-neutral">В момента няма публикации в тази категория.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts?.map((post) => (
+              <Link key={post.id} to={`/blog/${post.slug}`} className="block hover:no-underline">
+                <BlogPostCard 
+                  title={post.title} 
+                  excerpt={post.excerpt} 
+                  imageSrc={post.coverImage} 
+                  date={post.publishedAt} 
+                  author={post.author}
+                  category={post.category}
+                />
+              </Link>
+            ))}
           </div>
         )}
-      </main>
-
+        
+        {filteredPosts && filteredPosts.length === 0 && (
+          <div className="text-center p-12 bg-blue-50 rounded-xl">
+            <p className="text-muted-foreground">Няма намерени статии в тази категория.</p>
+          </div>
+        )}
+        
+      </div>
+      
       <Footer />
     </div>
   );

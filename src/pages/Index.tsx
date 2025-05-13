@@ -17,7 +17,7 @@ const Index = () => {
   const [searchMode, setSearchMode] = useState<'buy' | 'rent'>('buy');
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
       {/* Navbar */}
       <Navbar />
 
@@ -26,7 +26,7 @@ const Index = () => {
         <HeroCarousel />
         
         <div className="container mx-auto px-4 z-10 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg animate-fade-in bg-gradient-to-r from-white to-blue-100 text-transparent bg-clip-text">
             Намерете своя перфектен дом
           </h1>
           <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto drop-shadow-lg">
@@ -34,13 +34,13 @@ const Index = () => {
           </p>
           
           {/* Toggle and Search Bar */}
-          <div className="max-w-4xl mx-auto glass-effect rounded-lg p-4 animate-fade-in">
-            <div className="bg-gradient-to-r from-blue-600/20 to-blue-500/30 p-2 rounded-t-lg inline-flex mb-0">
+          <div className="max-w-4xl mx-auto rounded-lg p-4 animate-fade-in bg-white/5 backdrop-blur-md border border-white/20 shadow-lg">
+            <div className="bg-gradient-to-r from-blue-700 to-blue-900 p-2 rounded-t-lg inline-flex mb-0">
               <button 
                 onClick={() => setSearchMode('buy')}
                 className={`px-6 py-3 font-medium rounded-lg transition-colors ${
                   searchMode === 'buy' 
-                    ? 'bg-primary text-white shadow-md' 
+                    ? 'bg-white text-blue-900 shadow-md' 
                     : 'text-white hover:bg-white/20'
                 }`}
               >
@@ -50,7 +50,7 @@ const Index = () => {
                 onClick={() => setSearchMode('rent')}
                 className={`px-6 py-3 font-medium rounded-lg transition-colors ${
                   searchMode === 'rent' 
-                    ? 'bg-primary text-white shadow-md' 
+                    ? 'bg-white text-blue-900 shadow-md' 
                     : 'text-white hover:bg-white/20'
                 }`}
               >
@@ -63,7 +63,7 @@ const Index = () => {
           
           <div className="mt-12">
             <Link to="/properties">
-              <Button size="lg" className="bg-gradient-to-r from-secondary/90 to-secondary hover:from-secondary hover:to-secondary-dark transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-secondary-light/30">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-primary hover:from-blue-700 hover:to-primary-dark transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-blue-400/30 text-white">
                 Разгледай всички имоти
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -79,17 +79,17 @@ const Index = () => {
       <FeaturedProperties />
       
       {/* Testimonials Section */}
-      <section className="bg-blue-600 bg-opacity-10">
+      <section className="bg-gradient-to-r from-blue-50 to-blue-100">
         <TestimonialsCarousel />
       </section>
       
       {/* Blog Preview Section */}
-      <section className="bg-gradient-to-r from-gray-50 to-white">
+      <section className="bg-gradient-to-r from-white to-blue-50">
         <BlogPreview />
       </section>
       
       {/* Sell Your Property CTA Form */}
-      <section className="bg-gradient-to-b from-white to-gray-50">
+      <section className="bg-gradient-to-b from-blue-50 to-blue-100">
         <PropertySellForm />
       </section>
 
