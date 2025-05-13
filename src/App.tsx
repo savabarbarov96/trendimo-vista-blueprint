@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 // Pages
 import Index from './pages/Index';
 import Auth from './pages/Auth';
+import AboutPage from './pages/AboutPage';
 import PropertiesPage from './pages/PropertiesPage';
 import PropertyDetail from './pages/PropertyDetail';
 import Profile from './pages/Profile';
@@ -19,13 +20,14 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <AuthProvider>
+      <Router>
         <Navbar />
         <main>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/properties" element={<PropertiesPage />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/profile" element={<Profile />} />
@@ -35,8 +37,8 @@ function App() {
         </main>
         <Footer />
         <Toaster />
-      </AuthProvider>
-    </Router>
+      </Router>
+    </AuthProvider>
   );
 }
 
