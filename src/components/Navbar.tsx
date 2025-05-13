@@ -1,16 +1,27 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, User, Heart, LogIn } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Menu, X, User, Heart, LogIn, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { siteContent } from '../data/content';
+import { useAuth } from '@/hooks/use-auth';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { nav } = siteContent;
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleAuthAction = () => {
+    if (user) {
+      signOut();
+    } else {
+      navigate('/auth');
+    }
   };
 
   return (
@@ -48,12 +59,23 @@ const Navbar = () => {
           <Button variant="ghost" size="icon">
             <Heart className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
-          <Button className="bg-primary hover:bg-primary-dark">
-            <LogIn className="mr-2 h-4 w-4" />
-            Вход
+          {user ? (
+            <Button variant="ghost" size="icon" onClick={() => navigate('/profile')}>
+              <User className="h-5 w-5" />
+            </Button>
+          ) : null}
+          <Button className="bg-primary hover:bg-primary-dark" onClick={handleAuthAction}>
+            {user ? (
+              <>
+                <LogOut className="mr-2 h-4 w-4" />
+                Изход
+              </>
+            ) : (
+              <>
+                <LogIn className="mr-2 h-4 w-4" />
+                Вход
+              </>
+            )}
           </Button>
         </div>
 
@@ -91,9 +113,18 @@ const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}>
               {nav.blog}
             </Link>
-            <Button className="bg-primary hover:bg-primary-dark w-full">
-              <LogIn className="mr-2 h-4 w-4" />
-              Вход
+            <Button className="bg-primary hover:bg-primary-dark w-full" onClick={handleAuthAction}>
+              {user ? (
+                <>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Изход
+                </>
+              ) : (
+                <>
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Вход
+                </>
+              )}
             </Button>
           </div>
         </div>
