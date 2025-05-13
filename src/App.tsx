@@ -2,6 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './hooks/use-auth';
+import PrivateRoute from './components/PrivateRoute';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
 import AboutPage from './pages/AboutPage';
