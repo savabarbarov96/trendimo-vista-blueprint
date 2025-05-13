@@ -32,7 +32,7 @@ const Footer = () => {
   const { footer, nav } = siteContent;
 
   return (
-    <footer className="bg-neutral-dark text-white">
+    <footer className="bg-gradient-to-b from-neutral-dark to-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
@@ -60,46 +60,32 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Redesigned as a grid */}
           <div>
             <h3 className="text-xl font-bold mb-4">{footer.quickLinks}</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.home}
-                </Link>
-              </li>
-              <li>
-                <Link to="/properties" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.properties}
-                </Link>
-              </li>
-              <li>
-                <Link to="/services" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.services}
-                </Link>
-              </li>
-              <li>
-                <Link to="/sell" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.sell}
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.about}
-                </Link>
-              </li>
-              <li>
-                <Link to="/careers" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.careers}
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="text-gray-300 hover:text-white transition-colors">
-                  {nav.blog}
-                </Link>
-              </li>
-            </ul>
+            <div className="grid grid-cols-2 gap-2">
+              <Link to="/" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.home}
+              </Link>
+              <Link to="/properties" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.properties}
+              </Link>
+              <Link to="/services" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.services}
+              </Link>
+              <Link to="/sell" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.sell}
+              </Link>
+              <Link to="/about" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.about}
+              </Link>
+              <Link to="/careers" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.careers}
+              </Link>
+              <Link to="/blog" className="text-gray-300 hover:text-white hover:bg-white/10 px-2 py-1 rounded transition-colors">
+                {nav.blog}
+              </Link>
+            </div>
           </div>
 
           {/* Contact Info */}
@@ -130,7 +116,7 @@ const Footer = () => {
               <Input
                 type="email"
                 placeholder={footer.newsletter.placeholder}
-                className="bg-gray-700 border-gray-600 text-white"
+                className="bg-white/10 border-gray-600 text-white"
               />
               <Button className="ml-2 bg-secondary hover:bg-secondary-dark">
                 {footer.newsletter.buttonText}

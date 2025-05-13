@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
-import VideoBackground from '@/components/VideoBackground';
+import HeroCarousel from '@/components/HeroCarousel';
 import SearchBar from '@/components/SearchBar';
 import FeaturedProperties from '@/components/FeaturedProperties';
 import ViberBanner from '@/components/ViberBanner';
@@ -21,9 +21,9 @@ const Index = () => {
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero Section with Video Background */}
+      {/* Hero Section with Property Image Carousel */}
       <section className="relative h-screen flex items-center justify-center text-white">
-        <VideoBackground />
+        <HeroCarousel />
         
         <div className="container mx-auto px-4 z-10 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg animate-fade-in">
