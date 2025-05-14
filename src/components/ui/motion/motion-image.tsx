@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
@@ -37,21 +37,15 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
       );
     }
     
-    // Filter out problematic props which cause type errors
+    // Filter out HTML event handlers that conflict with Motion ones
     const { 
       onDrag, 
       onDragStart, 
       onDragEnd, 
-      onAnimationStart, 
+      onAnimationStart,
       onAnimationComplete,
-      ...filteredProps 
+      ...htmlProps 
     } = props;
-    
-    const motionProps: MotionProps = {
-      initial: "hidden",
-      animate: isLoaded ? "visible" : "hidden",
-      variants: fadeVariants,
-    };
     
     return (
       <div className={cn("relative overflow-hidden", containerClassName)}>
@@ -62,8 +56,10 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           alt={alt || ""}
           className={className}
           onLoad={handleImageLoad}
-          {...motionProps}
-          {...filteredProps}
+          initial="hidden"
+          animate={isLoaded ? "visible" : "hidden"}
+          variants={fadeVariants}
+          {...htmlProps as any}
         />
       </div>
     );

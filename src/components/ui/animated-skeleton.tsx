@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
@@ -47,22 +47,17 @@ export function AnimatedSkeleton({
     },
   };
   
-  // Filter out problematic props which cause type errors
+  // Filter out HTML event handlers that conflict with Motion ones
   const { 
     onDrag, 
     onDragStart, 
     onDragEnd, 
-    onAnimationStart, 
+    onAnimationStart,
     onAnimationComplete,
-    ...filteredProps 
+    ...htmlProps 
   } = props;
   
-  const motionProps: MotionProps = {
-    initial: "initial",
-    animate: "animate",
-    variants: shimmerVariants,
-  };
-  
+  // Type assertion to handle the div props correctly
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
@@ -77,8 +72,10 @@ export function AnimatedSkeleton({
               "linear-gradient(90deg, var(--skeleton-from, rgba(0,0,0,0.05)), var(--skeleton-to, rgba(0,0,0,0.1)), var(--skeleton-from, rgba(0,0,0,0.05)))",
             backgroundSize: "500px 100%"
           }}
-          {...motionProps}
-          {...filteredProps}
+          initial="initial"
+          animate="animate"
+          variants={shimmerVariants}
+          {...htmlProps as any}
         />
       ))}
     </>

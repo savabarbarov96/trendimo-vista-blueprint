@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type MotionProps, type HTMLMotionProps, Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
@@ -84,6 +84,16 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       ...(duration ? { duration } : {})
     };
     
+    // Filter out HTML event handlers that conflict with Motion ones
+    const { 
+      onDrag, 
+      onDragStart, 
+      onDragEnd, 
+      onAnimationStart,
+      onAnimationComplete,
+      ...htmlProps 
+    } = props;
+    
     // If animation should be triggered by intersection
     if (animate) {
       const { ref, isIntersecting } = useIntersectionObserver({
@@ -108,24 +118,6 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         }
       };
       
-      // Filter out problematic props which cause type errors
-      const { 
-        onDrag, 
-        onDragStart, 
-        onDragEnd, 
-        onAnimationStart, 
-        onAnimationComplete,
-        ...filteredProps 
-      } = props;
-      
-      const motionProps: MotionProps = {
-        initial: "hidden",
-        animate: isIntersecting ? "visible" : "hidden",
-        exit: "exit",
-        variants: selectedVariant,
-        transition: customTransition,
-      };
-      
       // Ensure children is a valid React node
       const safeChildren = React.Children.toArray(children);
       
@@ -133,8 +125,12 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         <motion.div
           ref={mergedRef}
           className={className}
-          {...motionProps}
-          {...filteredProps}
+          initial="hidden"
+          animate={isIntersecting ? "visible" : "hidden"}
+          exit="exit"
+          variants={selectedVariant}
+          transition={customTransition}
+          {...htmlProps as any}
         >
           {safeChildren}
         </motion.div>
@@ -142,24 +138,6 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
     }
     
     // Direct animation without intersection observer
-    // Filter out problematic props
-    const { 
-      onDrag, 
-      onDragStart, 
-      onDragEnd, 
-      onAnimationStart, 
-      onAnimationComplete,
-      ...filteredProps 
-    } = props;
-    
-    const motionProps: MotionProps = {
-      initial: "hidden",
-      animate: "visible",
-      exit: "exit",
-      variants: selectedVariant,
-      transition: customTransition,
-    };
-    
     // Ensure children is a valid React node
     const safeChildren = React.Children.toArray(children);
     
@@ -167,8 +145,12 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       <motion.div
         ref={forwardedRef}
         className={className}
-        {...motionProps}
-        {...filteredProps}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={selectedVariant}
+        transition={customTransition}
+        {...htmlProps as any}
       >
         {safeChildren}
       </motion.div>

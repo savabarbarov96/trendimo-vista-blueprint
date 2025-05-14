@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { motion, type MotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
@@ -60,26 +60,15 @@ export function MagneticButton({
     );
   }
   
-  // Filter out problematic props which cause type errors
+  // Filter out HTML event handlers that conflict with Motion ones
   const { 
     onDrag, 
     onDragStart, 
     onDragEnd, 
-    onAnimationStart, 
+    onAnimationStart,
     onAnimationComplete,
-    ...filteredProps 
+    ...htmlProps 
   } = props;
-  
-  const motionProps: MotionProps = {
-    animate: { x: position.x, y: position.y },
-    transition: { 
-      type: "spring", 
-      stiffness: 150, 
-      damping: 15,
-      mass: 0.1
-    },
-    whileTap: { scale: 0.98 },
-  };
   
   return (
     <div 
@@ -90,8 +79,15 @@ export function MagneticButton({
     >
       <motion.button
         className={cn("transition-colors", className)}
-        {...motionProps}
-        {...filteredProps}
+        animate={{ x: position.x, y: position.y }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 150, 
+          damping: 15,
+          mass: 0.1
+        }}
+        whileTap={{ scale: 0.98 }}
+        {...htmlProps as any}
       >
         {children}
       </motion.button>
