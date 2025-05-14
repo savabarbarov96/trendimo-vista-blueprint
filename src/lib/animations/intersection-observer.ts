@@ -21,13 +21,14 @@ export function useIntersectionObserver({
   const { shouldAnimate } = useAnimationSettings();
 
   useEffect(() => {
+    const currentRef = ref.current;
+    
+    // If animations are disabled, consider everything as visible
     if (!shouldAnimate) {
-      // If animations are disabled, consider everything as visible
       setIsIntersecting(true);
       return;
     }
-
-    const currentRef = ref.current;
+    
     if (!currentRef) return;
     
     const observer = new IntersectionObserver(

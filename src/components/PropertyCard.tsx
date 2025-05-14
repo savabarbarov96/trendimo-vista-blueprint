@@ -20,7 +20,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
 
   return (
     <motion.div
-      ref={ref}
+      ref={node => {
+        // TypeScript safe ref handling
+        if (node) ref.current = node;
+      }}
       initial={{ opacity: 0, y: 30 }}
       animate={isIntersecting ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.5 }}

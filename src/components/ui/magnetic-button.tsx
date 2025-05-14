@@ -78,6 +78,8 @@ export function MagneticButton({
           mass: 0.1
         }}
         whileTap={{ scale: 0.98 }}
+        // Remove any event handlers that might conflict with MotionProps
+        onDrag={undefined}
         {...props}
       >
         {children}

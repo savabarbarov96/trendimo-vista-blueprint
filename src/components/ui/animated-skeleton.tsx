@@ -64,6 +64,8 @@ export function AnimatedSkeleton({
               "linear-gradient(90deg, var(--skeleton-from, rgba(0,0,0,0.05)), var(--skeleton-to, rgba(0,0,0,0.1)), var(--skeleton-from, rgba(0,0,0,0.05)))",
             backgroundSize: "500px 100%"
           }}
+          // Remove any event handlers that might conflict with MotionProps
+          onDrag={undefined}
           {...props}
         />
       ))}

@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type HTMLMotionProps } from "framer-motion";
+import { motion, type HTMLMotionProps, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
@@ -56,7 +56,7 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
     }
     
     // Determine which variant to use
-    let selectedVariant;
+    let selectedVariant: Variants;
     if (staggerContainer) {
       selectedVariant = staggerContainerVariants;
     } else if (staggerItem) {
@@ -92,25 +92,32 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         triggerOnce
       });
       
+      // Create a merged ref that combines the intersection observer ref
+      // with any forwarded ref from the parent
+      const mergedRef = (node: HTMLDivElement | null) => {
+        // Assign to the intersection observer ref
+        if (node) {
+          ref.current = node;
+          
+          // Also assign to any forwarded ref
+          if (typeof forwardedRef === "function") {
+            forwardedRef(node);
+          } else if (forwardedRef) {
+            forwardedRef.current = node;
+          }
+        }
+      };
+      
       return (
         <motion.div
-          ref={(node) => {
-            // Pass ref to both motion and intersection observer
-            if (node) {
-              ref.current = node;
-              if (typeof forwardedRef === "function") {
-                forwardedRef(node);
-              } else if (forwardedRef) {
-                forwardedRef.current = node;
-              }
-            }
-          }}
+          ref={mergedRef}
           className={className}
           initial="hidden"
           animate={isIntersecting ? "visible" : "hidden"}
           exit="exit"
           variants={selectedVariant}
           transition={customTransition}
+          onDrag={undefined}
           {...props}
         >
           {children}
@@ -128,6 +135,7 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         exit="exit"
         variants={selectedVariant}
         transition={customTransition}
+        onDrag={undefined}
         {...props}
       >
         {children}
@@ -183,6 +191,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
         whileHover="hover"
         whileTap="tap"
         variants={hoverVariants}
+        onDrag={undefined}
         {...props}
       />
     );
@@ -192,7 +201,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
 MotionButton.displayName = "MotionButton";
 
 // Image component with lazy loading and fade-in
-type MotionImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+type MotionImageProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'onDrag'> & {
   containerClassName?: string;
   loadingComponent?: React.ReactNode;
 };
@@ -228,6 +237,7 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           animate={isLoaded ? "visible" : "hidden"}
           variants={fadeVariants}
           onLoad={handleImageLoad}
+          onDrag={undefined}
           {...props}
         />
       </div>
@@ -238,7 +248,7 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
 MotionImage.displayName = "MotionImage";
 
 // Animated list component
-type MotionListProps = HTMLMotionProps<"ul"> & {
+type MotionListProps = Omit<HTMLMotionProps<"ul">, 'onDrag'> & {
   staggerDelay?: number;
   children: React.ReactNode;
 };
