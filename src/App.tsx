@@ -1,9 +1,13 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './hooks/use-auth';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+import ErrorBoundary from './components/ErrorBoundary';
+import { LoadingFallback } from './components/ui/loading-fallback';
+
+// Import pages
 import Index from './pages/Index';
 import Auth from './pages/Auth';
 import AboutPage from './pages/AboutPage';
@@ -36,48 +40,52 @@ import Settings from './pages/admin/Settings';
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/properties" element={<PropertiesPage />} />
-          <Route path="/properties/:id" element={<PropertyDetail />} />
-          <Route path="/sell" element={<SellPage />} />
-          <Route path="/careers" element={<CareersPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/blog" element={<BlogIndexPage />} />
-          <Route path="/blog/:slug" element={<BlogPostPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/cookies" element={<CookiesPage />} />
-          <Route path="/make-admin" element={<MakeAdmin />} />
-          <Route path="/profile" element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          } />
-          
-          {/* Admin routes */}
-          <Route path="/admin" element={
-            <AdminRoute>
-              <AdminLayout />
-            </AdminRoute>
-          }>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<Users />} />
-            <Route path="properties" element={<Properties />} />
-            <Route path="inquiries" element={<Inquiries />} />
-            <Route path="sell-requests" element={<SellRequests />} />
-            <Route path="blog" element={<BlogAdmin />} />
-            <Route path="careers" element={<CareersAdmin />} />
-            <Route path="services" element={<ServicesAdmin />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
-          
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
+      <ErrorBoundary>
+        <AuthProvider>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/properties" element={<PropertiesPage />} />
+              <Route path="/properties/:id" element={<PropertyDetail />} />
+              <Route path="/sell" element={<SellPage />} />
+              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/blog" element={<BlogIndexPage />} />
+              <Route path="/blog/:slug" element={<BlogPostPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/cookies" element={<CookiesPage />} />
+              <Route path="/make-admin" element={<MakeAdmin />} />
+              <Route path="/profile" element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              } />
+              
+              {/* Admin routes */}
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }>
+                <Route index element={<Dashboard />} />
+                <Route path="users" element={<Users />} />
+                <Route path="properties" element={<Properties />} />
+                <Route path="inquiries" element={<Inquiries />} />
+                <Route path="sell-requests" element={<SellRequests />} />
+                <Route path="blog" element={<BlogAdmin />} />
+                <Route path="careers" element={<CareersAdmin />} />
+                <Route path="services" element={<ServicesAdmin />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+              
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </ErrorBoundary>
     </Router>
   );
 }

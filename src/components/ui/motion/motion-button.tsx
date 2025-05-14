@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, ButtonProps } from '@/components/ui/button';
+import { Button, type ButtonProps } from '@/components/ui/button';
 import { motion, type MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
@@ -8,78 +8,78 @@ import { useAnimationSettings } from '@/lib/animations/motion';
 // Create a motion button component by wrapping Button with motion
 export const MotionButtonBase = motion(Button);
 
+// Define a comprehensive type for the motion button props
 export interface MotionButtonProps extends Omit<ButtonProps, 'children'> {
   animate?: boolean;
   staggerItem?: boolean | number;
-  variants?: any;
+  variants?: Record<string, unknown>;
   children?: React.ReactNode;
-  whileHover?: any;
-  whileTap?: any;
-  initial?: any;
-  exit?: any;
+  whileHover?: MotionProps['whileHover'];
+  whileTap?: MotionProps['whileTap'];
+  initial?: MotionProps['initial'];
+  exit?: MotionProps['exit'];
 }
 
-export function MotionButton({
-  animate = true,
-  staggerItem,
-  className,
-  variants,
-  children,
-  ...props
-}: MotionButtonProps) {
-  const { fadeUpVariants, hoverVariants, shouldAnimate } = useAnimationSettings();
-  
-  // Strip out React event handlers that conflict with framer-motion
-  const {
-    onAnimationStart,
-    onAnimationEnd,
-    onAnimationIteration,
-    onDrag, 
-    onDragEnd, 
-    onDragStart,
-    ...restProps
-  } = props;
+export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
+  ({ animate = true, staggerItem, className, variants, children, ...props }, ref) => {
+    const { fadeUpVariants, shouldAnimate } = useAnimationSettings();
+    
+    // Strip out React event handlers that conflict with framer-motion
+    const {
+      onAnimationStart,
+      onAnimationEnd,
+      onAnimationIteration,
+      onDrag, 
+      onDragEnd, 
+      onDragStart,
+      ...restProps
+    } = props;
 
-  // If animation is disabled, just render a regular button
-  if (!shouldAnimate || !animate) {
+    // If animation is disabled, just render a regular button
+    if (!shouldAnimate || !animate) {
+      return (
+        <Button className={cn(className)} ref={ref} {...restProps}>
+          {children}
+        </Button>
+      );
+    }
+
+    // Define motion props with proper typing
+    const motionProps: Partial<MotionProps> = {
+      variants: variants || fadeUpVariants,
+      initial: 'hidden',
+      animate: 'visible',
+      exit: 'exit',
+      whileHover: 'hover',
+      whileTap: 'tap',
+    };
+
+    // Only add custom variants if staggerItem is true
+    if (staggerItem && typeof staggerItem !== 'boolean') {
+      const delay = typeof staggerItem === 'number' ? staggerItem * 0.1 : 0.1;
+      motionProps.variants = {
+        ...motionProps.variants,
+        visible: {
+          ...(motionProps.variants as any)?.visible,
+          transition: {
+            ...((motionProps.variants as any)?.visible?.transition || {}),
+            delay,
+          },
+        },
+      };
+    }
+
     return (
-      <Button className={cn(className)} {...restProps}>
+      <MotionButtonBase
+        className={cn(className)}
+        ref={ref}
+        {...restProps}
+        {...motionProps as any}
+      >
         {children}
-      </Button>
+      </MotionButtonBase>
     );
   }
+);
 
-  // Define motion props to avoid type conflicts
-  const motionProps = {
-    variants: variants || fadeUpVariants,
-    initial: 'hidden',
-    animate: 'visible',
-    exit: 'exit',
-    whileHover: 'hover',
-    whileTap: 'tap',
-  };
-
-  // Only add custom variants if staggerItem is true
-  if (staggerItem) {
-    motionProps.variants = {
-      ...motionProps.variants,
-      visible: {
-        ...motionProps.variants.visible,
-        transition: {
-          ...motionProps.variants.visible?.transition,
-          delay: 0.1 * Number(staggerItem),
-        },
-      },
-    };
-  }
-
-  return (
-    <MotionButtonBase
-      className={cn(className)}
-      {...restProps}
-      {...motionProps}
-    >
-      {children}
-    </MotionButtonBase>
-  );
-}
+MotionButton.displayName = 'MotionButton';
