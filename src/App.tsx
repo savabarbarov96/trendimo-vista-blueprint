@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './hooks/use-auth';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
 import AboutPage from './pages/AboutPage';
@@ -18,6 +19,18 @@ import BlogPostPage from './pages/blog/[slug]';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import CookiesPage from './pages/CookiesPage';
+
+// Admin pages
+import AdminLayout from './components/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import Users from './pages/admin/Users';
+import Properties from './pages/admin/Properties';
+import Inquiries from './pages/admin/Inquiries';
+import SellRequests from './pages/admin/SellRequests';
+import BlogAdmin from './pages/admin/BlogAdmin';
+import CareersAdmin from './pages/admin/CareersAdmin';
+import ServicesAdmin from './pages/admin/ServicesAdmin';
+import Settings from './pages/admin/Settings';
 
 function App() {
   return (
@@ -42,6 +55,24 @@ function App() {
               <Profile />
             </PrivateRoute>
           } />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminLayout />
+            </AdminRoute>
+          }>
+            <Route index element={<Dashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="properties" element={<Properties />} />
+            <Route path="inquiries" element={<Inquiries />} />
+            <Route path="sell-requests" element={<SellRequests />} />
+            <Route path="blog" element={<BlogAdmin />} />
+            <Route path="careers" element={<CareersAdmin />} />
+            <Route path="services" element={<ServicesAdmin />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

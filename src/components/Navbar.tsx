@@ -11,7 +11,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Menu, User } from "lucide-react";
 import logo from "../assets/trendimo-logo.svg";
 
 const mainNavItems = [
@@ -25,12 +33,13 @@ const mainNavItems = [
 ];
 
 const Navbar = () => {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   
   // Check if user exists to determine authentication status
   const isAuthenticated = !!user;
+  const isAdmin = profile?.role === 'admin';
 
   const handleSignout = async () => {
     await signOut();
@@ -65,14 +74,30 @@ const Navbar = () => {
         </div>
         {isAuthenticated ? (
           <div className="hidden md:flex items-center space-x-2">
-            <Link to="/profile">
-              <Button variant="ghost" size="sm">
-                {user?.email}
-              </Button>
-            </Link>
-            <Button variant="outline" size="sm" onClick={handleSignout}>
-              Изход
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <User size={16} />
+                  <span className="max-w-[150px] truncate">{profile?.full_name || user?.email}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Моят акаунт</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={() => navigate('/profile')}>
+                  Профил
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem onSelect={() => navigate('/admin')}>
+                    Администрация
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={handleSignout}>
+                  Изход
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         ) : location.pathname === "/auth" ? null : (
           <div className="hidden md:flex items-center space-x-2">
@@ -114,9 +139,16 @@ const Navbar = () => {
                 <>
                   <Link to="/profile">
                     <Button variant="ghost" size="sm" className="w-full justify-start">
-                      {user?.email}
+                      Профил
                     </Button>
                   </Link>
+                  {isAdmin && (
+                    <Link to="/admin">
+                      <Button variant="ghost" size="sm" className="w-full justify-start">
+                        Администрация
+                      </Button>
+                    </Link>
+                  )}
                   <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleSignout}>
                     Изход
                   </Button>

@@ -384,9 +384,13 @@ export type Database = {
         Args: { requested_role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
+      user_is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
-      app_role: "public" | "authenticated" | "agent"
+      app_role: "public" | "authenticated" | "agent" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -502,7 +506,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["public", "authenticated", "agent"],
+      app_role: ["public", "authenticated", "agent", "admin"],
     },
   },
 } as const
