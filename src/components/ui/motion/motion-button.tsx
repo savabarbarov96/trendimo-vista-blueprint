@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
 // Create a motion button component by wrapping Button with motion
-const MotionButton = motion(Button);
+export const MotionButtonBase = motion(Button);
 
 export interface MotionButtonProps extends Omit<ButtonProps, 'children'> {
   animate?: boolean;
@@ -74,13 +74,12 @@ export function MotionButton({
   }
 
   return (
-    <MotionButton
+    <MotionButtonBase
       className={cn(className)}
       {...restProps}
       {...motionProps}
     >
       {children}
-    </MotionButton>
+    </MotionButtonBase>
   );
 }
-
