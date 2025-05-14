@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type HTMLMotionProps, Variants } from "framer-motion";
+import { motion, type HTMLMotionProps, Variants, PanInfo } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
@@ -117,7 +117,6 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
           exit="exit"
           variants={selectedVariant}
           transition={customTransition}
-          onDrag={undefined}
           {...props}
         >
           {children}
@@ -135,7 +134,6 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         exit="exit"
         variants={selectedVariant}
         transition={customTransition}
-        onDrag={undefined}
         {...props}
       >
         {children}
@@ -191,7 +189,6 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
         whileHover="hover"
         whileTap="tap"
         variants={hoverVariants}
-        onDrag={undefined}
         {...props}
       />
     );
@@ -201,7 +198,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
 MotionButton.displayName = "MotionButton";
 
 // Image component with lazy loading and fade-in
-type MotionImageProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'onDrag'> & {
+type MotionImageProps = Omit<React.ImgHTMLAttributes<HTMLImageElement>, keyof HTMLMotionProps<"img">> & {
   containerClassName?: string;
   loadingComponent?: React.ReactNode;
 };
@@ -237,7 +234,6 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           animate={isLoaded ? "visible" : "hidden"}
           variants={fadeVariants}
           onLoad={handleImageLoad}
-          onDrag={undefined}
           {...props}
         />
       </div>
@@ -248,10 +244,11 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
 MotionImage.displayName = "MotionImage";
 
 // Animated list component
-type MotionListProps = Omit<HTMLMotionProps<"ul">, 'onDrag'> & {
+type MotionListProps = {
   staggerDelay?: number;
   children: React.ReactNode;
-};
+  className?: string;
+} & Omit<HTMLMotionProps<"ul">, "children">;
 
 export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
   ({ staggerDelay = 0.1, className, children, ...props }, ref) => {
