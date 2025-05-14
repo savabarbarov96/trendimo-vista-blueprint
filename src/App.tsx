@@ -19,6 +19,7 @@ import BlogPostPage from './pages/blog/[slug]';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import CookiesPage from './pages/CookiesPage';
+import MakeAdmin from './pages/admin/make-admin';
 
 // Admin pages
 import AdminLayout from './components/admin/AdminLayout';
@@ -50,6 +51,7 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/cookies" element={<CookiesPage />} />
+          <Route path="/make-admin" element={<MakeAdmin />} />
           <Route path="/profile" element={
             <PrivateRoute>
               <Profile />

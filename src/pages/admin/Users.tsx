@@ -2,56 +2,14 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet';
-import { Pencil, Search, Filter, MoreHorizontal, Loader2 } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/hooks/auth/types';
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { UserWithProfile, AuthUser } from '@/components/admin/users/types';
+import UsersFilter from '@/components/admin/users/UsersFilter';
+import UsersList from '@/components/admin/users/UsersList';
+import EditUserDialog from '@/components/admin/users/EditUserDialog';
 import { toast } from '@/hooks/use-toast';
-
-// Define a type for auth users to fix the TypeScript error
-interface AuthUser {
-  id: string;
-  email?: string;
-  created_at?: string;
-}
-
-interface UserWithProfile extends UserProfile {
-  email?: string;
-  created_at?: string;
-}
 
 const Users: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -174,168 +132,30 @@ const Users: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input 
-            placeholder="Търсене по име или имейл..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={selectedRole} onValueChange={setSelectedRole}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <div className="flex items-center">
-              <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
-              <span>{selectedRole || 'Всички роли'}</span>
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">Всички роли</SelectItem>
-            <SelectItem value="public">public</SelectItem>
-            <SelectItem value="authenticated">authenticated</SelectItem>
-            <SelectItem value="agent">agent</SelectItem>
-            <SelectItem value="admin">admin</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <UsersFilter 
+        search={search}
+        setSearch={setSearch}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
+      />
 
       {/* Users table */}
-      <div className="border rounded-md">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Потребител</TableHead>
-              <TableHead>Роля</TableHead>
-              <TableHead>Създаден на</TableHead>
-              <TableHead className="w-[80px]">Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-10">
-                  <div className="flex justify-center items-center">
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin text-primary" />
-                    <span>Зареждане на потребители...</span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ) : filteredUsers.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center py-10">
-                  Няма намерени потребители
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{user.full_name || 'Без име'}</div>
-                      <div className="text-sm text-muted-foreground">{user.email}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium 
-                      ${user.role === 'admin' ? 'bg-red-100 text-red-800' : 
-                      user.role === 'agent' ? 'bg-green-100 text-green-800' : 
-                      user.role === 'authenticated' ? 'bg-blue-100 text-blue-800' : 
-                      'bg-gray-100 text-gray-800'}`}
-                    >
-                      {user.role}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {user.created_at ? new Date(user.created_at).toLocaleDateString('bg-BG') : 'N/A'}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Отвори меню</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleEditUser(user)}>
-                          <Pencil className="mr-2 h-4 w-4" />
-                          <span>Промени роля</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <UsersList 
+        users={filteredUsers}
+        isLoading={isLoading} 
+        onEditUser={handleEditUser} 
+      />
 
       {/* Edit user role dialog */}
-      <Dialog open={editUserDialogOpen} onOpenChange={setEditUserDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Промяна на роля</DialogTitle>
-            <DialogDescription>
-              Променете ролята на потребителя {currentUser?.full_name || currentUser?.email}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <span className="text-right col-span-1">Текуща роля:</span>
-              <div className="col-span-3">
-                <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium 
-                  ${currentUser?.role === 'admin' ? 'bg-red-100 text-red-800' : 
-                  currentUser?.role === 'agent' ? 'bg-green-100 text-green-800' : 
-                  currentUser?.role === 'authenticated' ? 'bg-blue-100 text-blue-800' : 
-                  'bg-gray-100 text-gray-800'}`}
-                >
-                  {currentUser?.role}
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <span className="text-right col-span-1">Нова роля:</span>
-              <Select 
-                value={newRole} 
-                onValueChange={(value) => setNewRole(value as UserProfile['role'])}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Изберете роля" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="public">public</SelectItem>
-                  <SelectItem value="authenticated">authenticated</SelectItem>
-                  <SelectItem value="agent">agent</SelectItem>
-                  <SelectItem value="admin">admin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setEditUserDialogOpen(false)}>
-              Отказ
-            </Button>
-            <Button 
-              onClick={handleUpdateUserRole} 
-              disabled={updateUserRole.isPending}
-            >
-              {updateUserRole.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <span>Записва се...</span>
-                </>
-              ) : (
-                <span>Запази промените</span>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <EditUserDialog 
+        open={editUserDialogOpen}
+        onOpenChange={setEditUserDialogOpen}
+        currentUser={currentUser}
+        newRole={newRole}
+        setNewRole={setNewRole}
+        onUpdate={handleUpdateUserRole}
+        isUpdating={updateUserRole.isPending}
+      />
     </div>
   );
 };

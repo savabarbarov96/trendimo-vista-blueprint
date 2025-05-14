@@ -1,11 +1,12 @@
 
-import React from 'react';
-import { AuthContext, AuthProvider as BaseAuthProvider } from './auth/auth-context';
+import React, { createContext, useContext } from 'react';
 import { useAuthProvider } from './auth/use-auth-provider';
+
+// Create context with a more specific type
+const AuthContext = createContext<ReturnType<typeof useAuthProvider> | undefined>(undefined);
 
 // Create the actual AuthProvider component that uses the hook
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  // The issue might be related to this hook being called outside the React context
   const auth = useAuthProvider();
 
   return (
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 // Export the useAuth hook
 export const useAuth = () => {
-  const context = React.useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }

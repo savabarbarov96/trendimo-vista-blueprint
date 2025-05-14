@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Bell, Settings, User } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import {
@@ -34,17 +34,17 @@ const AdminHeader: React.FC = () => {
       </div>
       
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" type="button">
           <Bell size={20} />
         </Button>
         
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" type="button">
           <Settings size={20} />
         </Button>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2">
+            <Button variant="ghost" className="flex items-center gap-2" type="button">
               <User size={20} />
               <span className="hidden sm:inline-block">{user?.email}</span>
             </Button>
