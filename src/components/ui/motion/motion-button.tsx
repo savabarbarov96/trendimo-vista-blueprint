@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { motion, type MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
@@ -50,7 +50,7 @@ export function MotionButton({
   }
 
   // Define motion props to avoid type conflicts
-  const motionProps: any = {
+  const motionProps = {
     variants: variants || fadeUpVariants,
     initial: 'hidden',
     animate: 'visible',
