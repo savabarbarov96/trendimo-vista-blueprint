@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
@@ -136,17 +137,21 @@ const Navbar = () => {
               ))}
               {isAuthenticated ? (
                 <>
-                  <Link to="/profile">
-                    <Button variant="ghost" size="sm" className="w-full justify-start">
-                      Профил
-                    </Button>
-                  </Link>
+                  <NavLink to="/profile" className={({ isActive }) =>
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    }`
+                  }>
+                    Профил
+                  </NavLink>
                   {isAdmin && (
-                    <Link to="/admin">
-                      <Button variant="ghost" size="sm" className="w-full justify-start">
-                        Администрация
-                      </Button>
-                    </Link>
+                    <NavLink to="/admin" className={({ isActive }) =>
+                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                        isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                      }`
+                    }>
+                      Администрация
+                    </NavLink>
                   )}
                   <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleSignout}>
                     Изход
