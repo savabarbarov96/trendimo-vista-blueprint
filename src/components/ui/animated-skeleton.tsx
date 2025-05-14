@@ -1,10 +1,10 @@
 
 import * as React from "react";
-import { motion, type MotionProps, type HTMLMotionProps } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
-interface AnimatedSkeletonProps extends Omit<HTMLMotionProps<"div">, "initial" | "animate" | "variants" | "style"> {
+interface AnimatedSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   count?: number;
   animated?: boolean;
 }
@@ -47,7 +47,7 @@ export function AnimatedSkeleton({
     },
   };
   
-  // Filter out onDrag prop which causes type errors
+  // Filter out problematic props which cause type errors
   const { onDrag, onAnimationStart, ...filteredProps } = props;
   
   const motionProps: MotionProps = {
@@ -71,7 +71,7 @@ export function AnimatedSkeleton({
             backgroundSize: "500px 100%"
           }}
           {...motionProps}
-          {...filteredProps as any}
+          {...filteredProps}
         />
       ))}
     </>

@@ -1,13 +1,12 @@
 
 import React, { useState, useRef } from 'react';
-import { motion, type MotionProps, type HTMLMotionProps } from 'framer-motion';
+import { motion, type MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
-interface MagneticButtonProps extends Omit<HTMLMotionProps<"button">, "animate" | "transition" | "whileTap"> {
+interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   strength?: number;
   radius?: number;
-  children: React.ReactNode;
 }
 
 export function MagneticButton({
@@ -61,7 +60,7 @@ export function MagneticButton({
     );
   }
   
-  // Filter out onDrag prop which causes type errors
+  // Filter out problematic props which cause type errors
   const { onDrag, onAnimationStart, ...filteredProps } = props;
   
   const motionProps: MotionProps = {
@@ -85,7 +84,7 @@ export function MagneticButton({
       <motion.button
         className={cn("transition-colors", className)}
         {...motionProps}
-        {...filteredProps as any}
+        {...filteredProps}
       >
         {children}
       </motion.button>

@@ -1,14 +1,13 @@
 
 import * as React from "react";
-import { motion, type MotionProps, type HTMLMotionProps } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
 // Image component with lazy loading and fade-in
-export interface MotionImageProps extends Omit<HTMLMotionProps<"img">, "onLoad"> {
+export interface MotionImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   containerClassName?: string;
   loadingComponent?: React.ReactNode;
-  onLoad?: React.ReactEventHandler<HTMLImageElement>;
 }
 
 export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
@@ -31,13 +30,14 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
             src={src}
             alt={alt}
             className={className} 
+            onLoad={handleImageLoad}
             {...props} 
           />
         </div>
       );
     }
     
-    // Filter out onDrag prop which causes type errors
+    // Filter out problematic props which cause type errors
     const { onDrag, onAnimationStart, ...filteredProps } = props;
     
     const motionProps: MotionProps = {
@@ -52,11 +52,11 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
         <motion.img
           ref={ref}
           src={src}
-          alt={alt}
+          alt={alt || ""}
           className={className}
           onLoad={handleImageLoad}
           {...motionProps}
-          {...filteredProps as any}
+          {...filteredProps}
         />
       </div>
     );

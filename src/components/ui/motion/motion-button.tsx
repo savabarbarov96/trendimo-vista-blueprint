@@ -17,7 +17,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
       return <MotionDiv ref={ref} className={className} {...props} />;
     }
     
-    // Filter out onDrag prop which causes type errors
+    // Filter out props that cause type errors
     const { onDrag, onAnimationStart, ...filteredProps } = props;
     
     return (
@@ -26,8 +26,12 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
         className={cn("transition-transform", className)}
         whileHover="hover"
         whileTap="tap"
-        variants={hoverVariants}
+        variant="none" // Use custom variants instead
         {...filteredProps}
+        // Apply hover variants directly instead of using the variants prop
+        // which doesn't exist on MotionDiv
+        whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+        whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
       />
     );
   }

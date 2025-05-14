@@ -1,10 +1,10 @@
 
 import * as React from "react";
-import { motion, type MotionProps, type HTMLMotionProps } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
 // Animated list component
-export interface MotionListProps extends Omit<HTMLMotionProps<"ul">, "initial" | "animate" | "variants"> {
+export interface MotionListProps extends React.HTMLAttributes<HTMLUListElement> {
   staggerDelay?: number;
 }
 
@@ -30,7 +30,7 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
       },
     };
 
-    // Filter out onDrag prop which causes type errors
+    // Filter out problematic props which cause type errors
     const { onDrag, onAnimationStart, ...filteredProps } = props;
 
     const motionProps: MotionProps = {
@@ -39,18 +39,22 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
       variants: staggerVariants,
     };
 
+    // Make sure children is a valid React Node
+    const safeChildren = React.Children.toArray(children);
+
     return (
       <motion.ul
         ref={ref}
         className={className}
         {...motionProps}
-        {...filteredProps as any}
+        {...filteredProps}
       >
-        {React.Children.map(children, (child) => {
+        {safeChildren.map((child, index) => {
           if (!React.isValidElement(child)) return child;
           
           return (
             <motion.li
+              key={index}
               variants={{
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0 },
