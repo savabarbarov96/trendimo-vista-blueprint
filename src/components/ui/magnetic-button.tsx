@@ -61,7 +61,14 @@ export function MagneticButton({
   }
   
   // Filter out problematic props which cause type errors
-  const { onDrag, onAnimationStart, ...filteredProps } = props;
+  const { 
+    onDrag, 
+    onDragStart, 
+    onDragEnd, 
+    onAnimationStart, 
+    onAnimationComplete,
+    ...filteredProps 
+  } = props;
   
   const motionProps: MotionProps = {
     animate: { x: position.x, y: position.y },

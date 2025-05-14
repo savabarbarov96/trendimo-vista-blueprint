@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
 
-export type MotionDivProps = Omit<HTMLMotionProps<"div">, "animate" | "initial" | "exit" | "transition" | "variants"> & {
+export type MotionDivProps = Omit<React.HTMLAttributes<HTMLDivElement>, "animate" | "initial" | "exit" | "transition" | "variants"> & {
   variant?: "fade" | "fadeUp" | "slide" | "scale" | "none";
   animate?: boolean;
   triggerOnce?: boolean;
@@ -109,7 +109,14 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       };
       
       // Filter out problematic props which cause type errors
-      const { onDrag, onAnimationStart, ...filteredProps } = props;
+      const { 
+        onDrag, 
+        onDragStart, 
+        onDragEnd, 
+        onAnimationStart, 
+        onAnimationComplete,
+        ...filteredProps 
+      } = props;
       
       const motionProps: MotionProps = {
         initial: "hidden",
@@ -119,6 +126,9 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         transition: customTransition,
       };
       
+      // Ensure children is a valid React node
+      const safeChildren = React.Children.toArray(children);
+      
       return (
         <motion.div
           ref={mergedRef}
@@ -126,14 +136,21 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
           {...motionProps}
           {...filteredProps}
         >
-          {children}
+          {safeChildren}
         </motion.div>
       );
     }
     
     // Direct animation without intersection observer
     // Filter out problematic props
-    const { onDrag, onAnimationStart, ...filteredProps } = props;
+    const { 
+      onDrag, 
+      onDragStart, 
+      onDragEnd, 
+      onAnimationStart, 
+      onAnimationComplete,
+      ...filteredProps 
+    } = props;
     
     const motionProps: MotionProps = {
       initial: "hidden",
@@ -143,6 +160,9 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       transition: customTransition,
     };
     
+    // Ensure children is a valid React node
+    const safeChildren = React.Children.toArray(children);
+    
     return (
       <motion.div
         ref={forwardedRef}
@@ -150,7 +170,7 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         {...motionProps}
         {...filteredProps}
       >
-        {children}
+        {safeChildren}
       </motion.div>
     );
   }
