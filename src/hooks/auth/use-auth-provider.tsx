@@ -22,13 +22,17 @@ export function useAuthProvider() {
   const { profile } = useProfile(user);
 
   useEffect(() => {
+    let isFirstLoad = true;
+
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        // Update state regardless of event
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
 
-        if (event === 'SIGNED_IN') {
+        // Only show toasts and navigate on actual auth events, not initial page loads
+        if (event === 'SIGNED_IN' && !isFirstLoad) {
           toast({
             title: 'Успешен вход',
             description: 'Добре дошли отново!',
@@ -46,6 +50,9 @@ export function useAuthProvider() {
           });
           navigate('/');
         }
+
+        // After first auth state change, mark initial load as complete
+        isFirstLoad = false;
       }
     );
 
@@ -54,6 +61,8 @@ export function useAuthProvider() {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
+      // First load is complete after initial session check
+      isFirstLoad = false;
     });
 
     return () => {
