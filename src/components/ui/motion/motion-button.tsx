@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { motion, type MotionProps } from 'framer-motion';
+import { motion, type MotionProps, type Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
@@ -12,7 +12,7 @@ export const MotionButtonBase = motion(Button);
 export interface MotionButtonProps extends Omit<ButtonProps, 'children'> {
   animate?: boolean;
   staggerItem?: boolean | number;
-  variants?: Record<string, unknown>;
+  variants?: Variants; // Use the correct Variants type from framer-motion
   children?: React.ReactNode;
   whileHover?: MotionProps['whileHover'];
   whileTap?: MotionProps['whileTap'];

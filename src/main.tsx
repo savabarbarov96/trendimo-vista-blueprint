@@ -18,10 +18,10 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
-      useErrorBoundary: true,
+      // Remove unsupported useErrorBoundary option
     },
     mutations: {
-      useErrorBoundary: true,
+      // Remove unsupported useErrorBoundary option
     },
   },
 })

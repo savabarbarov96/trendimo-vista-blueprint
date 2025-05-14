@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type MotionProps } from "framer-motion";
+import { motion, type MotionProps, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 

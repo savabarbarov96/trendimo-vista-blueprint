@@ -1,26 +1,20 @@
 
 import { useReducer } from 'react';
-
-// Define animation variants with proper typings
-export interface MotionVariants {
-  hidden: Record<string, unknown>;
-  visible: Record<string, unknown>;
-  exit?: Record<string, unknown>;
-  hover?: Record<string, unknown>;
-  tap?: Record<string, unknown>;
-}
+import { type Variants } from 'framer-motion';
 
 // Define animation settings
 interface AnimationSettings {
   shouldAnimate: boolean;
-  fadeVariants: MotionVariants;
-  fadeUpVariants: MotionVariants;
-  slideVariants: MotionVariants;
-  scaleVariants: MotionVariants;
+  fadeVariants: Variants;
+  fadeUpVariants: Variants;
+  slideVariants: Variants;
+  scaleVariants: Variants;
   hoverVariants: Record<string, unknown>;
   tapVariants: Record<string, unknown>;
-  staggerContainer: Record<string, unknown>;
-  staggerItem: Record<string, unknown>;
+  staggerContainer: Variants;
+  staggerItem: Variants;
+  staggerContainerVariants: Variants;  // Add missing property
+  staggerItemVariants: Variants;       // Add missing property
 }
 
 // Use a default animation settings object with proper typing
@@ -61,8 +55,19 @@ export function useAnimationSettings(): AnimationSettings {
       hidden: {},
       visible: { transition: { staggerChildren: 0.1 } }
     },
-    
+
     staggerItem: {
+      hidden: { opacity: 0, y: 20 },
+      visible: { opacity: 1, y: 0 }
+    },
+    
+    // Add these two properties to match the interface
+    staggerContainerVariants: {
+      hidden: {},
+      visible: { transition: { staggerChildren: 0.1 } }
+    },
+    
+    staggerItemVariants: {
       hidden: { opacity: 0, y: 20 },
       visible: { opacity: 1, y: 0 }
     }
