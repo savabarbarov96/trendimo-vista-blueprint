@@ -21,7 +21,6 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
     // Strip out React event handlers that conflict with framer-motion
     const {
       onAnimationStart,
-      onAnimationComplete,
       onAnimationEnd,
       onAnimationIteration,
       onDrag, 
