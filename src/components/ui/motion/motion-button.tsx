@@ -1,49 +1,77 @@
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { useAnimationSettings } from "@/lib/animations/motion";
-import { MotionDiv, type MotionDivProps } from "./motion-div";
-import { motion, type MotionProps } from "framer-motion";
+import React from 'react';
+import { Button, ButtonProps } from '@/components/ui/button';
+import { motion, MotionProps } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { fadeUpVariants } from './motion-variants';
 
-// Interactive button wrapper that adds hover and tap animations
-export type MotionButtonProps = Omit<MotionDivProps, 'whileHover' | 'whileTap'> & {
-  interactive?: boolean;
-};
+// Create a motion button component by wrapping Button with motion
+const MotionButton = motion(Button);
 
-export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
-  ({ interactive = true, className, ...props }, ref) => {
-    const { shouldAnimate } = useAnimationSettings();
-    
-    if (!shouldAnimate || !interactive) {
-      return <MotionDiv ref={ref} className={className} {...props} />;
-    }
-    
-    // Strip out React event handlers that conflict with framer-motion
-    const {
-      onAnimationStart,
-      onAnimationEnd,
-      onAnimationIteration,
-      onDrag, 
-      onDragStart, 
-      onDragEnd,
-      ...filteredProps 
-    } = props;
-    
-    // Use proper type casting to avoid TypeScript errors with motion props
-    const motionProps: MotionProps = {
-      whileHover: { scale: 1.05, transition: { duration: 0.2 } },
-      whileTap: { scale: 0.98, transition: { duration: 0.1 } },
-      ...filteredProps as any // Cast to any to avoid TypeScript errors
-    };
-    
+export interface MotionButtonProps extends ButtonProps, MotionProps {
+  animate?: boolean;
+  staggerItem?: boolean;
+}
+
+export function MotionizedButton({
+  animate = true,
+  staggerItem,
+  className,
+  variants,
+  children,
+  ...props
+}: MotionButtonProps) {
+  // Strip out React event handlers that conflict with framer-motion
+  const {
+    onAnimationStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    onDrag, 
+    onDragEnd, 
+    onDragStart,
+    ...restProps
+  } = props;
+
+  // If animation is disabled, just render a regular button
+  if (!animate) {
     return (
-      <motion.div
-        ref={ref}
-        className={cn("transition-transform", className)}
-        {...motionProps}
-      />
+      <Button className={cn(className)} {...restProps}>
+        {children}
+      </Button>
     );
   }
-);
 
-MotionButton.displayName = "MotionButton";
+  // Define motion props separately to avoid type conflicts
+  const motionProps: any = {
+    variants: variants || fadeUpVariants,
+    initial: 'initial',
+    animate: 'animate',
+    exit: 'exit',
+    whileHover: 'hover',
+    whileTap: 'tap',
+  };
+
+  // Only add custom variants if staggerItem is true
+  if (staggerItem) {
+    motionProps.variants = {
+      ...motionProps.variants,
+      animate: {
+        ...motionProps.variants.animate,
+        transition: {
+          ...motionProps.variants.animate?.transition,
+          delay: 0.1 * Number(staggerItem),
+        },
+      },
+    };
+  }
+
+  return (
+    <MotionButton
+      className={cn(className)}
+      {...restProps}
+      {...motionProps}
+    >
+      {children}
+    </MotionButton>
+  );
+}
