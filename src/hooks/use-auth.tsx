@@ -4,7 +4,8 @@ import { AuthContext, AuthProvider as BaseAuthProvider } from './auth/auth-conte
 import { useAuthProvider } from './auth/use-auth-provider';
 
 // Create the actual AuthProvider component that uses the hook
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  // The issue might be related to this hook being called outside the React context
   const auth = useAuthProvider();
 
   return (

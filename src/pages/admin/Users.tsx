@@ -51,7 +51,7 @@ const Users: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string | undefined>(undefined);
   const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserWithProfile | null>(null);
-  const [newRole, setNewRole] = useState<string>('');
+  const [newRole, setNewRole] = useState<UserProfile['role']>('authenticated');
   
   const queryClient = useQueryClient();
 
@@ -95,13 +95,13 @@ const Users: React.FC = () => {
         };
       });
 
-      return combinedData;
+      return combinedData as UserWithProfile[];
     },
   });
 
   // Update user role mutation
   const updateUserRole = useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: UserProfile['role'] }) => {
       const { error } = await supabase
         .from('profiles')
         .update({ role })
@@ -295,7 +295,7 @@ const Users: React.FC = () => {
               <span className="text-right col-span-1">Нова роля:</span>
               <Select 
                 value={newRole} 
-                onValueChange={setNewRole}
+                onValueChange={(value) => setNewRole(value as UserProfile['role'])}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Изберете роля" />
