@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
 interface AnimatedCursorProps {
@@ -22,7 +21,7 @@ export function AnimatedCursor({
   trailingSpeed = 0.2,
   clickScale = 0.8
 }: AnimatedCursorProps) {
-  const { shouldAnimate } = useAnimationSettings();
+  const { shouldAnimate } = useAnimationSettings() ?? { shouldAnimate: false };
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isClicked, setIsClicked] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
@@ -60,44 +59,25 @@ export function AnimatedCursor({
   return (
     <>
       {/* Large outer cursor */}
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-50 rounded-full mix-blend-difference"
+      <div
+        className={`fixed top-0 left-0 pointer-events-none z-50 rounded-full mix-blend-difference transition-transform duration-300`}
         style={{
           backgroundColor: 'transparent',
           border: `2px solid ${color}`,
           height: outerSize,
           width: outerSize,
-        }}
-        animate={{
-          scale: isPointer ? outerScale : isClicked ? clickScale : 1,
-          x: mousePosition.x - outerSize / 2,
-          y: mousePosition.y - outerSize / 2,
-        }}
-        transition={{
-          type: "spring",
-          damping: 30,
-          stiffness: 200,
-          mass: 0.5,
+          transform: `translate3d(${mousePosition.x - outerSize / 2}px, ${mousePosition.y - outerSize / 2}px, 0) scale(${isPointer ? outerScale : isClicked ? clickScale : 1})`,
         }}
       />
       
       {/* Small inner cursor (dot) */}
-      <motion.div
-        className="fixed top-0 left-0 w-2 h-2 pointer-events-none z-50 rounded-full"
+      <div
+        className="fixed top-0 left-0 pointer-events-none z-50 rounded-full transition-transform duration-300"
         style={{
           backgroundColor: color,
           height: innerSize,
           width: innerSize,
-        }}
-        animate={{
-          scale: isClicked ? innerScale : 1,
-          x: mousePosition.x - innerSize / 2,
-          y: mousePosition.y - innerSize / 2,
-        }}
-        transition={{
-          type: "spring",
-          damping: 60,
-          stiffness: 1000,
+          transform: `translate3d(${mousePosition.x - innerSize / 2}px, ${mousePosition.y - innerSize / 2}px, 0) scale(${isClicked ? innerScale : 1})`,
         }}
       />
     </>

@@ -8,9 +8,8 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import TestimonialCard from './TestimonialCard';
-import { motion } from 'framer-motion';
 import { useIntersectionObserver } from '@/lib/animations/intersection-observer';
-import { FadeIn, StaggerContainer, StaggerItem } from '@/components/ui/motion';
+import { FadeIn } from '@/components/ui/motion';
 
 const testimonials = [
   {
@@ -65,33 +64,31 @@ const TestimonialsCarousel = () => {
             }}
             className="w-full"
           >
-            <StaggerContainer 
-              animate={isIntersecting}
-              className="w-full"
-            >
+            <div className="w-full">
               <CarouselContent>
                 {testimonials.map((testimonial, index) => (
                   <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <StaggerItem delay={index * 0.1}>
+                    <div 
+                      className="animate-fade-in" 
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
                       <TestimonialCard {...testimonial} />
-                    </StaggerItem>
+                    </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-            </StaggerContainer>
+            </div>
             <div className="flex justify-center mt-8 gap-4">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <div
+                className="transition-transform duration-200 hover:scale-110 active:scale-90"
               >
                 <CarouselPrevious className="relative inset-auto" />
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              </div>
+              <div
+                className="transition-transform duration-200 hover:scale-110 active:scale-90"
               >
                 <CarouselNext className="relative inset-auto" />
-              </motion.div>
+              </div>
             </div>
           </Carousel>
         </div>

@@ -1,59 +1,93 @@
 
-// This file provides backward compatibility with components that still expect motion components
-// Eventually these should all be replaced with Tailwind animations
-
 import React from 'react';
+import { useAnimationSettings } from '@/lib/animations/motion';
 
 interface FallbackProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
+  animate?: boolean;
+  delay?: number;
 }
 
-// Simplified fallback components that just render children with some basic animations
-export const FadeIn: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div className={`animate-fade-in ${className || ''}`} {...props}>
-    {children}
-  </div>
-);
+// Simplified components that use CSS animations instead of framer-motion
+export const FadeIn: React.FC<FallbackProps> = ({ children, className, animate, delay, ...props }) => {
+  const { shouldAnimate } = useAnimationSettings() ?? { shouldAnimate: true };
+  const shouldShow = animate === undefined ? shouldAnimate : animate;
+  
+  return (
+    <div 
+      className={`${shouldShow ? 'animate-fade-in' : ''} ${className || ''}`}
+      style={delay ? { animationDelay: `${delay}s` } : undefined} 
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
-export const FadeUp: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div 
-    className={`animate-fade-in translate-y-0 opacity-100 transition-all duration-500 ${className || ''}`} 
-    style={{ transform: 'translateY(0)', opacity: 1 }}
-    {...props}
-  >
-    {children}
-  </div>
-);
+export const FadeUp: React.FC<FallbackProps> = ({ children, className, animate, delay, ...props }) => {
+  const { shouldAnimate } = useAnimationSettings() ?? { shouldAnimate: true };
+  const shouldShow = animate === undefined ? shouldAnimate : animate;
+  
+  return (
+    <div 
+      className={`transition-all duration-500 ${shouldShow ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'} ${className || ''}`}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
-export const SlideIn: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div className={`animate-slide-in-right ${className || ''}`} {...props}>
-    {children}
-  </div>
-);
+export const SlideIn: React.FC<FallbackProps> = ({ children, className, animate, delay, ...props }) => {
+  const { shouldAnimate } = useAnimationSettings() ?? { shouldAnimate: true };
+  const shouldShow = animate === undefined ? shouldAnimate : animate;
+  
+  return (
+    <div 
+      className={`${shouldShow ? 'animate-slide-in-right' : ''} ${className || ''}`}
+      style={delay ? { animationDelay: `${delay}s` } : undefined}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
-export const ScaleIn: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div 
-    className={`scale-100 opacity-100 transition-all duration-300 ${className || ''}`}
-    {...props}
-  >
-    {children}
-  </div>
-);
+export const ScaleIn: React.FC<FallbackProps> = ({ children, className, animate, delay, ...props }) => {
+  const { shouldAnimate } = useAnimationSettings() ?? { shouldAnimate: true };
+  const shouldShow = animate === undefined ? shouldAnimate : animate;
+  
+  return (
+    <div 
+      className={`transition-all duration-300 ${shouldShow ? 'scale-100 opacity-100' : 'scale-95 opacity-0'} ${className || ''}`}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
-export const StaggerContainer: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div className={className || ''} {...props}>
-    {children}
-  </div>
-);
+export const StaggerContainer: React.FC<FallbackProps> = ({ children, className, animate, ...props }) => {
+  return (
+    <div className={className || ''} {...props}>
+      {children}
+    </div>
+  );
+};
 
-export const StaggerItem: React.FC<FallbackProps> = ({ children, className, ...props }) => (
-  <div 
-    className={`animate-fade-in ${className || ''}`} 
-    {...props}
-  >
-    {children}
-  </div>
-);
+export const StaggerItem: React.FC<FallbackProps> = ({ children, className, delay, ...props }) => {
+  return (
+    <div 
+      className={`animate-fade-in ${className || ''}`} 
+      style={delay ? { animationDelay: `${delay}s` } : undefined}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const MotionDiv: React.FC<FallbackProps> = ({ children, className, ...props }) => (
   <div className={className || ''} {...props}>
