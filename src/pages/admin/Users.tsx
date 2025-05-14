@@ -41,6 +41,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from '@/hooks/use-toast';
 
+// Define a type for auth users to fix the TypeScript error
+interface AuthUser {
+  id: string;
+  email?: string;
+  created_at?: string;
+}
+
 interface UserWithProfile extends UserProfile {
   email?: string;
   created_at?: string;
@@ -85,9 +92,9 @@ const Users: React.FC = () => {
         return [];
       }
 
-      // Combine the data
+      // Combine the data - Fix the type issue by explicitly typing the authUsers.users array
       const combinedData = profiles.map(profile => {
-        const authUser = authUsers.users.find(user => user.id === profile.id);
+        const authUser = (authUsers.users as AuthUser[]).find(user => user.id === profile.id);
         return {
           ...profile,
           email: authUser?.email,
