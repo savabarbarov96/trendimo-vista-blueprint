@@ -18,27 +18,30 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
       return <MotionDiv ref={ref} className={className} {...props} />;
     }
     
-    // Strip out React event handlers that conflict with framer-motion and props that will be set directly
+    // Strip out React event handlers that conflict with framer-motion
     const {
       onAnimationStart,
+      onAnimationComplete,
       onAnimationEnd,
       onAnimationIteration,
       onDrag, 
       onDragStart, 
       onDragEnd,
-      whileHover, // Not in props, but strip out to avoid confusion
-      whileTap,    // Not in props, but strip out to avoid confusion
       ...filteredProps 
     } = props;
+    
+    // Use proper type casting to avoid TypeScript errors with motion props
+    const motionProps: MotionProps = {
+      whileHover: { scale: 1.05, transition: { duration: 0.2 } },
+      whileTap: { scale: 0.98, transition: { duration: 0.1 } },
+      ...filteredProps as any // Cast to any to avoid TypeScript errors
+    };
     
     return (
       <motion.div
         ref={ref}
         className={cn("transition-transform", className)}
-        // Apply hover and tap animations directly
-        whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
-        whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-        {...filteredProps as unknown as MotionProps}
+        {...motionProps}
       />
     );
   }
