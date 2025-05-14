@@ -2,6 +2,37 @@
 import * as React from "react";
 import { MotionDiv, type MotionDivProps } from "./motion-div";
 
+// Common animation variants that are exported and used by other components
+export const fadeVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { duration: 0.5 }
+  },
+  exit: { 
+    opacity: 0,
+    transition: { duration: 0.3 }
+  },
+  hover: { scale: 1.05, transition: { duration: 0.2 } },
+  tap: { scale: 0.98, transition: { duration: 0.1 } }
+};
+
+export const fadeUpVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5 }
+  },
+  exit: { 
+    opacity: 0, 
+    y: 20,
+    transition: { duration: 0.3 }
+  },
+  hover: { scale: 1.05, transition: { duration: 0.2 } },
+  tap: { scale: 0.98, transition: { duration: 0.1 } }
+};
+
 // Pre-configured variants for common use cases
 export const FadeIn = React.forwardRef<HTMLDivElement, MotionDivProps>(
   (props, ref) => <MotionDiv variant="fade" ref={ref} {...props} />

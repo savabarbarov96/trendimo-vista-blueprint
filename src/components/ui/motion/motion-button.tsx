@@ -1,19 +1,25 @@
 
 import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/button';
-import { motion, MotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { fadeUpVariants } from './motion-variants';
+import { useAnimationSettings } from '@/lib/animations/motion';
 
 // Create a motion button component by wrapping Button with motion
 const MotionButton = motion(Button);
 
-export interface MotionButtonProps extends ButtonProps, MotionProps {
+export interface MotionButtonProps extends Omit<ButtonProps, 'children'> {
   animate?: boolean;
-  staggerItem?: boolean;
+  staggerItem?: boolean | number;
+  variants?: any;
+  children?: React.ReactNode;
+  whileHover?: any;
+  whileTap?: any;
+  initial?: any;
+  exit?: any;
 }
 
-export function MotionizedButton({
+export function MotionButton({
   animate = true,
   staggerItem,
   className,
@@ -21,6 +27,8 @@ export function MotionizedButton({
   children,
   ...props
 }: MotionButtonProps) {
+  const { fadeUpVariants, hoverVariants, shouldAnimate } = useAnimationSettings();
+  
   // Strip out React event handlers that conflict with framer-motion
   const {
     onAnimationStart,
@@ -33,7 +41,7 @@ export function MotionizedButton({
   } = props;
 
   // If animation is disabled, just render a regular button
-  if (!animate) {
+  if (!shouldAnimate || !animate) {
     return (
       <Button className={cn(className)} {...restProps}>
         {children}
@@ -41,11 +49,11 @@ export function MotionizedButton({
     );
   }
 
-  // Define motion props separately to avoid type conflicts
+  // Define motion props to avoid type conflicts
   const motionProps: any = {
     variants: variants || fadeUpVariants,
-    initial: 'initial',
-    animate: 'animate',
+    initial: 'hidden',
+    animate: 'visible',
     exit: 'exit',
     whileHover: 'hover',
     whileTap: 'tap',
@@ -55,10 +63,10 @@ export function MotionizedButton({
   if (staggerItem) {
     motionProps.variants = {
       ...motionProps.variants,
-      animate: {
-        ...motionProps.variants.animate,
+      visible: {
+        ...motionProps.variants.visible,
         transition: {
-          ...motionProps.variants.animate?.transition,
+          ...motionProps.variants.visible?.transition,
           delay: 0.1 * Number(staggerItem),
         },
       },
@@ -75,3 +83,4 @@ export function MotionizedButton({
     </MotionButton>
   );
 }
+
