@@ -3,10 +3,10 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { MotionDiv, type MotionDivProps } from "./motion-div";
-import { motion } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 
 // Interactive button wrapper that adds hover and tap animations
-export type MotionButtonProps = MotionDivProps & {
+export type MotionButtonProps = Omit<MotionDivProps, 'whileHover' | 'whileTap'> & {
   interactive?: boolean;
 };
 
@@ -18,15 +18,16 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
       return <MotionDiv ref={ref} className={className} {...props} />;
     }
     
-    // Filter out props that cause type errors
-    const { 
+    // Strip out React event handlers that conflict with framer-motion and props that will be set directly
+    const {
+      onAnimationStart,
+      onAnimationEnd,
+      onAnimationIteration,
       onDrag, 
       onDragStart, 
-      onDragEnd, 
-      onAnimationStart, 
-      onAnimationComplete,
-      whileHover, // Remove these from props to avoid duplicates
-      whileTap,
+      onDragEnd,
+      whileHover, // Not in props, but strip out to avoid confusion
+      whileTap,    // Not in props, but strip out to avoid confusion
       ...filteredProps 
     } = props;
     
@@ -37,7 +38,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
         // Apply hover and tap animations directly
         whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
         whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
-        {...filteredProps as any}
+        {...filteredProps as unknown as MotionProps}
       />
     );
   }

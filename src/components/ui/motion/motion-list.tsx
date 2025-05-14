@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
 // Animated list component
@@ -30,14 +30,15 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
       },
     };
 
-    // Filter out HTML event handlers that conflict with Motion ones
-    const { 
+    // Strip out React event handlers that conflict with Framer Motion
+    const {
+      onAnimationStart,
       onDrag, 
       onDragStart, 
-      onDragEnd, 
-      onAnimationStart, 
-      onAnimationComplete,
-      ...htmlProps 
+      onDragEnd,
+      onAnimationEnd,
+      onAnimationIteration,
+      ...htmlProps
     } = props;
 
     // Make sure children is a valid React Node
@@ -50,7 +51,7 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
         initial="hidden"
         animate="visible"
         variants={staggerVariants}
-        {...htmlProps as any}
+        {...htmlProps as unknown as MotionProps}
       >
         {safeChildren.map((child, index) => {
           if (!React.isValidElement(child)) return child;

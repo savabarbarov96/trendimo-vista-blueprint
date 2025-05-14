@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
@@ -37,14 +37,15 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
       );
     }
     
-    // Filter out HTML event handlers that conflict with Motion ones
-    const { 
+    // Strip out React event handlers that conflict with Framer Motion
+    const {
+      onAnimationStart,
       onDrag, 
       onDragStart, 
-      onDragEnd, 
-      onAnimationStart,
-      onAnimationComplete,
-      ...htmlProps 
+      onDragEnd,
+      onAnimationEnd,
+      onAnimationIteration,
+      ...htmlProps
     } = props;
     
     return (
@@ -59,7 +60,7 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
           variants={fadeVariants}
-          {...htmlProps as any}
+          {...htmlProps as unknown as MotionProps}
         />
       </div>
     );

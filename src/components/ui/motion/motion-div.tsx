@@ -1,6 +1,6 @@
 
 import * as React from "react";
-import { motion, type Variants } from "framer-motion";
+import { motion, type Variants, type MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
@@ -84,14 +84,15 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       ...(duration ? { duration } : {})
     };
     
-    // Filter out HTML event handlers that conflict with Motion ones
-    const { 
+    // Strip out React event handlers that conflict with Framer Motion
+    const {
+      onAnimationStart,
       onDrag, 
       onDragStart, 
-      onDragEnd, 
-      onAnimationStart,
-      onAnimationComplete,
-      ...htmlProps 
+      onDragEnd,
+      onAnimationEnd,
+      onAnimationIteration,
+      ...htmlProps
     } = props;
     
     // If animation should be triggered by intersection
@@ -118,9 +119,6 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         }
       };
       
-      // Ensure children is a valid React node
-      const safeChildren = React.Children.toArray(children);
-      
       return (
         <motion.div
           ref={mergedRef}
@@ -130,17 +128,14 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
           exit="exit"
           variants={selectedVariant}
           transition={customTransition}
-          {...htmlProps as any}
+          {...htmlProps as unknown as MotionProps}
         >
-          {safeChildren}
+          {children}
         </motion.div>
       );
     }
     
     // Direct animation without intersection observer
-    // Ensure children is a valid React node
-    const safeChildren = React.Children.toArray(children);
-    
     return (
       <motion.div
         ref={forwardedRef}
@@ -150,9 +145,9 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         exit="exit"
         variants={selectedVariant}
         transition={customTransition}
-        {...htmlProps as any}
+        {...htmlProps as unknown as MotionProps}
       >
-        {safeChildren}
+        {children}
       </motion.div>
     );
   }

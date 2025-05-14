@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
@@ -60,14 +60,15 @@ export function MagneticButton({
     );
   }
   
-  // Filter out HTML event handlers that conflict with Motion ones
-  const { 
-    onDrag, 
-    onDragStart, 
-    onDragEnd, 
+  // Strip out React event handlers that conflict with Framer Motion
+  const {
     onAnimationStart,
-    onAnimationComplete,
-    ...htmlProps 
+    onDrag,
+    onDragEnd,
+    onDragStart,
+    onAnimationEnd,
+    onAnimationIteration,
+    ...htmlProps
   } = props;
   
   return (
@@ -87,7 +88,7 @@ export function MagneticButton({
           mass: 0.1
         }}
         whileTap={{ scale: 0.98 }}
-        {...htmlProps as any}
+        {...htmlProps as unknown as MotionProps}
       >
         {children}
       </motion.button>
