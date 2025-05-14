@@ -1,10 +1,10 @@
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type MotionProps, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
-interface AnimatedSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+interface AnimatedSkeletonProps extends Omit<HTMLMotionProps<"div">, "initial" | "animate" | "variants" | "style"> {
   count?: number;
   animated?: boolean;
 }
@@ -48,7 +48,13 @@ export function AnimatedSkeleton({
   };
   
   // Filter out onDrag prop which causes type errors
-  const { onDrag, ...filteredProps } = props;
+  const { onDrag, onAnimationStart, ...filteredProps } = props;
+  
+  const motionProps: MotionProps = {
+    initial: "initial",
+    animate: "animate",
+    variants: shimmerVariants,
+  };
   
   return (
     <>
@@ -59,15 +65,13 @@ export function AnimatedSkeleton({
             "rounded-md bg-muted relative overflow-hidden",
             className
           )}
-          initial="initial"
-          animate="animate"
-          variants={shimmerVariants}
           style={{
             backgroundImage: 
               "linear-gradient(90deg, var(--skeleton-from, rgba(0,0,0,0.05)), var(--skeleton-to, rgba(0,0,0,0.1)), var(--skeleton-from, rgba(0,0,0,0.05)))",
             backgroundSize: "500px 100%"
           }}
-          {...filteredProps}
+          {...motionProps}
+          {...filteredProps as any}
         />
       ))}
     </>

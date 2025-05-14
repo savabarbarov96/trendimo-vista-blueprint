@@ -1,22 +1,26 @@
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type MotionProps, type HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
 // Image component with lazy loading and fade-in
-export interface MotionImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+export interface MotionImageProps extends Omit<HTMLMotionProps<"img">, "onLoad"> {
   containerClassName?: string;
   loadingComponent?: React.ReactNode;
+  onLoad?: React.ReactEventHandler<HTMLImageElement>;
 }
 
 export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
-  ({ containerClassName, className, loadingComponent, src, alt, ...props }, ref) => {
+  ({ containerClassName, className, loadingComponent, src, alt, onLoad, ...props }, ref) => {
     const [isLoaded, setIsLoaded] = React.useState(false);
     const { fadeVariants, shouldAnimate } = useAnimationSettings();
     
-    const handleImageLoad = () => {
+    const handleImageLoad: React.ReactEventHandler<HTMLImageElement> = (e) => {
       setIsLoaded(true);
+      if (onLoad) {
+        onLoad(e);
+      }
     };
     
     if (!shouldAnimate) {
@@ -34,7 +38,13 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
     }
     
     // Filter out onDrag prop which causes type errors
-    const { onDrag, ...filteredProps } = props;
+    const { onDrag, onAnimationStart, ...filteredProps } = props;
+    
+    const motionProps: MotionProps = {
+      initial: "hidden",
+      animate: isLoaded ? "visible" : "hidden",
+      variants: fadeVariants,
+    };
     
     return (
       <div className={cn("relative overflow-hidden", containerClassName)}>
@@ -44,11 +54,9 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           src={src}
           alt={alt}
           className={className}
-          initial="hidden"
-          animate={isLoaded ? "visible" : "hidden"}
-          variants={fadeVariants}
           onLoad={handleImageLoad}
-          {...filteredProps}
+          {...motionProps}
+          {...filteredProps as any}
         />
       </div>
     );

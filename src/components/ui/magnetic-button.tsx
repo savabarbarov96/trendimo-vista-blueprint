@@ -1,10 +1,10 @@
 
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type MotionProps, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useAnimationSettings } from '@/lib/animations/motion';
 
-interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface MagneticButtonProps extends Omit<HTMLMotionProps<"button">, "animate" | "transition" | "whileTap"> {
   strength?: number;
   radius?: number;
   children: React.ReactNode;
@@ -62,7 +62,18 @@ export function MagneticButton({
   }
   
   // Filter out onDrag prop which causes type errors
-  const { onDrag, ...filteredProps } = props;
+  const { onDrag, onAnimationStart, ...filteredProps } = props;
+  
+  const motionProps: MotionProps = {
+    animate: { x: position.x, y: position.y },
+    transition: { 
+      type: "spring", 
+      stiffness: 150, 
+      damping: 15,
+      mass: 0.1
+    },
+    whileTap: { scale: 0.98 },
+  };
   
   return (
     <div 
@@ -73,15 +84,8 @@ export function MagneticButton({
     >
       <motion.button
         className={cn("transition-colors", className)}
-        animate={{ x: position.x, y: position.y }}
-        transition={{ 
-          type: "spring", 
-          stiffness: 150, 
-          damping: 15,
-          mass: 0.1
-        }}
-        whileTap={{ scale: 0.98 }}
-        {...filteredProps}
+        {...motionProps}
+        {...filteredProps as any}
       >
         {children}
       </motion.button>

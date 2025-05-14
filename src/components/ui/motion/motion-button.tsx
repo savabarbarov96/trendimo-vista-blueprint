@@ -18,7 +18,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
     }
     
     // Filter out onDrag prop which causes type errors
-    const { onDrag, ...filteredProps } = props;
+    const { onDrag, onAnimationStart, ...filteredProps } = props;
     
     return (
       <MotionDiv

@@ -1,11 +1,11 @@
 
 import * as React from "react";
-import { motion, type HTMLMotionProps, Variants } from "framer-motion";
+import { motion, type MotionProps, type HTMLMotionProps, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 import { useIntersectionObserver } from "@/lib/animations/intersection-observer";
 
-export type MotionDivProps = HTMLMotionProps<"div"> & {
+export type MotionDivProps = Omit<HTMLMotionProps<"div">, "animate" | "initial" | "exit" | "transition" | "variants"> & {
   variant?: "fade" | "fadeUp" | "slide" | "scale" | "none";
   animate?: boolean;
   triggerOnce?: boolean;
@@ -109,18 +109,22 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
       };
       
       // Filter out onDrag prop which causes type errors with framer-motion
-      const { onDrag, ...filteredProps } = props;
+      const { onDrag, onAnimationStart, ...filteredProps } = props;
+      
+      const motionProps: MotionProps = {
+        initial: "hidden",
+        animate: isIntersecting ? "visible" : "hidden",
+        exit: "exit",
+        variants: selectedVariant,
+        transition: customTransition,
+      };
       
       return (
         <motion.div
           ref={mergedRef}
           className={className}
-          initial="hidden"
-          animate={isIntersecting ? "visible" : "hidden"}
-          exit="exit"
-          variants={selectedVariant}
-          transition={customTransition}
-          {...filteredProps}
+          {...motionProps}
+          {...filteredProps as any}
         >
           {children}
         </motion.div>
@@ -129,18 +133,22 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
     
     // Direct animation without intersection observer
     // Filter out onDrag prop which causes type errors
-    const { onDrag, ...filteredProps } = props;
+    const { onDrag, onAnimationStart, ...filteredProps } = props;
+    
+    const motionProps: MotionProps = {
+      initial: "hidden",
+      animate: "visible",
+      exit: "exit",
+      variants: selectedVariant,
+      transition: customTransition,
+    };
     
     return (
       <motion.div
         ref={forwardedRef}
         className={className}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={selectedVariant}
-        transition={customTransition}
-        {...filteredProps}
+        {...motionProps}
+        {...filteredProps as any}
       >
         {children}
       </motion.div>
