@@ -78,6 +78,7 @@ export function MagneticButton({
           mass: 0.1
         }}
         whileTap={{ scale: 0.98 }}
+        onDrag={undefined} // Fix TypeScript error
         {...props}
       >
         {children}

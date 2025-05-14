@@ -28,6 +28,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       animate={isIntersecting ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       transition={{ duration: 0.5 }}
       className="bg-white rounded-lg overflow-hidden property-card-shadow transition-transform duration-300 hover:-translate-y-1 h-full"
+      onDrag={undefined} // Fix TypeScript error
     >
       <Link to={`/properties/${property.id}`}>
         <div className="relative">
@@ -42,6 +43,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={isIntersecting ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3, delay: 0.2 }}
+            onDrag={undefined} // Fix TypeScript error
           >
             {formatPrice(property.price)}
           </motion.div>
@@ -55,6 +57,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             initial={{ opacity: 0 }}
             animate={isIntersecting ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.3, delay: 0.1 }}
+            onDrag={undefined} // Fix TypeScript error
           >
             {property.title}
           </motion.h3>
@@ -65,6 +68,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           initial={{ opacity: 0 }}
           animate={isIntersecting ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
+          onDrag={undefined} // Fix TypeScript error
         >
           <MapPin className="h-4 w-4 mr-1" />
           <span>{property.location}, {property.city}</span>
@@ -75,6 +79,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           initial={{ opacity: 0 }}
           animate={isIntersecting ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.3, delay: 0.3 }}
+          onDrag={undefined} // Fix TypeScript error
         >
           {property.description}
         </motion.p>
@@ -84,10 +89,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           initial={{ opacity: 0, y: 10 }}
           animate={isIntersecting ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.3, delay: 0.4 }}
+          onDrag={undefined} // Fix TypeScript error
         >
           <motion.div 
             className="flex items-center"
             whileHover={{ scale: 1.05 }}
+            onDrag={undefined} // Fix TypeScript error
           >
             <Bed className="h-4 w-4 mr-1" />
             <span>{property.bedrooms} спални</span>
@@ -95,6 +102,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           <motion.div 
             className="flex items-center"
             whileHover={{ scale: 1.05 }}
+            onDrag={undefined} // Fix TypeScript error
           >
             <Bath className="h-4 w-4 mr-1" />
             <span>{property.bathrooms} бани</span>
@@ -102,6 +110,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           <motion.div 
             className="flex items-center"
             whileHover={{ scale: 1.05 }}
+            onDrag={undefined} // Fix TypeScript error
           >
             <Maximize className="h-4 w-4 mr-1" />
             <span>{property.area} кв.м</span>
