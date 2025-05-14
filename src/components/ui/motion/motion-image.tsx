@@ -33,6 +33,9 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
       );
     }
     
+    // Filter out onDrag prop which causes type errors
+    const { onDrag, ...filteredProps } = props;
+    
     return (
       <div className={cn("relative overflow-hidden", containerClassName)}>
         {!isLoaded && loadingComponent}
@@ -45,8 +48,7 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           animate={isLoaded ? "visible" : "hidden"}
           variants={fadeVariants}
           onLoad={handleImageLoad}
-          onDrag={undefined} // Fix TypeScript error
-          {...props}
+          {...filteredProps}
         />
       </div>
     );

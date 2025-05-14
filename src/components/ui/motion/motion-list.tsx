@@ -30,6 +30,9 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
       },
     };
 
+    // Filter out onDrag prop which causes type errors
+    const { onDrag, ...filteredProps } = props;
+
     return (
       <motion.ul
         ref={ref}
@@ -37,8 +40,7 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
         initial="hidden"
         animate="visible"
         variants={staggerVariants}
-        onDrag={undefined} // Fix TypeScript error
-        {...props}
+        {...filteredProps}
       >
         {React.Children.map(children, (child) => {
           if (!React.isValidElement(child)) return child;
@@ -49,7 +51,6 @@ export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
                 hidden: { opacity: 0, y: 10 },
                 visible: { opacity: 1, y: 0 },
               }}
-              onDrag={undefined} // Fix TypeScript error
             >
               {child}
             </motion.li>

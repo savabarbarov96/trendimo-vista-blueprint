@@ -61,6 +61,9 @@ export function MagneticButton({
     );
   }
   
+  // Filter out onDrag prop which causes type errors
+  const { onDrag, ...filteredProps } = props;
+  
   return (
     <div 
       ref={buttonRef}
@@ -78,8 +81,7 @@ export function MagneticButton({
           mass: 0.1
         }}
         whileTap={{ scale: 0.98 }}
-        onDrag={undefined} // Fix TypeScript error
-        {...props}
+        {...filteredProps}
       >
         {children}
       </motion.button>

@@ -108,6 +108,9 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         }
       };
       
+      // Filter out onDrag prop which causes type errors with framer-motion
+      const { onDrag, ...filteredProps } = props;
+      
       return (
         <motion.div
           ref={mergedRef}
@@ -117,8 +120,7 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
           exit="exit"
           variants={selectedVariant}
           transition={customTransition}
-          {...props}
-          onDrag={undefined} // Fix TypeScript error
+          {...filteredProps}
         >
           {children}
         </motion.div>
@@ -126,6 +128,9 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
     }
     
     // Direct animation without intersection observer
+    // Filter out onDrag prop which causes type errors
+    const { onDrag, ...filteredProps } = props;
+    
     return (
       <motion.div
         ref={forwardedRef}
@@ -135,8 +140,7 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
         exit="exit"
         variants={selectedVariant}
         transition={customTransition}
-        {...props}
-        onDrag={undefined} // Fix TypeScript error
+        {...filteredProps}
       >
         {children}
       </motion.div>

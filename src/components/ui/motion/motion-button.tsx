@@ -17,6 +17,9 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
       return <MotionDiv ref={ref} className={className} {...props} />;
     }
     
+    // Filter out onDrag prop which causes type errors
+    const { onDrag, ...filteredProps } = props;
+    
     return (
       <MotionDiv
         ref={ref}
@@ -24,7 +27,7 @@ export const MotionButton = React.forwardRef<HTMLDivElement, MotionButtonProps>(
         whileHover="hover"
         whileTap="tap"
         variants={hoverVariants}
-        {...props}
+        {...filteredProps}
       />
     );
   }
