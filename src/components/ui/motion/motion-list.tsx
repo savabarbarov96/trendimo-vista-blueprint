@@ -10,7 +10,7 @@ export interface MotionListProps extends React.HTMLAttributes<HTMLUListElement> 
 
 export const MotionList = React.forwardRef<HTMLUListElement, MotionListProps>(
   ({ staggerDelay = 0.1, className, children, ...props }, ref) => {
-    const { shouldAnimate } = useAnimationSettings();
+    const { shouldAnimate = true } = useAnimationSettings() ?? {};
     
     if (!shouldAnimate) {
       return (

@@ -13,7 +13,7 @@ export interface MotionImageProps extends React.ImgHTMLAttributes<HTMLImageEleme
 export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
   ({ containerClassName, className, loadingComponent, src, alt, onLoad, ...props }, ref) => {
     const [isLoaded, setIsLoaded] = React.useState(false);
-    const { fadeVariants, shouldAnimate } = useAnimationSettings();
+    const { fadeVariants = {}, shouldAnimate = true } = useAnimationSettings() ?? {};
     
     const handleImageLoad: React.ReactEventHandler<HTMLImageElement> = (e) => {
       setIsLoaded(true);
@@ -59,7 +59,7 @@ export const MotionImage = React.forwardRef<HTMLImageElement, MotionImageProps>(
           onLoad={handleImageLoad}
           initial="hidden"
           animate={isLoaded ? "visible" : "hidden"}
-          variants={fadeVariants}
+          variants={fadeVariants as Variants}
           {...htmlProps as unknown as MotionProps}
         />
       </div>

@@ -5,6 +5,7 @@ import './index.css'
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import { MotionProvider } from '@/lib/animations/motion-provider'
 
 const container = document.getElementById("root")
 
@@ -18,10 +19,10 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
-      // Remove unsupported useErrorBoundary option
+      // Remove unsupported options
     },
     mutations: {
-      // Remove unsupported useErrorBoundary option
+      // Remove unsupported options
     },
   },
 })
@@ -29,8 +30,10 @@ const queryClient = new QueryClient({
 createRoot(container).render(
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
-      <App />
-      <Toaster />
+      <MotionProvider>
+        <App />
+        <Toaster />
+      </MotionProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );

@@ -23,11 +23,11 @@ const propertyImages = [
 const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
-  const { shouldAnimate } = useAnimationSettings();
-  const { ref: carouselRef, isIntersecting } = useIntersectionObserver({
+  const { shouldAnimate = true } = useAnimationSettings() ?? {};
+  const { ref: carouselRef, isIntersecting = false } = useIntersectionObserver({
     threshold: 0.2,
     triggerOnce: false,
-  });
+  }) ?? {};
   
   // Scroll-based parallax effect for background
   const { scrollY } = useScroll();

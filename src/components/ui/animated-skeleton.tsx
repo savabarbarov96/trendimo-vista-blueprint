@@ -15,7 +15,7 @@ export function AnimatedSkeleton({
   animated = true,
   ...props
 }: AnimatedSkeletonProps) {
-  const { shouldAnimate } = useAnimationSettings();
+  const { shouldAnimate = true } = useAnimationSettings() ?? {};
   
   // If animations are disabled or animated prop is false, use static skeleton
   if (!shouldAnimate || !animated) {

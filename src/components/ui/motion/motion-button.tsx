@@ -22,7 +22,7 @@ export interface MotionButtonProps extends Omit<ButtonProps, 'children'> {
 
 export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProps>(
   ({ animate = true, staggerItem, className, variants, children, ...props }, ref) => {
-    const { fadeUpVariants, shouldAnimate } = useAnimationSettings();
+    const { fadeUpVariants = {}, shouldAnimate = true } = useAnimationSettings() ?? {};
     
     // Strip out React event handlers that conflict with framer-motion
     const {
@@ -46,7 +46,7 @@ export const MotionButton = React.forwardRef<HTMLButtonElement, MotionButtonProp
 
     // Define motion props with proper typing
     const motionProps: Partial<MotionProps> = {
-      variants: variants || fadeUpVariants,
+      variants: variants || (fadeUpVariants as Variants),
       initial: 'hidden',
       animate: 'visible',
       exit: 'exit',

@@ -20,7 +20,7 @@ import { useAnimationSettings } from '@/lib/animations/motion';
 
 const Index = () => {
   const [searchMode, setSearchMode] = useState<'buy' | 'rent'>('buy');
-  const { shouldAnimate } = useAnimationSettings();
+  const { shouldAnimate = true } = useAnimationSettings() ?? {};
   
   // Get scroll progress for parallax effects
   const { scrollYProgress } = useScroll();

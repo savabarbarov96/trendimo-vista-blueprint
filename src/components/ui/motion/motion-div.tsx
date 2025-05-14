@@ -35,16 +35,16 @@ export const MotionDiv = React.forwardRef<HTMLDivElement, MotionDivProps>(
     },
     forwardedRef
   ) => {
-    // Get animation variants based on user preferences
+    // Get animation variants based on user preferences with safe destructuring
     const { 
-      fadeVariants, 
-      fadeUpVariants, 
-      slideVariants, 
-      scaleVariants,
-      staggerContainerVariants,
-      staggerItemVariants,
-      shouldAnimate
-    } = useAnimationSettings();
+      fadeVariants = {}, 
+      fadeUpVariants = {}, 
+      slideVariants = {}, 
+      scaleVariants = {},
+      staggerContainerVariants = {},
+      staggerItemVariants = {},
+      shouldAnimate = true
+    } = useAnimationSettings() ?? {};
     
     // If animations should be disabled based on user preferences
     if (!shouldAnimate || variant === "none") {

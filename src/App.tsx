@@ -1,10 +1,11 @@
 
 import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useRouteError } from 'react-router-dom';
 import { AuthProvider } from './hooks/use-auth';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import RouteErrorBoundary from './components/RouteErrorBoundary';
 import { LoadingFallback } from './components/ui/loading-fallback';
 
 // Import pages
@@ -37,55 +38,66 @@ import CareersAdmin from './pages/admin/CareersAdmin';
 import ServicesAdmin from './pages/admin/ServicesAdmin';
 import Settings from './pages/admin/Settings';
 
+// Wrap route in error boundary
+const RouteWithErrorBoundary = ({ element }: { element: React.ReactNode }) => {
+  return (
+    <ErrorBoundary fallback={<RouteErrorBoundary />}>
+      <Suspense fallback={<LoadingFallback />}>
+        {element}
+      </Suspense>
+    </ErrorBoundary>
+  );
+};
+
 function App() {
   return (
     <Router>
-      <ErrorBoundary>
-        <AuthProvider>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/properties" element={<PropertiesPage />} />
-              <Route path="/properties/:id" element={<PropertyDetail />} />
-              <Route path="/sell" element={<SellPage />} />
-              <Route path="/careers" element={<CareersPage />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/blog" element={<BlogIndexPage />} />
-              <Route path="/blog/:slug" element={<BlogPostPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/cookies" element={<CookiesPage />} />
-              <Route path="/make-admin" element={<MakeAdmin />} />
-              <Route path="/profile" element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
-              } />
-              
-              {/* Admin routes */}
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminLayout />
-                </AdminRoute>
-              }>
-                <Route index element={<Dashboard />} />
-                <Route path="users" element={<Users />} />
-                <Route path="properties" element={<Properties />} />
-                <Route path="inquiries" element={<Inquiries />} />
-                <Route path="sell-requests" element={<SellRequests />} />
-                <Route path="blog" element={<BlogAdmin />} />
-                <Route path="careers" element={<CareersAdmin />} />
-                <Route path="services" element={<ServicesAdmin />} />
-                <Route path="settings" element={<Settings />} />
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </AuthProvider>
-      </ErrorBoundary>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<RouteWithErrorBoundary element={<Index />} />} />
+          <Route path="/auth" element={<RouteWithErrorBoundary element={<Auth />} />} />
+          <Route path="/about" element={<RouteWithErrorBoundary element={<AboutPage />} />} />
+          <Route path="/properties" element={<RouteWithErrorBoundary element={<PropertiesPage />} />} />
+          <Route path="/properties/:id" element={<RouteWithErrorBoundary element={<PropertyDetail />} />} />
+          <Route path="/sell" element={<RouteWithErrorBoundary element={<SellPage />} />} />
+          <Route path="/careers" element={<RouteWithErrorBoundary element={<CareersPage />} />} />
+          <Route path="/services" element={<RouteWithErrorBoundary element={<ServicesPage />} />} />
+          <Route path="/blog" element={<RouteWithErrorBoundary element={<BlogIndexPage />} />} />
+          <Route path="/blog/:slug" element={<RouteWithErrorBoundary element={<BlogPostPage />} />} />
+          <Route path="/terms" element={<RouteWithErrorBoundary element={<TermsPage />} />} />
+          <Route path="/privacy" element={<RouteWithErrorBoundary element={<PrivacyPage />} />} />
+          <Route path="/cookies" element={<RouteWithErrorBoundary element={<CookiesPage />} />} />
+          <Route path="/make-admin" element={<RouteWithErrorBoundary element={<MakeAdmin />} />} />
+          <Route path="/profile" element={
+            <RouteWithErrorBoundary element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            } />
+          } />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={
+            <RouteWithErrorBoundary element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            } />
+          }>
+            <Route index element={<Dashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="properties" element={<Properties />} />
+            <Route path="inquiries" element={<Inquiries />} />
+            <Route path="sell-requests" element={<SellRequests />} />
+            <Route path="blog" element={<BlogAdmin />} />
+            <Route path="careers" element={<CareersAdmin />} />
+            <Route path="services" element={<ServicesAdmin />} />
+            <Route path="settings" element={<Settings />} />
+          </Route>
+          
+          <Route path="*" element={<RouteWithErrorBoundary element={<NotFound />} />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }

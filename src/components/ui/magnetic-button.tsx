@@ -18,7 +18,7 @@ export function MagneticButton({
 }: MagneticButtonProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLDivElement>(null);
-  const { shouldAnimate } = useAnimationSettings();
+  const { shouldAnimate = true } = useAnimationSettings() ?? {};
   
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!shouldAnimate || !buttonRef.current) return;
