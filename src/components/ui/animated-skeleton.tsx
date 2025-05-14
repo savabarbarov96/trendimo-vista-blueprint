@@ -1,6 +1,5 @@
 
 import * as React from "react";
-import { motion, type MotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimationSettings } from "@/lib/animations/motion";
 
@@ -24,7 +23,7 @@ export function AnimatedSkeleton({
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className={cn("animate-pulse rounded-md bg-muted", className)}
+            className={cn("bg-muted rounded-md", className)}
             {...props}
           />
         ))}
@@ -32,50 +31,18 @@ export function AnimatedSkeleton({
     );
   }
   
-  // Shimmer effect animation
-  const shimmerVariants = {
-    initial: {
-      backgroundPosition: "-500px 0",
-    },
-    animate: {
-      backgroundPosition: "calc(500px + 100%) 0",
-      transition: {
-        repeat: Infinity,
-        repeatType: "mirror" as const,
-        duration: 2,
-      },
-    },
-  };
-  
-  // Strip out React event handlers that conflict with Framer Motion
-  const {
-    onAnimationStart,
-    onDrag,
-    onDragEnd,
-    onDragStart,
-    onAnimationEnd,
-    onAnimationIteration,
-    ...htmlProps
-  } = props;
-  
   return (
     <>
       {Array.from({ length: count }).map((_, index) => (
-        <motion.div
+        <div
           key={index}
           className={cn(
             "rounded-md bg-muted relative overflow-hidden",
+            "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite]",
+            "before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent",
             className
           )}
-          style={{
-            backgroundImage: 
-              "linear-gradient(90deg, var(--skeleton-from, rgba(0,0,0,0.05)), var(--skeleton-to, rgba(0,0,0,0.1)), var(--skeleton-from, rgba(0,0,0,0.05)))",
-            backgroundSize: "500px 100%"
-          }}
-          initial="initial"
-          animate="animate"
-          variants={shimmerVariants}
-          {...htmlProps as MotionProps}
+          {...props}
         />
       ))}
     </>

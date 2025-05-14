@@ -1,6 +1,8 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { Button } from './ui/button';
+import { RefreshCw } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -53,12 +55,13 @@ class ErrorBoundary extends Component<Props, State> {
           <p className="text-muted-foreground mb-4">
             We're sorry for the inconvenience. Please try refreshing the page.
           </p>
-          <button
+          <Button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            className="flex items-center gap-2"
           >
+            <RefreshCw className="h-4 w-4" />
             Refresh page
-          </button>
+          </Button>
           
           {/* Show error details in development */}
           {process.env.NODE_ENV === 'development' && this.state.error && (

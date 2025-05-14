@@ -19,11 +19,8 @@ const queryClient = new QueryClient({
     queries: {
       retry: 1,
       refetchOnWindowFocus: false,
-      // Remove unsupported options
     },
-    mutations: {
-      // Remove unsupported options
-    },
+    mutations: {},
   },
 })
 

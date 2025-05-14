@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { 
   Carousel,
   CarouselContent,
@@ -7,10 +7,7 @@ import {
   type CarouselApi
 } from '@/components/ui/carousel';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
-import { motion, useMotionTemplate, useTransform, useScroll } from 'framer-motion';
-import { useIntersectionObserver } from '@/lib/animations/intersection-observer';
 import { useAnimationSettings } from '@/lib/animations/motion';
-import { FadeIn } from '@/components/ui/motion';
 
 // Sample property images for demonstration
 const propertyImages = [
@@ -24,20 +21,8 @@ const HeroCarousel = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
   const { shouldAnimate = true } = useAnimationSettings() ?? {};
-  const { ref: carouselRef, isIntersecting = false } = useIntersectionObserver({
-    threshold: 0.2,
-    triggerOnce: false,
-  }) ?? {};
-  
-  // Scroll-based parallax effect for background
-  const { scrollY } = useScroll();
-  const backgroundY = useTransform(scrollY, [0, 500], [0, -100]);
-  const backgroundScale = useTransform(scrollY, [0, 500], [1, 1.1]);
-  const overlayOpacity = useTransform(scrollY, [0, 300], [0.5, 0.8]);
-  
-  // Format the values for use in styles
-  const backgroundYStyle = useMotionTemplate`${backgroundY}px`;
-  const overlayOpacityStyle = useMotionTemplate`${overlayOpacity}`;
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isIntersecting, setIsIntersecting] = useState(true);
   
   // Update current slide when API changes
   const onSelect = useCallback(() => {
@@ -53,6 +38,25 @@ const HeroCarousel = () => {
       api.off("select", onSelect);
     };
   }, [api, onSelect]);
+
+  // Simple intersection observer to check if carousel is in viewport
+  useEffect(() => {
+    if (!carouselRef.current) return;
+    
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsIntersecting(entry.isIntersecting);
+      },
+      { threshold: 0.2 }
+    );
+    
+    observer.observe(carouselRef.current);
+    return () => {
+      if (carouselRef.current) {
+        observer.unobserve(carouselRef.current);
+      }
+    };
+  }, [carouselRef]);
 
   // Auto-advance the carousel only when in viewport
   useEffect(() => {
@@ -74,12 +78,11 @@ const HeroCarousel = () => {
   return (
     <div 
       className="absolute top-0 left-0 w-full h-full overflow-hidden"
-      ref={carouselRef as React.RefObject<HTMLDivElement>}
+      ref={carouselRef}
     >
-      {/* Dark overlay with scroll parallax effect */}
-      <motion.div 
+      {/* Dark overlay with parallax effect */}
+      <div 
         className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70 z-[1]"
-        style={shouldAnimate ? { opacity: overlayOpacityStyle } : undefined}
       />
       
       <Carousel 
@@ -89,28 +92,19 @@ const HeroCarousel = () => {
           {propertyImages.map((image, index) => (
             <CarouselItem key={index} className="h-full">
               <AspectRatio ratio={16/9} className="h-full">
-                <motion.div
+                <div
                   className="w-full h-full"
-                  style={shouldAnimate ? { 
-                    y: backgroundYStyle,
-                    scale: backgroundScale
-                  } : undefined}
                 >
-                  <motion.img 
+                  <img 
                     src={image} 
                     alt={`Property showcase ${index + 1}`}
-                    className="object-cover w-full h-full"
-                    initial={{ opacity: 0, scale: 1.1 }}
-                    animate={{ 
-                      opacity: currentSlide === index ? 1 : 0,
-                      scale: currentSlide === index ? 1 : 1.1
-                    }}
-                    transition={{ 
-                      opacity: { duration: 1, ease: "easeInOut" },
-                      scale: { duration: 6, ease: "easeOut" }
-                    }}
+                    className={`object-cover w-full h-full transition-all duration-1000 ${
+                      currentSlide === index 
+                        ? "opacity-100 scale-100" 
+                        : "opacity-0 scale-110"
+                    }`}
                   />
-                </motion.div>
+                </div>
               </AspectRatio>
             </CarouselItem>
           ))}
@@ -118,26 +112,22 @@ const HeroCarousel = () => {
       </Carousel>
       
       {/* Carousel indicators with animations */}
-      <FadeIn 
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10"
-        animate={isIntersecting}
+      <div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10 animate-fade-in"
       >
         {propertyImages.map((_, index) => (
-          <motion.button
+          <button
             key={index}
             className={`w-3 h-3 rounded-full transition-all bg-white ${
-              currentSlide === index ? "opacity-100" : "opacity-50"
+              currentSlide === index 
+                ? "opacity-100 scale-110" 
+                : "opacity-50 scale-100"
             }`}
             onClick={() => handleIndicatorClick(index)}
             aria-label={`Go to slide ${index + 1}`}
-            whileTap={{ scale: 0.9 }}
-            animate={{ 
-              scale: currentSlide === index ? 1.1 : 1,
-            }}
-            transition={{ duration: 0.2 }}
           />
         ))}
-      </FadeIn>
+      </div>
     </div>
   );
 };
