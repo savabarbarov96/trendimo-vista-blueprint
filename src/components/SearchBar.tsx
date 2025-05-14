@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { siteContent, cities, propertyTypes } from '../data/content';
+import { motion } from 'framer-motion';
+import { useAnimationSettings } from '@/lib/animations/motion';
 
 interface SearchParams {
   location: string;
@@ -18,6 +20,7 @@ const SearchBar = () => {
     priceRange: '',
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const { shouldAnimate } = useAnimationSettings();
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -34,11 +37,40 @@ const SearchBar = () => {
     setShowAdvanced(!showAdvanced);
   };
 
+  // Animation variants for the advanced search section
+  const advancedVariants = {
+    hidden: { 
+      height: 0, 
+      opacity: 0,
+      transition: { 
+        height: { duration: 0.3 },
+        opacity: { duration: 0.2 }
+      }
+    },
+    visible: { 
+      height: 'auto', 
+      opacity: 1,
+      transition: { 
+        height: { duration: 0.3 },
+        opacity: { duration: 0.3, delay: 0.1 }
+      }
+    }
+  };
+
+  // Animation for the toggle arrow
+  const arrowVariants = {
+    up: { rotate: 0 },
+    down: { rotate: 180 }
+  };
+
   return (
     <div className="bg-gradient-to-r from-blue-900/90 to-blue-700/90 backdrop-blur-md border border-blue-400/30 rounded-lg shadow-lg p-6 mb-4">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
+          <motion.div 
+            className="flex-1"
+            whileTap={shouldAnimate ? { scale: 0.98 } : {}}
+          >
             <select
               name="location"
               className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -52,9 +84,12 @@ const SearchBar = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </motion.div>
           
-          <div className="flex-1">
+          <motion.div 
+            className="flex-1"
+            whileTap={shouldAnimate ? { scale: 0.98 } : {}}
+          >
             <select
               name="propertyType"
               className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -68,9 +103,12 @@ const SearchBar = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </motion.div>
           
-          <div className="flex-1">
+          <motion.div 
+            className="flex-1"
+            whileTap={shouldAnimate ? { scale: 0.98 } : {}}
+          >
             <select
               name="priceRange"
               className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -84,17 +122,28 @@ const SearchBar = () => {
               <option value="300000-500000">300,000 лв. - 500,000 лв.</option>
               <option value="500000+">Над 500,000 лв.</option>
             </select>
-          </div>
+          </motion.div>
           
-          <Button type="submit" className="bg-white hover:bg-blue-50 text-blue-900 border border-blue-200 shadow-md hover:shadow-lg">
-            <Search className="mr-2 h-4 w-4" />
-            {home.search.buttonText}
-          </Button>
+          <motion.div
+            whileHover={shouldAnimate ? { scale: 1.03 } : {}}
+            whileTap={shouldAnimate ? { scale: 0.97 } : {}}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          >
+            <Button type="submit" className="bg-white hover:bg-blue-50 text-blue-900 border border-blue-200 shadow-md hover:shadow-lg">
+              <Search className="mr-2 h-4 w-4" />
+              {home.search.buttonText}
+            </Button>
+          </motion.div>
         </div>
         
-        {showAdvanced && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 animate-fade-in">
-            <div>
+        <motion.div
+          initial="hidden"
+          animate={showAdvanced ? "visible" : "hidden"}
+          variants={advancedVariants}
+          className="overflow-hidden"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <motion.div whileTap={shouldAnimate ? { scale: 0.98 } : {}}>
               <select
                 name="bedrooms"
                 className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -106,9 +155,9 @@ const SearchBar = () => {
                 <option value="4">4+</option>
                 <option value="5">5+</option>
               </select>
-            </div>
+            </motion.div>
             
-            <div>
+            <motion.div whileTap={shouldAnimate ? { scale: 0.98 } : {}}>
               <select
                 name="bathrooms"
                 className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -119,9 +168,9 @@ const SearchBar = () => {
                 <option value="3">3+</option>
                 <option value="4">4+</option>
               </select>
-            </div>
+            </motion.div>
             
-            <div>
+            <motion.div whileTap={shouldAnimate ? { scale: 0.98 } : {}}>
               <select
                 name="area"
                 className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -133,21 +182,28 @@ const SearchBar = () => {
                 <option value="120-200">120 - 200 кв.м</option>
                 <option value="200+">Над 200 кв.м</option>
               </select>
-            </div>
+            </motion.div>
           </div>
-        )}
+        </motion.div>
         
         <div className="mt-4">
-          <button 
+          <motion.button 
             type="button"
             onClick={toggleAdvanced}
             className="text-white hover:text-blue-200 font-medium text-sm flex items-center"
+            whileHover={shouldAnimate ? { scale: 1.05 } : {}}
+            whileTap={shouldAnimate ? { scale: 0.95 } : {}}
           >
             {home.search.advancedSearch} 
-            <span className="ml-1 transition-transform duration-200" style={{ transform: showAdvanced ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+            <motion.span 
+              className="ml-1"
+              animate={showAdvanced ? "down" : "up"}
+              variants={arrowVariants}
+              transition={{ duration: 0.3 }}
+            >
               ▼
-            </span>
-          </button>
+            </motion.span>
+          </motion.button>
         </div>
       </form>
     </div>
