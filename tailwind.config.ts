@@ -33,21 +33,21 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#C10206', // Red
-					dark: '#A50113', // Darker Red
-					light: '#E62629', // Lighter Red
+					DEFAULT: '#3b82f6', // blue-500
+					dark: '#1d4ed8', // blue-700
+					light: '#60a5fa', // blue-400
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
-					DEFAULT: '#211D21', // Black
-					dark: '#000000', // Darker Black
-					light: '#3A363A', // Lighter Black
+					DEFAULT: '#f97316', // orange-500
+					dark: '#ea580c', // orange-600
+					light: '#fb923c', // orange-400
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				neutral: {
-					DEFAULT: '#DFE2DB', // Gray
-					dark: '#AEAEAE', // Darker Gray
-					light: '#F5F5F5', // Lighter Gray
+					DEFAULT: '#6b7280', // gray-500
+					dark: '#374151', // gray-700
+					light: '#9ca3af', // gray-400
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
