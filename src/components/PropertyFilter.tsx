@@ -49,14 +49,18 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange, initial
     initialFilters?.maxPrice || 1000000
   ]);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [initialFilterSet, setInitialFilterSet] = useState(false);
 
   useEffect(() => {
-    if (initialFilters) {
+    if (initialFilters && (!initialFilterSet || 
+        JSON.stringify(initialFilters) !== JSON.stringify(filters))) {
+      console.log('Updating filters from initialFilters:', initialFilters);
       setFilters(initialFilters);
       setPriceRange([
         initialFilters.minPrice || 0,
         initialFilters.maxPrice || 1000000
       ]);
+      setInitialFilterSet(true);
     }
   }, [initialFilters]);
 

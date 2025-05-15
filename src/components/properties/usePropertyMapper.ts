@@ -1,6 +1,7 @@
 import { getPropertyImages } from '@/utils/storageHelpers';
 import { Property } from '@/data/properties';
 import { SupabaseProperty } from './types';
+import { propertyTypes } from '@/data/content';
 
 export const usePropertyMapper = () => {
   // Helper function to get placeholder images
@@ -15,6 +16,16 @@ export const usePropertyMapper = () => {
   // Helper function to get placeholder main image
   const getPlaceholderMainImage = (): string => {
     return "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80";
+  };
+
+  // Helper function to ensure property type is valid
+  const getValidPropertyType = (type: string): string => {
+    // If the type is valid, return it
+    if (propertyTypes.includes(type)) {
+      return type;
+    }
+    // Otherwise, return a default type
+    return 'Апартамент';
   };
 
   // Function to convert SupabaseProperty to Property
@@ -42,7 +53,7 @@ export const usePropertyMapper = () => {
       location: prop.address.split(',').pop()?.trim() || '',
       city: prop.city,
       address: prop.address,
-      propertyType: prop.property_type,
+      propertyType: getValidPropertyType(prop.property_type),
       status: 'available',
       featured: prop.is_featured || false,
       imageUrl: images[0] || getPlaceholderMainImage(),
@@ -54,6 +65,7 @@ export const usePropertyMapper = () => {
   return {
     mapSupabasePropertyToProperty,
     getPlaceholderImages,
-    getPlaceholderMainImage
+    getPlaceholderMainImage,
+    getValidPropertyType
   };
 };

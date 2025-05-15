@@ -1,5 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { propertyTypes, cities } from '@/data/content';
+
+// Helper function to validate property type
+const validatePropertyType = (type: string): string => {
+  return propertyTypes.includes(type) ? type : propertyTypes[0];
+};
+
+// Helper function to validate listing type
+const validateListingType = (type: string): string => {
+  return ['sale', 'rent'].includes(type) ? type : 'sale';
+};
+
+// Helper function to validate city
+const validateCity = (city: string): string => {
+  return cities.includes(city) ? city : '';
+};
 
 export interface Property {
   id: string;
@@ -87,9 +103,13 @@ export const useCreateProperty = () => {
   
   return useMutation({
     mutationFn: async (property: PropertyFormData): Promise<Property> => {
-      // Make sure we have a valid images array
-      const sanitizedProperty = {
+      // Validate property and listing types
+      const validatedProperty = {
         ...property,
+        property_type: validatePropertyType(property.property_type),
+        listing_type: validateListingType(property.listing_type),
+        city: validateCity(property.city),
+        // Make sure we have a valid images array
         images: property.images && Array.isArray(property.images) && property.images.length > 0
           ? property.images
           : []
@@ -98,7 +118,7 @@ export const useCreateProperty = () => {
       // Create a property record
       const { data, error } = await supabase
         .from('properties')
-        .insert(sanitizedProperty)
+        .insert(validatedProperty)
         .select()
         .single();
 
@@ -122,17 +142,34 @@ export const useUpdateProperty = () => {
   
   return useMutation({
     mutationFn: async ({ id, property }: { id: string, property: Partial<PropertyFormData> }): Promise<Property> => {
+      // Create a validated copy of the property to update
+      const validatedProperty = { ...property };
+      
+      // Validate property type if it's being updated
+      if ('property_type' in validatedProperty) {
+        validatedProperty.property_type = validatePropertyType(validatedProperty.property_type as string);
+      }
+      
+      // Validate listing type if it's being updated
+      if ('listing_type' in validatedProperty) {
+        validatedProperty.listing_type = validateListingType(validatedProperty.listing_type as string);
+      }
+      
+      // Validate city if it's being updated
+      if ('city' in validatedProperty) {
+        validatedProperty.city = validateCity(validatedProperty.city as string);
+      }
+      
       // Make sure we have a valid images array if it's being updated
-      const sanitizedProperty = { ...property };
-      if ('images' in sanitizedProperty) {
-        sanitizedProperty.images = sanitizedProperty.images && Array.isArray(sanitizedProperty.images) && sanitizedProperty.images.length > 0
-          ? sanitizedProperty.images
+      if ('images' in validatedProperty) {
+        validatedProperty.images = validatedProperty.images && Array.isArray(validatedProperty.images) && validatedProperty.images.length > 0
+          ? validatedProperty.images
           : [];
       }
       
       const { data, error } = await supabase
         .from('properties')
-        .update(sanitizedProperty)
+        .update(validatedProperty)
         .eq('id', id)
         .select()
         .single();

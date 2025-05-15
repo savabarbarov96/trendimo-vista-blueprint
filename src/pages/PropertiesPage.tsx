@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PropertiesList } from '@/components/properties/PropertiesList';
 import PropertyFilter from '@/components/PropertyFilter';
 import PropertySellForm from '@/components/PropertySellForm';
@@ -18,27 +18,50 @@ const PropertiesPage = () => {
     bedrooms: null,
     bathrooms: null
   });
+  const [initialLoad, setInitialLoad] = useState(true);
+  const processedUrlParams = useRef(false);
 
-  // Parse URL query parameters when the page loads
+  // Parse URL query parameters when the page loads or URL changes
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    
-    const newFilters: FilterState = {
-      listingType: queryParams.get('listingType') || '',
-      propertyType: queryParams.get('propertyType') || '',
-      city: queryParams.get('city') || '',
-      minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
-      maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
-      bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
-      bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
-    };
-    
-    setFilters(newFilters);
+    if (location.search && !processedUrlParams.current) {
+      const queryParams = new URLSearchParams(location.search);
+      
+      const newFilters: FilterState = {
+        listingType: queryParams.get('listingType') || '',
+        propertyType: queryParams.get('propertyType') || '',
+        city: queryParams.get('city') || '',
+        minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
+        maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
+        bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
+        bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
+      };
+      
+      console.log('URL params parsed into filters:', newFilters);
+      setFilters(newFilters);
+      processedUrlParams.current = true;
+      setInitialLoad(false);
+    } else if (!location.search) {
+      // Reset if there are no URL params
+      processedUrlParams.current = false;
+      if (!initialLoad) {
+        setFilters({
+          listingType: '',
+          propertyType: '',
+          city: '',
+          minPrice: null,
+          maxPrice: null,
+          bedrooms: null,
+          bathrooms: null
+        });
+      }
+    }
   }, [location.search]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     console.log('Filter changed:', newFilters);
     setFilters(newFilters);
+    // Updating filters through sidebar doesn't need to be marked as URL params
+    processedUrlParams.current = true;
   };
 
   return (
