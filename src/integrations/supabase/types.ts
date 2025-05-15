@@ -6,373 +6,398 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
+export interface Database {
   public: {
     Tables: {
       blog_posts: {
         Row: {
-          author_id: string | null
+          author_id: string
           category: string
           content: string
-          created_at: string | null
+          created_at: string
           excerpt: string
           id: string
-          image_url: string | null
-          published_at: string | null
+          image_url: string
+          published_at: string
           slug: string
           title: string
-          updated_at: string | null
+          updated_at: string
         }
         Insert: {
-          author_id?: string | null
+          author_id?: string
           category: string
           content: string
-          created_at?: string | null
+          created_at?: string
           excerpt: string
           id?: string
-          image_url?: string | null
-          published_at?: string | null
+          image_url?: string
+          published_at?: string
           slug: string
           title: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Update: {
-          author_id?: string | null
+          author_id?: string
           category?: string
           content?: string
-          created_at?: string | null
+          created_at?: string
           excerpt?: string
           id?: string
-          image_url?: string | null
-          published_at?: string | null
+          image_url?: string
+          published_at?: string
           slug?: string
           title?: string
-          updated_at?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
       careers: {
         Row: {
-          created_at: string | null
-          department: string
-          description: string
           id: string
-          is_active: boolean | null
-          location: string
-          requirements: string
           title: string
+          department: string
+          location: string
+          description: string
+          requirements: string
+          is_active: boolean
+          created_at: string
         }
         Insert: {
-          created_at?: string | null
-          department: string
-          description: string
           id?: string
-          is_active?: boolean | null
-          location: string
-          requirements: string
           title: string
+          department: string
+          location: string
+          description: string
+          requirements: string
+          is_active?: boolean
+          created_at?: string
         }
         Update: {
-          created_at?: string | null
-          department?: string
-          description?: string
           id?: string
-          is_active?: boolean | null
-          location?: string
-          requirements?: string
           title?: string
+          department?: string
+          location?: string
+          description?: string
+          requirements?: string
+          is_active?: boolean
+          created_at?: string
         }
         Relationships: []
       }
       careers_applications: {
         Row: {
-          cover_letter: string | null
-          created_at: string | null
-          cv_url: string | null
-          email: string
-          full_name: string
           id: string
+          name: string
+          email: string
           phone: string
-          position_id: string | null
-          status: string | null
+          position_id: string
+          cv_url: string
+          message: string
+          created_at: string
+          is_reviewed: boolean
         }
         Insert: {
-          cover_letter?: string | null
-          created_at?: string | null
-          cv_url?: string | null
-          email: string
-          full_name: string
           id?: string
+          name: string
+          email: string
           phone: string
-          position_id?: string | null
-          status?: string | null
+          position_id: string
+          cv_url: string
+          message: string
+          created_at?: string
+          is_reviewed?: boolean
         }
         Update: {
-          cover_letter?: string | null
-          created_at?: string | null
-          cv_url?: string | null
-          email?: string
-          full_name?: string
           id?: string
+          name?: string
+          email?: string
           phone?: string
-          position_id?: string | null
-          status?: string | null
+          position_id?: string
+          cv_url?: string
+          message?: string
+          created_at?: string
+          is_reviewed?: boolean
         }
         Relationships: [
           {
             foreignKeyName: "careers_applications_position_id_fkey"
             columns: ["position_id"]
-            isOneToOne: false
             referencedRelation: "careers"
             referencedColumns: ["id"]
-          },
+          }
         ]
       }
       inquiries: {
         Row: {
-          created_at: string
-          email: string
           id: string
-          message: string | null
+          property_id: string | null
           name: string
-          phone: string
-          property_id: string
-          responded: boolean
-          user_id: string | null
+          email: string
+          phone: string | null
+          message: string
+          created_at: string
+          is_reviewed: boolean
         }
         Insert: {
-          created_at?: string
-          email: string
           id?: string
-          message?: string | null
+          property_id?: string | null
           name: string
-          phone: string
-          property_id: string
-          responded?: boolean
-          user_id?: string | null
+          email: string
+          phone?: string | null
+          message: string
+          created_at?: string
+          is_reviewed?: boolean
         }
         Update: {
-          created_at?: string
-          email?: string
           id?: string
-          message?: string | null
+          property_id?: string | null
           name?: string
-          phone?: string
-          property_id?: string
-          responded?: boolean
-          user_id?: string | null
+          email?: string
+          phone?: string | null
+          message?: string
+          created_at?: string
+          is_reviewed?: boolean
         }
         Relationships: [
           {
             foreignKeyName: "inquiries_property_id_fkey"
             columns: ["property_id"]
-            isOneToOne: false
             referencedRelation: "properties"
             referencedColumns: ["id"]
-          },
+          }
         ]
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          full_name: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          updated_at: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          full_name?: string | null
-          id: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          full_name?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          updated_at?: string | null
-        }
-        Relationships: []
       }
       properties: {
         Row: {
-          address: string
-          area: number | null
-          bathrooms: number | null
-          bedrooms: number | null
-          city: string
-          created_at: string | null
-          description: string | null
           id: string
+          title: string
+          description: string | null
+          price: number
+          area: number | null
+          bedrooms: number | null
+          bathrooms: number | null
+          address: string
+          city: string
+          property_type: string
+          listing_type: string
           is_featured: boolean | null
           is_published: boolean | null
-          listing_type: string
-          owner_id: string
-          price: number
-          property_type: string
-          title: string
-          updated_at: string | null
+          created_at: string | null
         }
         Insert: {
-          address: string
-          area?: number | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          city: string
-          created_at?: string | null
-          description?: string | null
           id?: string
+          title: string
+          description?: string | null
+          price: number
+          area?: number | null
+          bedrooms?: number | null
+          bathrooms?: number | null
+          address: string
+          city: string
+          property_type: string
+          listing_type: string
           is_featured?: boolean | null
           is_published?: boolean | null
-          listing_type: string
-          owner_id: string
-          price: number
-          property_type: string
-          title: string
-          updated_at?: string | null
+          created_at?: string | null
         }
         Update: {
-          address?: string
-          area?: number | null
-          bathrooms?: number | null
-          bedrooms?: number | null
-          city?: string
-          created_at?: string | null
-          description?: string | null
           id?: string
+          title?: string
+          description?: string | null
+          price?: number
+          area?: number | null
+          bedrooms?: number | null
+          bathrooms?: number | null
+          address?: string
+          city?: string
+          property_type?: string
+          listing_type?: string
           is_featured?: boolean | null
           is_published?: boolean | null
-          listing_type?: string
-          owner_id?: string
-          price?: number
-          property_type?: string
-          title?: string
-          updated_at?: string | null
+          created_at?: string | null
         }
         Relationships: []
       }
-      sell_requests: {
+      profiles: {
         Row: {
-          address: string
-          consultation_date: string | null
-          created_at: string
-          description: string | null
-          email: string
           id: string
-          name: string
-          phone: string
-          price: number | null
-          property_type: string
-          status: string
-          title: string | null
-          user_id: string | null
+          first_name: string | null
+          last_name: string | null
+          email: string | null
+          phone: string | null
+          avatar_url: string | null
+          role: string | null
+          created_at: string | null
         }
         Insert: {
-          address: string
-          consultation_date?: string | null
-          created_at?: string
-          description?: string | null
-          email: string
-          id?: string
-          name: string
-          phone: string
-          price?: number | null
-          property_type: string
-          status?: string
-          title?: string | null
-          user_id?: string | null
+          id: string
+          first_name?: string | null
+          last_name?: string | null
+          email?: string | null
+          phone?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string | null
         }
         Update: {
-          address?: string
-          consultation_date?: string | null
+          id?: string
+          first_name?: string | null
+          last_name?: string | null
+          email?: string | null
+          phone?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      sell_requests: {
+        Row: {
+          id: string
+          name: string
+          email: string
+          phone: string
+          property_type: string
+          property_location: string
+          message: string
+          created_at: string
+          is_reviewed: boolean
+        }
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          phone: string
+          property_type: string
+          property_location: string
+          message: string
           created_at?: string
-          description?: string | null
-          email?: string
+          is_reviewed?: boolean
+        }
+        Update: {
           id?: string
           name?: string
+          email?: string
           phone?: string
-          price?: number | null
           property_type?: string
-          status?: string
-          title?: string | null
-          user_id?: string | null
+          property_location?: string
+          message?: string
+          created_at?: string
+          is_reviewed?: boolean
         }
         Relationships: []
       }
       services: {
         Row: {
-          created_at: string | null
+          id: string
+          title: string
           description: string
           icon: string
-          id: string
-          is_highlighted: boolean | null
-          name: string
+          is_active: boolean
+          created_at: string
         }
         Insert: {
-          created_at?: string | null
+          id?: string
+          title: string
           description: string
           icon: string
-          id?: string
-          is_highlighted?: boolean | null
-          name: string
+          is_active?: boolean
+          created_at?: string
         }
         Update: {
-          created_at?: string | null
+          id?: string
+          title?: string
           description?: string
           icon?: string
+          is_active?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          id: string
+          name: string
+          position: string
+          bio: string | null
+          image_url: string | null
+          order_index: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
           id?: string
-          is_highlighted?: boolean | null
+          name: string
+          position: string
+          bio?: string | null
+          image_url?: string | null
+          order_index?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
           name?: string
+          position?: string
+          bio?: string | null
+          image_url?: string | null
+          order_index?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }
       viewings: {
         Row: {
-          created_at: string
-          email: string
           id: string
-          message: string | null
-          name: string
-          phone: string
           property_id: string
-          status: string
-          user_id: string | null
+          customer_name: string
+          customer_email: string
+          customer_phone: string
           viewing_date: string
+          status: string
+          created_at: string
+          additional_notes: string | null
         }
         Insert: {
-          created_at?: string
-          email: string
           id?: string
-          message?: string | null
-          name: string
-          phone: string
           property_id: string
-          status?: string
-          user_id?: string | null
+          customer_name: string
+          customer_email: string
+          customer_phone: string
           viewing_date: string
+          status?: string
+          created_at?: string
+          additional_notes?: string | null
         }
         Update: {
-          created_at?: string
-          email?: string
           id?: string
-          message?: string | null
-          name?: string
-          phone?: string
           property_id?: string
-          status?: string
-          user_id?: string | null
+          customer_name?: string
+          customer_email?: string
+          customer_phone?: string
           viewing_date?: string
+          status?: string
+          created_at?: string
+          additional_notes?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "viewings_property_id_fkey"
             columns: ["property_id"]
-            isOneToOne: false
             referencedRelation: "properties"
             referencedColumns: ["id"]
-          },
+          }
         ]
       }
     }
@@ -380,23 +405,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      user_has_role: {
-        Args: { requested_role: Database["public"]["Enums"]["app_role"] }
-        Returns: boolean
-      }
-      user_is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "public" | "authenticated" | "agent" | "admin"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
     }
   }
 }
+
+export type TeamMember = Database['public']['Tables']['team_members']['Row']
 
 type DefaultSchema = Database[Extract<keyof Database, "public">]
 

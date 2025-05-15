@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import PropertiesManagement from '@/components/management/PropertiesManagement';
 import InquiriesManagement from '@/components/management/InquiriesManagement';
 import SellRequestsManagement from '@/components/management/SellRequestsManagement';
+import CareersManagement from '@/components/management/CareersManagement';
 import { useUser } from '@/hooks/auth/use-user';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,6 +42,8 @@ const ManagementPage = () => {
             <TabsTrigger value="properties">Имоти</TabsTrigger>
             <TabsTrigger value="sell-requests">Заявки за продажба</TabsTrigger>
             <TabsTrigger value="inquiries">Запитвания</TabsTrigger>
+            <TabsTrigger value="careers">Отворени Позиции</TabsTrigger>
+            <TabsTrigger value="team">Нашият Екип</TabsTrigger>
           </TabsList>
           
           <TabsContent value="properties">
@@ -53,6 +56,14 @@ const ManagementPage = () => {
           
           <TabsContent value="inquiries">
             <InquiriesManagement />
+          </TabsContent>
+          
+          <TabsContent value="careers">
+            <CareersManagement />
+          </TabsContent>
+          
+          <TabsContent value="team">
+
           </TabsContent>
         </Tabs>
       </main>
