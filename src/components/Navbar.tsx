@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -25,11 +24,8 @@ import logo from "../assets/trendimo-logo.svg";
 const mainNavItems = [
   { title: "Начало", href: "/" },
   { title: "Имоти", href: "/properties" },
-  { title: "Услуги", href: "/services" },
-  { title: "Продай", href: "/sell" },
   { title: "За нас", href: "/about" },
-  { title: "Кариери", href: "/careers" },
-  { title: "Блог", href: "/blog" },
+  { title: "Контакт", href: "/contact" },
 ];
 
 const Navbar = () => {
@@ -47,24 +43,25 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-      <div className="container flex h-16 items-center justify-between">
+    <div className="bg-white sticky top-0 z-50 shadow-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center space-x-2">
           <img src={logo} alt="Trendimo Logo" width="40" height="40" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent transform hover:scale-105 transition-transform duration-300">
+          <span className="text-xl font-bold text-secondary">
             Trendimo
           </span>
         </Link>
-        <div className="hidden md:flex items-center space-x-4">
+        
+        <div className="hidden md:flex items-center space-x-8">
           {mainNavItems.map((item) => (
             <NavLink
               key={item.href}
               to={item.href}
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                `px-1 py-2 text-sm font-medium transition-all duration-200 border-b-2 ${
                   isActive 
-                    ? "text-primary border-b-2 border-primary shadow-sm" 
-                    : "text-gray-700 hover:text-primary"
+                    ? "text-primary border-primary" 
+                    : "text-secondary border-transparent hover:text-primary hover:border-primary/30"
                 }`
               }
             >
@@ -72,6 +69,7 @@ const Navbar = () => {
             </NavLink>
           ))}
         </div>
+        
         {isAuthenticated ? (
           <div className="hidden md:flex items-center space-x-2">
             <DropdownMenu>
@@ -100,18 +98,18 @@ const Navbar = () => {
             </DropdownMenu>
           </div>
         ) : location.pathname === "/auth" ? null : (
-          <div className="hidden md:flex items-center space-x-2">
-            <Link to="/auth">
-              <Button 
-                variant="secondary" 
-                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all" 
-                size="sm"
-              >
-                Вход
-              </Button>
-            </Link>
+          <div className="hidden md:block">
+            <Button 
+              variant="modern" 
+              size="sm"
+              className="rounded-full px-6"
+              onClick={() => navigate("/auth")}
+            >
+              Започнете търсенето!
+            </Button>
           </div>
         )}
+        
         <Sheet>
           <SheetTrigger className="md:hidden">
             <Menu className="h-6 w-6" />
@@ -119,7 +117,6 @@ const Navbar = () => {
           <SheetContent side="left" className="sm:w-2/3 md:w-1/2">
             <SheetHeader className="text-left">
               <SheetTitle>Меню</SheetTitle>
-              <SheetDescription>Разгледайте нашите предложения.</SheetDescription>
             </SheetHeader>
             <div className="grid gap-4 py-4">
               {mainNavItems.map((item) => (
@@ -127,8 +124,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                      isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                     }`
                   }
                 >
@@ -138,16 +135,16 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <NavLink to="/profile" className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                      isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                     }`
                   }>
                     Профил
                   </NavLink>
                   {isAdmin && (
                     <NavLink to="/admin" className={({ isActive }) =>
-                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                        isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                        isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                       }`
                     }>
                       Администрация
@@ -160,9 +157,9 @@ const Navbar = () => {
               ) : location.pathname === "/auth" ? null : (
                 <Link to="/auth">
                   <Button 
-                    variant="secondary" 
+                    variant="modern" 
                     size="sm" 
-                    className="w-full justify-start bg-primary text-white hover:bg-primary-dark shadow-md"
+                    className="w-full justify-start"
                   >
                     Вход
                   </Button>
