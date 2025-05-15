@@ -93,118 +93,137 @@ const PropertySellForm = () => {
   };
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
-        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
-          <h3 className="text-2xl font-semibold mb-4 text-center">Свържете се с нас за оценка</h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Phone Field - always shown */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-neutral-dark mb-1">
-                Телефон *
-              </label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+359 88x xxxx"
-                required
-                value={formData.phone}
-                onChange={handleChange}
-              />
-              {phoneHint && <p className="text-xs text-neutral mt-1">{phoneHint}</p>}
-            </div>
-
-            {/* Property Type - reveal after 4 digits */}
-            {showPropertyType && (
-              <div>
-                <label htmlFor="propertyType" className="block text-sm font-medium text-neutral-dark mb-1">
-                  Вид имот *
-                </label>
-                <select
-                  id="propertyType"
-                  className="w-full border border-gray-300 rounded-md px-4 py-2"
-                  value={formData.propertyType}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Изберете тип имот</option>
-                  <option value="apartment">Апартамент</option>
-                  <option value="house">Къща</option>
-                  <option value="land">Земя</option>
-                  <option value="commercial">Търговски имот</option>
-                  <option value="other">Друго</option>
-                </select>
-              </div>
-            )}
-
-            {/* Reveal rest after 6 digits or propertyType selected */}
-            {showAllRest && (
-              <>
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-neutral-dark mb-1">
-                    Име и фамилия *
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Вашето име"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-neutral-dark mb-1">
-                    Имейл адрес *
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="example@email.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-neutral-dark mb-1">
-                    Адрес на имота *
-                  </label>
-                  <Input
-                    id="address"
-                    type="text"
-                    placeholder="ул./бул., номер, град"
-                    value={formData.address}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-neutral-dark mb-1">
-                    Допълнителна информация
-                  </label>
-                  <Textarea
-                    id="message"
-                    placeholder="Опишете накратко вашия имот"
-                    className="h-24"
-                    value={formData.message}
-                    onChange={handleChange}
-                  />
-                </div>
-              </>
-            )}
-
-            <Button type="submit" className="w-full bg-primary hover:bg-primary-dark" disabled={isSubmitting}>
-              {isSubmitting ? 'Изпращане...' : 'Изпратете запитване'}
-            </Button>
-
-            <p className="text-xs text-neutral text-center mt-2">
-              С изпращането на формата, се съгласявате с нашите <a href="/terms" className="text-primary hover:underline">общи условия</a> и <a href="/privacy" className="text-primary hover:underline">политика за поверителност</a>.
-            </p>
-          </form>
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Phone Field - always shown */}
+      <div className="group">
+        <label htmlFor="phone" className="block text-base font-medium text-neutral-dark mb-2">
+          <span className="flex items-center gap-2">
+            <Phone className="h-5 w-5 text-red-500" />
+            Телефон *
+          </span>
+        </label>
+        <Input
+          id="phone"
+          type="tel"
+          placeholder="+359 88x xxxx"
+          required
+          value={formData.phone}
+          onChange={handleChange}
+          className="py-3 text-lg transition-all focus-within:border-red-500 focus-within:ring-red-500/20"
+        />
+        {phoneHint && <p className="text-sm text-neutral mt-2 italic">{phoneHint}</p>}
       </div>
-    </section>
+
+      {/* Property Type - reveal after 4 digits */}
+      {showPropertyType && (
+        <div className="animate-fade-in">
+          <label htmlFor="propertyType" className="block text-base font-medium text-neutral-dark mb-2">
+            <span className="flex items-center gap-2">
+              <Building className="h-5 w-5 text-red-500" />
+              Вид имот *
+            </span>
+          </label>
+          <select
+            id="propertyType"
+            className="w-full border border-gray-300 rounded-md px-4 py-3 text-lg transition-all focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+            value={formData.propertyType}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Изберете тип имот</option>
+            <option value="apartment">Апартамент</option>
+            <option value="house">Къща</option>
+            <option value="land">Земя</option>
+            <option value="commercial">Търговски имот</option>
+            <option value="other">Друго</option>
+          </select>
+        </div>
+      )}
+
+      {/* Reveal rest after 6 digits or propertyType selected */}
+      {showAllRest && (
+        <div className="space-y-6 animate-fade-in">
+          <div>
+            <label htmlFor="name" className="block text-base font-medium text-neutral-dark mb-2">
+              <span className="flex items-center gap-2">
+                <span className="h-5 w-5 flex items-center justify-center">👤</span>
+                Име и фамилия *
+              </span>
+            </label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Вашето име"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="py-3 text-lg transition-all focus-within:border-red-500 focus-within:ring-red-500/20"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="email" className="block text-base font-medium text-neutral-dark mb-2">
+              <span className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-red-500" />
+                Имейл адрес *
+              </span>
+            </label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="example@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="py-3 text-lg transition-all focus-within:border-red-500 focus-within:ring-red-500/20"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="address" className="block text-base font-medium text-neutral-dark mb-2">
+              <span className="flex items-center gap-2">
+                <MapPin className="h-5 w-5 text-red-500" />
+                Адрес на имота *
+              </span>
+            </label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="ул./бул., номер, град"
+              value={formData.address}
+              onChange={handleChange}
+              required
+              className="py-3 text-lg transition-all focus-within:border-red-500 focus-within:ring-red-500/20"
+            />
+          </div>
+          
+          <div>
+            <label htmlFor="message" className="block text-base font-medium text-neutral-dark mb-2">
+              Допълнителна информация
+            </label>
+            <Textarea
+              id="message"
+              placeholder="Опишете накратко вашия имот"
+              className="h-32 transition-all focus-within:border-red-500 focus-within:ring-red-500/20"
+              value={formData.message}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+      )}
+
+      <Button 
+        type="submit" 
+        className="w-full mt-6 text-lg py-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 shadow-md" 
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Изпращане...' : 'Изпратете запитване'}
+      </Button>
+
+      <p className="text-sm text-neutral text-center mt-4">
+        С изпращането на формата, се съгласявате с нашите <a href="/terms" className="text-red-500 hover:underline">общи условия</a> и <a href="/privacy" className="text-red-500 hover:underline">политика за поверителност</a>.
+      </p>
+    </form>
   );
 };
 

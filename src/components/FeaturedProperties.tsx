@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
 import PropertyCard from './PropertyCard';
 import { siteContent } from '../data/content';
 import { useFeaturedProperties } from '@/hooks/use-properties';
+import { usePropertyMapper } from '@/components/properties/usePropertyMapper';
+import { Property } from '@/data/properties';
 
 const FeaturedProperties = () => {
   const { home } = siteContent;
-  const { data: featuredProperties, isLoading, error } = useFeaturedProperties();
+  const { data: featuredPropertiesData, isLoading, error } = useFeaturedProperties();
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const { mapSupabasePropertyToProperty } = usePropertyMapper();
+  
+  useEffect(() => {
+    const mapProperties = async () => {
+      if (featuredPropertiesData) {
+        const mappedProperties = await Promise.all(
+          featuredPropertiesData.map(property => mapSupabasePropertyToProperty(property))
+        );
+        setFeaturedProperties(mappedProperties);
+      }
+    };
+    
+    mapProperties();
+  }, [featuredPropertiesData, mapSupabasePropertyToProperty]);
 
   return (
     <section className="py-16 bg-gradient-to-b from-blue-50 to-gray-50">
@@ -37,24 +54,7 @@ const FeaturedProperties = () => {
         ) : featuredProperties && featuredProperties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredProperties.map((property) => (
-              <PropertyCard key={property.id} property={{
-                id: Number(property.id),
-                title: property.title,
-                description: property.description || '',
-                price: property.price,
-                area: property.area || 0,
-                bedrooms: property.bedrooms || 0,
-                bathrooms: property.bathrooms || 0,
-                location: '',
-                city: property.city,
-                address: property.address,
-                propertyType: property.property_type,
-                status: 'available',
-                featured: true,
-                imageUrl: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914',
-                images: ['https://images.unsplash.com/photo-1580587771525-78b9dba3b914'],
-                createdAt: property.created_at || new Date().toISOString()
-              }} />
+              <PropertyCard key={property.id} property={property} />
             ))}
           </div>
         ) : (

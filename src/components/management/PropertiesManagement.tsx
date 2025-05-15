@@ -88,9 +88,10 @@ const PropertiesManagement = () => {
     const { name, value, type } = e.target;
     
     if (type === 'number') {
+      const numericValue = value === '' ? 0 : parseFloat(value);
       setFormData({
         ...formData,
-        [name]: parseFloat(value)
+        [name]: isNaN(numericValue) ? 0 : numericValue
       });
     } else if (type === 'checkbox') {
       setFormData({
@@ -471,7 +472,7 @@ const PropertiesManagement = () => {
               <div>
                 <Label htmlFor="images" className="block mb-2">Снимки на имота</Label>
                 <ImageUploader
-                  bucketName="properties"
+                  bucketName="property_images"
                   folderPath={`images/`}
                   onUploadComplete={handleImageUpload}
                   maxFiles={5}
@@ -772,7 +773,7 @@ const PropertiesManagement = () => {
             <div>
               <Label htmlFor="edit-images" className="block mb-2">Снимки на имота</Label>
               <ImageUploader
-                bucketName="properties"
+                bucketName="property_images"
                 folderPath={`images/`}
                 onUploadComplete={handleImageUpload}
                 maxFiles={5}

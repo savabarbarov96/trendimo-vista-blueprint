@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from './ui/button';
@@ -56,12 +55,35 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           throw error;
         }
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from(bucketName)
-          .getPublicUrl(filePath);
+        // Try to get URL - first try signed URL, then fall back to public URL if that fails
+        let url = '';
+        try {
+          // First try to get a signed URL
+          const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+            .from(bucketName)
+            .createSignedUrl(filePath, 60 * 60 * 24 * 365); // 1 year expiry
+          
+          if (signedUrlData?.signedUrl && !signedUrlError) {
+            url = signedUrlData.signedUrl;
+          } else {
+            // Fall back to public URL
+            const { data: publicUrlData } = supabase.storage
+              .from(bucketName)
+              .getPublicUrl(filePath);
+            
+            url = publicUrlData.publicUrl;
+          }
+        } catch (urlError) {
+          console.error('Error getting URL:', urlError);
+          // Last attempt - construct URL directly
+          url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/${filePath}`;
+        }
 
-        return { path: filePath, url: publicUrl, file };
+        return { 
+          path: filePath, 
+          url, 
+          file 
+        };
       });
 
       const results = await Promise.all(uploadPromises);
@@ -94,6 +116,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           variant="outline" 
           className="w-full"
           disabled={uploading}
+          onClick={() => document.getElementById('file-upload-input')?.click()}
         >
           {uploading ? (
             <>
@@ -108,6 +131,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           )}
         </Button>
         <input
+          id="file-upload-input"
           type="file"
           accept={acceptedTypes}
           multiple={maxFiles > 1}

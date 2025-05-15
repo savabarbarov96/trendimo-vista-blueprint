@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { usePropertyMapper } from './usePropertyMapper';
 import { Property, formatPrice } from '@/data/properties';
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 import {
   Dialog,
@@ -29,6 +30,7 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
   onOpenChange 
 }) => {
   const { mapSupabasePropertyToProperty } = usePropertyMapper();
+  const navigate = useNavigate();
   
   // Fetch property data
   const { data: property, isLoading, error } = useQuery({
@@ -55,8 +57,9 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
   });
 
   const handleCallAgent = () => {
-    toast.success("Connecting you with our agent");
-    // In a real implementation, this could trigger a call, open a contact form, etc.
+    toast.success("Свързваме Ви с нашия агент");
+    onOpenChange(false); // Close the modal
+    navigate('/about'); // Navigate to the about page
   };
 
   return (
@@ -107,18 +110,18 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div className="flex flex-col items-center">
                 <Bed className="h-5 w-5 text-primary mb-1" />
-                <span className="text-sm text-muted-foreground">Bedrooms</span>
+                <span className="text-sm text-muted-foreground">Спални</span>
                 <span className="font-medium">{property.bedrooms}</span>
               </div>
               <div className="flex flex-col items-center">
                 <Bath className="h-5 w-5 text-primary mb-1" />
-                <span className="text-sm text-muted-foreground">Bathrooms</span>
+                <span className="text-sm text-muted-foreground">Бани</span>
                 <span className="font-medium">{property.bathrooms}</span>
               </div>
               <div className="flex flex-col items-center">
                 <Maximize className="h-5 w-5 text-primary mb-1" />
-                <span className="text-sm text-muted-foreground">Area</span>
-                <span className="font-medium">{property.area} sq.m</span>
+                <span className="text-sm text-muted-foreground">Площ</span>
+                <span className="font-medium">{property.area} кв.м</span>
               </div>
             </div>
 
@@ -126,7 +129,7 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
 
             {/* Property description */}
             <div>
-              <h3 className="font-medium mb-2">Description</h3>
+              <h3 className="font-medium mb-2">Описание</h3>
               <p className="text-neutral-dark text-sm">{property.description}</p>
             </div>
 
@@ -134,23 +137,23 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
 
             {/* Property features */}
             <div>
-              <h3 className="font-medium mb-2">Features</h3>
+              <h3 className="font-medium mb-2">Характеристики</h3>
               <div className="grid grid-cols-2 gap-y-2 text-sm">
                 <div className="flex items-center">
                   <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                  <span>Property Type: {property.propertyType}</span>
+                  <span>Тип имот: {property.propertyType}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                  <span>City: {property.city}</span>
+                  <span>Град: {property.city}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                  <span>Location: {property.location}</span>
+                  <span>Локация: {property.location}</span>
                 </div>
                 <div className="flex items-center">
                   <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-                  <span>Status: {property.status}</span>
+                  <span>Статус: {property.status}</span>
                 </div>
               </div>
             </div>
@@ -161,14 +164,14 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
                 onClick={() => onOpenChange(false)} 
                 className="mr-2"
               >
-                Close
+                Затвори
               </Button>
               <Button 
                 className="flex items-center" 
                 onClick={handleCallAgent}
               >
                 <Phone className="h-4 w-4 mr-2" />
-                Contact Agent
+                Свържи се с агент
               </Button>
             </DialogFooter>
           </>

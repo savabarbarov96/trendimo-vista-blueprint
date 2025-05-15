@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PropertiesList } from '@/components/properties/PropertiesList';
 import PropertyFilter from '@/components/PropertyFilter';
 import PropertySellForm from '@/components/PropertySellForm';
 import { FilterState } from '@/components/properties/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useLocation } from 'react-router-dom';
 
 const PropertiesPage = () => {
+  const location = useLocation();
   const [filters, setFilters] = useState<FilterState>({
     listingType: '',
     propertyType: '',
@@ -16,6 +18,23 @@ const PropertiesPage = () => {
     bedrooms: null,
     bathrooms: null
   });
+
+  // Parse URL query parameters when the page loads
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    
+    const newFilters: FilterState = {
+      listingType: queryParams.get('listingType') || '',
+      propertyType: queryParams.get('propertyType') || '',
+      city: queryParams.get('city') || '',
+      minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
+      maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
+      bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
+      bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
+    };
+    
+    setFilters(newFilters);
+  }, [location.search]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     console.log('Filter changed:', newFilters);
@@ -42,7 +61,7 @@ const PropertiesPage = () => {
             <div className="sticky top-4">
               <div className="bg-gradient-to-r from-red-50 to-white rounded-xl shadow-elegant p-4 border border-red-100">
                 <h3 className="text-lg font-semibold mb-4 text-red-800">Филтри</h3>
-                <PropertyFilter onFilterChange={handleFilterChange} />
+                <PropertyFilter onFilterChange={handleFilterChange} initialFilters={filters} />
               </div>
             </div>
           </div>
@@ -60,7 +79,53 @@ const PropertiesPage = () => {
 
         {/* Sell Your Property Form */}
         <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 shadow-elegant">
-          <PropertySellForm />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="flex flex-col justify-center">
+              <h2 className="text-3xl font-bold mb-4 text-red-700">Искате да продадете имот?</h2>
+              <p className="text-lg mb-6 text-neutral-700">
+                Нашите експерти ще ви помогнат да постигнете най-добрата цена за вашия имот. Попълнете формата 
+                и ще се свържем с вас за безплатна консултация.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start">
+                  <div className="bg-red-100 p-2 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-700">Професионална оценка</h3>
+                    <p className="text-neutral-600">Получете реалистична оценка на вашия имот</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="bg-red-100 p-2 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-700">Бързи резултати</h3>
+                    <p className="text-neutral-600">Продайте бързо с нашата мрежа от купувачи</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="bg-red-100 p-2 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-red-700">Без скрити такси</h3>
+                    <p className="text-neutral-600">Прозрачни условия и честни комисионни</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <PropertySellForm />
+            </div>
+          </div>
         </div>
       </div>
       

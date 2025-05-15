@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -30,10 +30,11 @@ const formatPrice = (price: number): string => {
 
 interface PropertyFilterProps {
   onFilterChange: (filters: FilterState) => void;
+  initialFilters?: FilterState;
 }
 
-const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState<FilterState>({
+const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange, initialFilters }) => {
+  const [filters, setFilters] = useState<FilterState>(initialFilters || {
     listingType: '',
     propertyType: '',
     city: '',
@@ -43,8 +44,21 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
     bathrooms: null
   });
 
-  const [priceRange, setPriceRange] = useState<number[]>([0, 1000000]);
+  const [priceRange, setPriceRange] = useState<number[]>([
+    initialFilters?.minPrice || 0, 
+    initialFilters?.maxPrice || 1000000
+  ]);
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters);
+      setPriceRange([
+        initialFilters.minPrice || 0,
+        initialFilters.maxPrice || 1000000
+      ]);
+    }
+  }, [initialFilters]);
 
   const handleListingTypeChange = (value: string) => {
     console.log('Listing type changed to:', value);

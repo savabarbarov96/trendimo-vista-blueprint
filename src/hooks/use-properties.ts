@@ -87,12 +87,18 @@ export const useCreateProperty = () => {
   
   return useMutation({
     mutationFn: async (property: PropertyFormData): Promise<Property> => {
-      // Create a copy without images to insert
-      const { images, ...propertyData } = property;
+      // Make sure we have a valid images array
+      const sanitizedProperty = {
+        ...property,
+        images: property.images && Array.isArray(property.images) && property.images.length > 0
+          ? property.images
+          : []
+      };
       
+      // Create a property record
       const { data, error } = await supabase
         .from('properties')
-        .insert(propertyData)
+        .insert(sanitizedProperty)
         .select()
         .single();
 
@@ -101,19 +107,6 @@ export const useCreateProperty = () => {
         throw new Error('Failed to create property');
       }
       
-      // If there are images, update the property with the image array
-      if (images && images.length > 0) {
-        const { error: updateError } = await supabase
-          .from('properties')
-          .update({ images })
-          .eq('id', data.id);
-        
-        if (updateError) {
-          console.error('Error updating property images:', updateError);
-          // We don't throw here as the property was created successfully
-        }
-      }
-
       return data as Property;
     },
     onSuccess: () => {
@@ -129,9 +122,17 @@ export const useUpdateProperty = () => {
   
   return useMutation({
     mutationFn: async ({ id, property }: { id: string, property: Partial<PropertyFormData> }): Promise<Property> => {
+      // Make sure we have a valid images array if it's being updated
+      const sanitizedProperty = { ...property };
+      if ('images' in sanitizedProperty) {
+        sanitizedProperty.images = sanitizedProperty.images && Array.isArray(sanitizedProperty.images) && sanitizedProperty.images.length > 0
+          ? sanitizedProperty.images
+          : [];
+      }
+      
       const { data, error } = await supabase
         .from('properties')
-        .update(property)
+        .update(sanitizedProperty)
         .eq('id', id)
         .select()
         .single();
