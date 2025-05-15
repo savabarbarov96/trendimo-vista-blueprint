@@ -30,7 +30,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-neutral-900 to-black">
       
       {/* Navbar */}
       <Navbar />
@@ -44,26 +44,26 @@ const Index = () => {
           style={shouldAnimate ? { transform: `translateY(${-scrollY * 0.1}px)` } : undefined}
         >
           <div className="mb-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg bg-gradient-to-r from-white to-blue-100 text-transparent bg-clip-text">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg gradient-text">
               Намерете своя перфектен дом
             </h1>
           </div>
           
           <div className="mb-8 animate-fade-in [animation-delay:0.1s]">
-            <p className="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-lg">
+            <p className="text-xl md:text-2xl max-w-3xl mx-auto drop-shadow-lg text-gray-200">
               Trendimo предлага най-добрите имоти в България. Независимо дали търсите нов дом или инвестиция, ние имаме решение за вас.
             </p>
           </div>
           
           {/* Toggle and Search Bar */}
           <div className="max-w-4xl mx-auto animate-fade-in [animation-delay:0.2s]">
-            <div className="rounded-lg p-4 bg-white/5 backdrop-blur-md border border-white/20 shadow-lg">
-              <div className="bg-gradient-to-r from-blue-700 to-blue-900 p-2 rounded-t-lg inline-flex mb-0">
+            <div className="rounded-lg p-4 glass-card border border-neutral-700/30 shadow-lg">
+              <div className="bg-gradient-to-r from-rose-700 to-rose-900 p-2 rounded-t-lg inline-flex mb-0">
                 <button 
                   onClick={() => setSearchMode('buy')}
                   className={`px-6 py-3 font-medium rounded-lg transition-all duration-300 ${
                     searchMode === 'buy' 
-                      ? "bg-white text-blue-900 shadow-md" 
+                      ? "bg-white text-neutral-900 shadow-md" 
                       : "text-white hover:bg-white/20"
                   }`}
                 >
@@ -73,7 +73,7 @@ const Index = () => {
                   onClick={() => setSearchMode('rent')}
                   className={`px-6 py-3 font-medium rounded-lg transition-all duration-300 ${
                     searchMode === 'rent' 
-                      ? "bg-white text-blue-900 shadow-md" 
+                      ? "bg-white text-neutral-900 shadow-md" 
                       : "text-white hover:bg-white/20"
                   }`}
                 >
@@ -87,7 +87,7 @@ const Index = () => {
           
           <div className="mt-12 animate-fade-in [animation-delay:0.4s]">
             <Link to="/properties">
-              <Button className="group bg-gradient-to-r from-blue-600 to-primary hover:from-blue-700 hover:to-primary-dark transform transition-all duration-300 shadow-lg hover:shadow-xl border border-blue-400/30 text-white px-6 py-3 rounded-lg font-medium">
+              <Button className="group bg-gradient-to-r from-rose-600 to-primary hover:from-rose-700 hover:to-primary-dark transform transition-all duration-300 shadow-lg hover:shadow-xl border border-rose-500/30 text-white px-6 py-3 rounded-lg font-medium">
                 Разгледай всички имоти
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -103,17 +103,17 @@ const Index = () => {
       <FeaturedProperties />
       
       {/* Testimonials Section */}
-      <section className="bg-gradient-to-r from-blue-50 to-blue-100">
+      <section className="bg-gradient-to-r from-neutral-900 to-neutral-800">
         <TestimonialsCarousel />
       </section>
       
       {/* Blog Preview Section */}
-      <section className="bg-gradient-to-r from-white to-blue-50">
+      <section className="bg-gradient-to-r from-black to-neutral-900">
         <BlogPreview />
       </section>
       
       {/* Sell Your Property CTA Form */}
-      <section className="bg-gradient-to-b from-blue-50 to-blue-100">
+      <section className="bg-gradient-to-b from-neutral-900 to-neutral-800">
         <PropertySellForm />
       </section>
 
