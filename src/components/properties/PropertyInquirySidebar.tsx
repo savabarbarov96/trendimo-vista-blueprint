@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Mail, Calendar } from 'lucide-react';
+import { Mail, Calendar, Phone } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import PropertyInquiryForm from '@/components/properties/PropertyInquiryForm';
@@ -17,17 +16,26 @@ const PropertyInquirySidebar: React.FC<PropertyInquirySidebarProps> = ({
   const [showInquiryForm, setShowInquiryForm] = useState(false);
   
   return (
-    <Card className="sticky top-4">
+    <Card className="sticky top-4 border-red-100 bg-gradient-to-b from-white to-red-50">
       <CardHeader>
-        <h2 className="text-xl font-semibold">Interested in this property?</h2>
+        <h2 className="text-xl font-semibold text-red-800">Интересувате се от този имот?</h2>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button 
+          className="w-full bg-red-700 hover:bg-red-800"
+          onClick={() => window.location.href = "tel:+35929876543"}
+        >
+          <Phone className="mr-2 h-4 w-4" />
+          Обадете се на брокер
+        </Button>
+
+        <Button 
           className="w-full" 
+          variant="outline"
           onClick={() => setShowInquiryForm(!showInquiryForm)}
         >
           <Mail className="mr-2 h-4 w-4" />
-          Inquire About This Property
+          Запитване за имота
         </Button>
         
         <Button 
@@ -36,7 +44,7 @@ const PropertyInquirySidebar: React.FC<PropertyInquirySidebarProps> = ({
           onClick={() => setShowInquiryForm(true)}
         >
           <Calendar className="mr-2 h-4 w-4" />
-          Schedule a Viewing
+          Запазете оглед
         </Button>
         
         {showInquiryForm && propertyId && (
@@ -48,7 +56,7 @@ const PropertyInquirySidebar: React.FC<PropertyInquirySidebarProps> = ({
       
       <CardFooter className="flex flex-col items-start">
         <p className="text-muted-foreground text-sm">
-          We'll get back to you within 24 hours
+          Ще се свържем с вас до 24 часа
         </p>
       </CardFooter>
     </Card>

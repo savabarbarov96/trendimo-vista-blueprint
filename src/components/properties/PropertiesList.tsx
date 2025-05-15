@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import PropertyCard from '@/components/PropertyCard';
@@ -26,6 +25,13 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
 
   const { mapSupabasePropertyToProperty } = usePropertyMapper();
 
+  // Update filters when initialFilters change
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
+
   useEffect(() => {
     fetchProperties();
   }, [filters]);
@@ -33,31 +39,40 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
   const fetchProperties = async () => {
     try {
       setLoading(true);
+      console.log('Fetching properties with filters:', filters);
+      
       let query = supabase
         .from('properties')
         .select('*')
         .eq('is_published', true);
 
       // Apply filters
-      if (filters.listingType) {
+      if (filters.listingType && filters.listingType !== '') {
         query = query.eq('listing_type', filters.listingType);
       }
-      if (filters.propertyType) {
+      
+      if (filters.propertyType && filters.propertyType !== '') {
         query = query.eq('property_type', filters.propertyType);
+        console.log('Filtering by property type:', filters.propertyType);
       }
-      if (filters.city) {
+      
+      if (filters.city && filters.city !== '') {
         query = query.eq('city', filters.city);
       }
-      if (filters.minPrice) {
+      
+      if (filters.minPrice && filters.minPrice > 0) {
         query = query.gte('price', filters.minPrice);
       }
-      if (filters.maxPrice) {
+      
+      if (filters.maxPrice && filters.maxPrice > 0) {
         query = query.lte('price', filters.maxPrice);
       }
-      if (filters.bedrooms) {
+      
+      if (filters.bedrooms && filters.bedrooms > 0) {
         query = query.gte('bedrooms', filters.bedrooms);
       }
-      if (filters.bathrooms) {
+      
+      if (filters.bathrooms && filters.bathrooms > 0) {
         query = query.gte('bathrooms', filters.bathrooms);
       }
 
@@ -67,6 +82,8 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
         throw error;
       }
 
+      console.log('Properties fetched:', data?.length);
+      
       // Map Supabase properties to the format expected by PropertyCard
       const formattedProperties = await Promise.all(
         (data || []).map(mapSupabasePropertyToProperty)

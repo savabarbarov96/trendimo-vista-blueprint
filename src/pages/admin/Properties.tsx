@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet';
@@ -161,8 +160,8 @@ const Properties: React.FC = () => {
       property.address.toLowerCase().includes(search.toLowerCase()) ||
       property.city.toLowerCase().includes(search.toLowerCase());
     
-    const matchesType = !filterType || property.property_type === filterType;
-    const matchesStatus = !filterStatus || 
+    const matchesType = !filterType || filterType === 'all' || property.property_type === filterType;
+    const matchesStatus = !filterStatus || filterStatus === 'all' || 
       (filterStatus === 'published' && property.is_published) ||
       (filterStatus === 'unpublished' && !property.is_published) ||
       (filterStatus === 'featured' && property.is_featured);
@@ -194,7 +193,7 @@ const Properties: React.FC = () => {
             className="pl-10"
           />
         </div>
-        <Select value={filterType} onValueChange={setFilterType}>
+        <Select value={filterType || 'all'} onValueChange={setFilterType}>
           <SelectTrigger className="w-full md:w-[180px]">
             <div className="flex items-center">
               <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -202,14 +201,14 @@ const Properties: React.FC = () => {
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Всички типове</SelectItem>
+            <SelectItem value="all">Всички типове</SelectItem>
             <SelectItem value="apartment">Апартамент</SelectItem>
             <SelectItem value="house">Къща</SelectItem>
             <SelectItem value="office">Офис</SelectItem>
             <SelectItem value="land">Парцел</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
+        <Select value={filterStatus || 'all'} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-full md:w-[180px]">
             <div className="flex items-center">
               <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -222,7 +221,7 @@ const Properties: React.FC = () => {
             </div>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Всички статуси</SelectItem>
+            <SelectItem value="all">Всички статуси</SelectItem>
             <SelectItem value="published">Публикувани</SelectItem>
             <SelectItem value="unpublished">Непубликувани</SelectItem>
             <SelectItem value="featured">Препоръчани</SelectItem>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -77,7 +76,7 @@ const PropertyDetail = () => {
           setProperty(mappedProperty);
         } catch (error) {
           console.error('Error mapping property:', error);
-          toast.error('Could not load property details');
+          toast.error('Не можахме да заредим данните за имота');
         }
       };
       
@@ -88,7 +87,7 @@ const PropertyDetail = () => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <Loader2 className="h-12 w-12 animate-spin text-red-600" />
       </div>
     );
   }
@@ -96,12 +95,12 @@ const PropertyDetail = () => {
   if (error || !property) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
-        <h1 className="text-2xl font-bold mb-4">Error Loading Property</h1>
+        <h1 className="text-2xl font-bold mb-4">Грешка при зареждане на имота</h1>
         <p className="text-muted-foreground mb-6">
-          {error instanceof Error ? error.message : 'Could not find property details'}
+          {error instanceof Error ? error.message : 'Не можахме да намерим данни за този имот'}
         </p>
-        <Button asChild>
-          <Link to="/properties"><ArrowLeft size={16} /> Back to Properties</Link>
+        <Button asChild className="bg-red-700 hover:bg-red-800">
+          <Link to="/properties"><ArrowLeft size={16} /> Обратно към имотите</Link>
         </Button>
       </div>
     );
@@ -110,7 +109,7 @@ const PropertyDetail = () => {
   const isAgent = userRole === 'agent';
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
       <div className="container mx-auto px-4 py-8">
         {/* Property header section */}
         <PropertyDetailHeader property={property} isAgent={isAgent} />

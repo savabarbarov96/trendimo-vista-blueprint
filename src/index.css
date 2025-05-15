@@ -272,3 +272,17 @@
     transform: scale(1);
   }
 }
+
+/* Add animation for InfiniteMovingCards component */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 1rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}

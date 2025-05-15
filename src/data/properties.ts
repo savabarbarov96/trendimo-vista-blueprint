@@ -1,8 +1,7 @@
-
 import { cities } from './content';
 
 export interface Property {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: number;
@@ -23,7 +22,7 @@ export interface Property {
 // Sample property data for demonstration
 export const properties: Property[] = [
   {
-    id: 1,
+    id: "1",
     title: "Луксозен апартамент в центъра",
     description: "Просторен и светъл апартамент с прекрасна гледка към града. Напълно обновен с висококачествени материали. Идеална локация близо до обществен транспорт, магазини и ресторанти.",
     price: 380000,
@@ -45,7 +44,7 @@ export const properties: Property[] = [
     createdAt: "2025-05-01"
   },
   {
-    id: 2,
+    id: "2",
     title: "Модерна къща с градина",
     description: "Семейна къща с просторен двор и градина. Къщата е построена с висококачествени материали и има ефективна енергийна система. Перфектна за семейства с деца.",
     price: 560000,
@@ -67,7 +66,7 @@ export const properties: Property[] = [
     createdAt: "2025-04-28"
   },
   {
-    id: 3,
+    id: "3",
     title: "Панорамен апартамент с две спални",
     description: "Красив апартамент с невероятна панорамна гледка. Апартаментът се продава с модерно обзавеждане и качествена техника, готов за нанасяне.",
     price: 290000,
@@ -89,7 +88,7 @@ export const properties: Property[] = [
     createdAt: "2025-05-03"
   },
   {
-    id: 4,
+    id: "4",
     title: "Офис пространство в бизнес сграда",
     description: "Модерен офис в престижна бизнес сграда с 24/7 охрана и контрол на достъпа. Отлична локация с добра транспортна свързаност и паркинг.",
     price: 420000,
@@ -111,7 +110,7 @@ export const properties: Property[] = [
     createdAt: "2025-04-20"
   },
   {
-    id: 5,
+    id: "5",
     title: "Вила с басейн в планината",
     description: "Луксозна вила с невероятна гледка към планината. Разполага с частен басейн, барбекю и оборудвана лятна кухня. Перфектно място за почивка и релакс.",
     price: 680000,
@@ -133,7 +132,7 @@ export const properties: Property[] = [
     createdAt: "2025-04-15"
   },
   {
-    id: 6,
+    id: "6",
     title: "Нов апартамент с тераса в Пловдив",
     description: "Чисто нов апартамент в модерна жилищна сграда с високо качество на строителство. Просторна тераса с изглед към Родопите.",
     price: 210000,
@@ -161,12 +160,11 @@ export const getFeaturedProperties = (): Property[] => {
   return properties.filter(property => property.featured);
 };
 
-// Function to format price
+// Helper function to format price
 export const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('bg-BG', { 
-    style: 'currency',
-    currency: 'BGN',
+  return new Intl.NumberFormat('bg-BG', {
+    style: 'decimal',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(price);
+    maximumFractionDigits: 0,
+  }).format(price) + ' €';
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cities, propertyTypes } from '@/data/content';
 import { FilterState } from '@/components/properties/types';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, ChevronDown, ChevronUp } from 'lucide-react';
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectLabel, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 
 const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('bg-BG', { 
@@ -39,19 +47,22 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
 
   const handleListingTypeChange = (value: string) => {
+    console.log('Listing type changed to:', value);
     const newFilters = { ...filters, listingType: value };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handlePropertyTypeChange = (value: string) => {
+    console.log('Property type changed to:', value);
     const newFilters = { ...filters, propertyType: value };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handleCityChange = (value: string) => {
-    const newFilters = { ...filters, city: value };
+    console.log('City changed to:', value);
+    const newFilters = { ...filters, city: value === 'all' ? '' : value };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
@@ -64,14 +75,14 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
   };
 
   const handleBedroomsChange = (value: string) => {
-    const bedrooms = value === '' ? null : parseInt(value);
+    const bedrooms = value === 'all' ? null : parseInt(value);
     const newFilters = { ...filters, bedrooms };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handleBathroomsChange = (value: string) => {
-    const bathrooms = value === '' ? null : parseInt(value);
+    const bathrooms = value === 'all' ? null : parseInt(value);
     const newFilters = { ...filters, bathrooms };
     setFilters(newFilters);
     onFilterChange(newFilters);
@@ -87,8 +98,8 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
       bedrooms: null,
       bathrooms: null
     };
-    setPriceRange([0, 1000000]);
     setFilters(resetFilters);
+    setPriceRange([0, 1000000]);
     onFilterChange(resetFilters);
   };
 
@@ -97,8 +108,8 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <Card className="sticky top-4 bg-gradient-to-b from-white to-blue-50 border-blue-100">
-      <CardHeader className="pb-3 bg-gradient-to-r from-blue-700 to-blue-900 text-white rounded-t-lg">
+    <Card className="sticky top-4 bg-gradient-to-b from-white to-red-50 border-red-100">
+      <CardHeader className="pb-3 bg-gradient-to-r from-red-700 to-red-600 text-white rounded-t-lg">
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-play flex items-center text-white">
             <Filter className="mr-2" />
@@ -118,7 +129,7 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
         <div className="space-y-6">
           {/* Listing Type */}
           <div>
-            <h3 className="font-medium mb-2 text-blue-800">Тип оферта</h3>
+            <h3 className="font-medium mb-2 text-red-800">Тип оферта</h3>
             <ToggleGroup 
               type="single" 
               value={filters.listingType} 
@@ -127,13 +138,13 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
             >
               <ToggleGroupItem 
                 value="sale" 
-                className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
+                className="flex-1 data-[state=on]:bg-red-700 data-[state=on]:text-white"
               >
                 Продажба
               </ToggleGroupItem>
               <ToggleGroupItem 
                 value="rent" 
-                className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
+                className="flex-1 data-[state=on]:bg-red-700 data-[state=on]:text-white"
               >
                 Наем
               </ToggleGroupItem>
@@ -142,39 +153,70 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
 
           {/* Property Type */}
           <div>
-            <h3 className="font-medium mb-2 text-blue-800">Вид имот</h3>
+            <h3 className="font-medium mb-2 text-red-800">Вид имот</h3>
             <div className="grid grid-cols-2 gap-2">
               {propertyTypes.slice(0, expanded ? undefined : 4).map((type, index) => (
                 <Button 
                   key={index}
                   variant={filters.propertyType === type ? "default" : "outline"} 
-                  className={`justify-start w-full ${filters.propertyType === type ? 'bg-blue-700 hover:bg-blue-800' : 'border-blue-200'}`}
-                  onClick={() => handlePropertyTypeChange(filters.propertyType === type ? '' : type)}
+                  className={`justify-start w-full ${filters.propertyType === type ? 'bg-red-700 hover:bg-red-800' : 'border-red-200'}`}
+                  onClick={() => {
+                    console.log('Property type button clicked:', type);
+                    const newValue = filters.propertyType === type ? '' : type;
+                    handlePropertyTypeChange(newValue);
+                  }}
                 >
                   {type}
                 </Button>
               ))}
             </div>
+            {propertyTypes.length > 4 && (
+              <Button
+                variant="ghost"
+                className="w-full mt-2 text-red-800 hover:text-red-900 hover:bg-red-50"
+                onClick={() => setExpanded(!expanded)}
+              >
+                {expanded ? (
+                  <>
+                    <ChevronUp className="h-4 w-4 mr-2" />
+                    По-малко
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-4 w-4 mr-2" />
+                    Повече опции
+                  </>
+                )}
+              </Button>
+            )}
           </div>
 
           {/* City */}
           <div>
-            <h3 className="font-medium mb-2 text-blue-800">Местоположение</h3>
-            <select
-              className="w-full border border-blue-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={filters.city}
-              onChange={(e) => handleCityChange(e.target.value)}
+            <h3 className="font-medium mb-2 text-red-800">Местоположение</h3>
+            <Select 
+              value={filters.city} 
+              onValueChange={handleCityChange}
             >
-              <option value="">Всички градове</option>
-              {cities.map((city, index) => (
-                <option key={index} value={city}>{city}</option>
-              ))}
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Всички градове" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="all">Всички градове</SelectItem>
+                  {cities.map((city, index) => (
+                    <SelectItem key={index} value={city}>
+                      {city}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Price Range */}
           <div>
-            <h3 className="font-medium mb-4 text-blue-800">Цена</h3>
+            <h3 className="font-medium mb-4 text-red-800">Цена</h3>
             <Slider
               value={priceRange}
               min={0}
@@ -185,10 +227,10 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
             />
             <div className="flex justify-between items-center">
               <div className="text-sm">
-                От: <span className="font-semibold text-blue-800">{formatPrice(priceRange[0])}</span>
+                От: <span className="font-semibold text-red-800">{formatPrice(priceRange[0])}</span>
               </div>
               <div className="text-sm">
-                До: <span className="font-semibold text-blue-800">{formatPrice(priceRange[1])}</span>
+                До: <span className="font-semibold text-red-800">{formatPrice(priceRange[1])}</span>
               </div>
             </div>
           </div>
@@ -197,92 +239,65 @@ const PropertyFilter: React.FC<PropertyFilterProps> = ({ onFilterChange }) => {
             <>
               {/* Bedrooms */}
               <div>
-                <h3 className="font-medium mb-2 text-blue-800">Спални</h3>
-                <ToggleGroup 
-                  type="single" 
-                  value={filters.bedrooms ? String(filters.bedrooms) : ''} 
+                <h3 className="font-medium mb-2 text-red-800">Спални</h3>
+                <Select 
+                  value={filters.bedrooms?.toString() || 'all'} 
                   onValueChange={handleBedroomsChange}
-                  className="flex flex-wrap justify-between"
                 >
-                  <ToggleGroupItem 
-                    value="" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    Всички
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="1" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    1+
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="2" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    2+
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="3" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    3+
-                  </ToggleGroupItem>
-                </ToggleGroup>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Всички" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="all">Всички</SelectItem>
+                      <SelectItem value="1">1+</SelectItem>
+                      <SelectItem value="2">2+</SelectItem>
+                      <SelectItem value="3">3+</SelectItem>
+                      <SelectItem value="4">4+</SelectItem>
+                      <SelectItem value="5">5+</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Bathrooms */}
               <div>
-                <h3 className="font-medium mb-2 text-blue-800">Бани</h3>
-                <ToggleGroup 
-                  type="single" 
-                  value={filters.bathrooms ? String(filters.bathrooms) : ''} 
+                <h3 className="font-medium mb-2 text-red-800">Бани</h3>
+                <Select 
+                  value={filters.bathrooms?.toString() || 'all'} 
                   onValueChange={handleBathroomsChange}
-                  className="flex flex-wrap justify-between"
                 >
-                  <ToggleGroupItem 
-                    value="" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    Всички
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="1" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    1+
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="2" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    2+
-                  </ToggleGroupItem>
-                  <ToggleGroupItem 
-                    value="3" 
-                    className="flex-1 data-[state=on]:bg-blue-700 data-[state=on]:text-white"
-                  >
-                    3+
-                  </ToggleGroupItem>
-                </ToggleGroup>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Всички" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="all">Всички</SelectItem>
+                      <SelectItem value="1">1+</SelectItem>
+                      <SelectItem value="2">2+</SelectItem>
+                      <SelectItem value="3">3+</SelectItem>
+                      <SelectItem value="4">4+</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
             </>
           )}
 
-          <div className="pt-6 flex gap-2">
+          {/* Actions */}
+          <div className="flex gap-2 pt-2">
             <Button 
-              onClick={handleReset} 
               variant="outline" 
-              className="flex-1 border-blue-200"
+              className="flex-1 border-red-200 hover:bg-red-50 text-red-900"
+              onClick={handleReset}
             >
-              Изчистване
+              Изчисти
             </Button>
             <Button 
-              onClick={handleApplyFilters} 
-              className="flex-1 bg-gradient-to-r from-blue-700 to-blue-900 hover:from-blue-800 hover:to-blue-950"
+              className="flex-1 bg-red-700 hover:bg-red-800"
+              onClick={handleApplyFilters}
             >
-              <Search className="h-4 w-4 mr-2" />
-              Търсене
+              Приложи
             </Button>
           </div>
         </div>

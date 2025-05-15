@@ -1,4 +1,3 @@
-
 import { getPropertyImages } from '@/utils/storageHelpers';
 import { Property } from '@/data/properties';
 import { SupabaseProperty } from './types';
@@ -33,7 +32,7 @@ export const usePropertyMapper = () => {
     }
 
     return {
-      id: parseInt(prop.id), // Convert string ID to number
+      id: prop.id, // Keep ID as string
       title: prop.title,
       description: prop.description || '',
       price: prop.price,

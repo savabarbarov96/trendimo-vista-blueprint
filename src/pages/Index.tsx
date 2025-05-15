@@ -7,7 +7,7 @@ import HeroCarousel from '@/components/HeroCarousel';
 import SearchBar from '@/components/SearchBar';
 import FeaturedProperties from '@/components/FeaturedProperties';
 import ViberBanner from '@/components/ViberBanner';
-import TestimonialsCarousel from '@/components/TestimonialsCarousel';
+import { InfiniteMovingCards } from '@/components/infinite-moving-cards';
 import BlogPreview from '@/components/BlogPreview';
 import PropertySellForm from '@/components/PropertySellForm';
 import Footer from '@/components/Footer';
@@ -27,6 +27,35 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Testimonials data
+  const testimonials = [
+    {
+      quote: "Trendimo ми помогна да намеря перфектния дом за моето семейство. Техният екип беше изключително отзивчив и професионален през целия процес.",
+      name: "Георги Иванов",
+      title: "Купувач"
+    },
+    {
+      quote: "Продадох апартамента си за по-малко от месец с помощта на Trendimo. Получих отлична цена и сделката премина безпроблемно.",
+      name: "Мария Петрова",
+      title: "Продавач" 
+    },
+    {
+      quote: "Като инвеститор в недвижими имоти, високо ценя експертизата на Trendimo. Те винаги намират най-добрите възможности за инвестиция.",
+      name: "Стоян Димитров",
+      title: "Инвеститор"
+    },
+    {
+      quote: "Сътрудничеството с Trendimo беше страхотно решение за нашия бизнес. Намериха ни идеалния офис на отлична локация.",
+      name: "Петър Николов",
+      title: "Бизнес клиент"
+    },
+    {
+      quote: "Агентите на Trendimo са истински професионалисти. Отзивчиви, информирани и винаги готови да помогнат. Горещо ги препоръчвам!",
+      name: "Елена Тодорова",
+      title: "Клиент"
+    }
+  ];
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-red-50 to-white">
@@ -102,8 +131,23 @@ const Index = () => {
       <FeaturedProperties />
       
       {/* Testimonials Section */}
-      <section className="bg-gradient-to-r from-red-50 to-red-100">
-        <TestimonialsCarousel />
+      <section className="py-16 bg-gradient-to-r from-red-50 to-red-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-red-900">Какво казват нашите клиенти</h2>
+            <p className="text-lg text-neutral-700 max-w-2xl mx-auto">Вижте какво споделят клиентите за опита си с Trendimo</p>
+          </div>
+          
+          <div className="relative">
+            <InfiniteMovingCards 
+              items={testimonials} 
+              direction="left" 
+              speed="normal" 
+              pauseOnHover={true}
+              className="py-4"
+            />
+          </div>
+        </div>
       </section>
       
       {/* Blog Preview Section */}

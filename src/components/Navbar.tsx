@@ -38,6 +38,7 @@ const Navbar = () => {
 
   const isAuthenticated = !!user;
   const isAdmin = profile?.role === 'admin';
+  const isAgent = profile?.role === 'agent';
 
   const handleSignout = async () => {
     await signOut();
@@ -87,6 +88,11 @@ const Navbar = () => {
                 <DropdownMenuItem onSelect={() => navigate('/profile')}>
                   Профил
                 </DropdownMenuItem>
+                {(isAdmin || isAgent) && (
+                  <DropdownMenuItem onSelect={() => navigate('/management')}>
+                    Управление на имоти
+                  </DropdownMenuItem>
+                )}
                 {isAdmin && (
                   <DropdownMenuItem onSelect={() => navigate('/admin')}>
                     Администрация
@@ -144,6 +150,15 @@ const Navbar = () => {
                   }>
                     Профил
                   </NavLink>
+                  {(isAdmin || isAgent) && (
+                    <NavLink to="/management" className={({ isActive }) =>
+                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
+                        isActive ? "text-primary bg-red-50 font-bold" : "text-gray-700 hover:text-primary"
+                      }`
+                    }>
+                      Управление на имоти
+                    </NavLink>
+                  )}
                   {isAdmin && (
                     <NavLink to="/admin" className={({ isActive }) =>
                       `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
