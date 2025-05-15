@@ -104,7 +104,7 @@ const Navbar = () => {
             <Link to="/auth">
               <Button 
                 variant="default" 
-                className="bg-rose-600 hover:bg-rose-700 text-white font-medium shadow-md hover:shadow-lg transition-all" 
+                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all" 
                 size="sm"
               >
                 Вход
@@ -162,7 +162,7 @@ const Navbar = () => {
                   <Button 
                     variant="default" 
                     size="sm" 
-                    className="w-full justify-start bg-rose-600 text-white hover:bg-rose-700 shadow-md"
+                    className="w-full justify-start bg-primary text-white hover:bg-primary-dark shadow-md"
                   >
                     Вход
                   </Button>

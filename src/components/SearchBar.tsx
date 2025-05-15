@@ -45,7 +45,7 @@ const SearchBar = () => {
           >
             <select
               name="location"
-              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               onChange={handleChange}
               value={searchParams.location}
             >
@@ -63,7 +63,7 @@ const SearchBar = () => {
           >
             <select
               name="propertyType"
-              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               onChange={handleChange}
               value={searchParams.propertyType}
             >
@@ -81,7 +81,7 @@ const SearchBar = () => {
           >
             <select
               name="priceRange"
-              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               onChange={handleChange}
               value={searchParams.priceRange}
             >
@@ -97,7 +97,7 @@ const SearchBar = () => {
           <div
             className={`${shouldAnimate ? 'transition-all duration-200 hover:scale-103 active:scale-97' : ''}`}
           >
-            <Button type="submit" className="bg-rose-600 hover:bg-rose-700 text-white border border-rose-500/30 shadow-md hover:shadow-lg">
+            <Button type="submit" className="bg-primary hover:bg-primary-dark text-white border border-primary-dark/30 shadow-md hover:shadow-lg w-full md:w-auto">
               <Search className="mr-2 h-4 w-4" />
               {home.search.buttonText}
             </Button>
@@ -111,7 +111,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="bedrooms"
-                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">{home.search.filters.bedrooms}</option>
                 <option value="1">1+</option>
@@ -125,7 +125,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="bathrooms"
-                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">{home.search.filters.bathrooms}</option>
                 <option value="1">1+</option>
@@ -138,7 +138,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="area"
-                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full bg-neutral-800 text-white border border-neutral-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 <option value="">{home.search.filters.area}</option>
                 <option value="0-50">До 50 кв.м</option>
