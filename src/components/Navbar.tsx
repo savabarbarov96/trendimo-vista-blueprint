@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
@@ -61,7 +60,7 @@ const Navbar = () => {
               key={item.href}
               to={item.href}
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
                   isActive 
                     ? "text-primary border-b-2 border-primary shadow-sm" 
                     : "text-gray-700 hover:text-primary"
@@ -127,8 +126,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
+                      isActive ? "text-primary bg-red-50 font-bold" : "text-gray-700 hover:text-primary"
                     }`
                   }
                 >
@@ -138,16 +137,16 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <NavLink to="/profile" className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
+                      isActive ? "text-primary bg-red-50 font-bold" : "text-gray-700 hover:text-primary"
                     }`
                   }>
                     Профил
                   </NavLink>
                   {isAdmin && (
                     <NavLink to="/admin" className={({ isActive }) =>
-                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                        isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
+                        isActive ? "text-primary bg-red-50 font-bold" : "text-gray-700 hover:text-primary"
                       }`
                     }>
                       Администрация

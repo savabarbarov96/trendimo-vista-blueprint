@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import ServiceCard from '@/components/services/ServiceCard';
@@ -15,7 +14,7 @@ const ServicesPage = () => {
   const regularServices = services?.filter(service => !service.is_highlighted);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
       <Helmet>
         <title>Услуги | Trendimo</title>
         <meta name="description" content="Професионални услуги в областта на недвижимите имоти от Trendimo. Продажба, отдаване под наем, консултации и още." />
@@ -26,7 +25,7 @@ const ServicesPage = () => {
       <div className="container mx-auto py-12 px-4">
         {/* Hero section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent">Нашите услуги</h1>
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Нашите услуги</h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Предлагаме пълен набор от професионални услуги, за да ви помогнем на всеки етап 
             от вашето пътуване в света на недвижимите имоти.
@@ -37,8 +36,8 @@ const ServicesPage = () => {
         {highlightedService && (
           <div className="mb-16">
             <div className="flex items-center gap-2 mb-8 justify-center">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent">Специална услуга</h2>
-              <Badge variant="default" className="bg-gradient-to-r from-primary to-blue-700">Препоръчано</Badge>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Специална услуга</h2>
+              <Badge variant="default" className="bg-gradient-to-r from-primary to-red-700">Препоръчано</Badge>
             </div>
             <div className="max-w-4xl mx-auto">
               <ServiceCard
@@ -53,10 +52,10 @@ const ServicesPage = () => {
 
         {/* Regular services */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent">Всички услуги</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Всички услуги</h2>
           
           {isLoading && (
-            <div className="text-center py-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-elegant p-6 border border-blue-100">
+            <div className="text-center py-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-elegant p-6 border border-red-100">
               <p className="text-muted-foreground">Зареждане на услуги...</p>
             </div>
           )}

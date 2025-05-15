@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
 
 @tailwind base;
@@ -16,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 346 75% 53%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -57,7 +56,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 346 75% 53%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -77,7 +76,7 @@
     --ring: 212.7 26.8% 83.9%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 346 75% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -108,7 +107,7 @@
   }
 
   .section-alt {
-    @apply bg-blue-50;
+    @apply bg-red-50;
   }
 
   .glass-effect {
@@ -117,7 +116,7 @@
 
   /* Hero sections */
   .hero-section {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #e12b57 0%, #c01b47 100%);
   }
 
   /* Card hover effects */
@@ -141,7 +140,7 @@
 
   /* New color gradients for sections */
   .gradient-cool {
-    @apply bg-gradient-to-r from-blue-50 to-indigo-50;
+    @apply bg-gradient-to-r from-red-50 to-pink-50;
   }
 
   .gradient-warm {
@@ -149,7 +148,7 @@
   }
 
   .gradient-primary {
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    background: linear-gradient(135deg, #fff0f3 0%, #ffe4e6 100%);
   }
 
   .gradient-secondary {
@@ -162,7 +161,7 @@
   }
 
   .bg-services {
-    background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 100%);
+    background: linear-gradient(90deg, #fff0f3 0%, #ffe4e6 100%);
   }
 
   .bg-about {
@@ -215,7 +214,7 @@
 
   /* Gradient text headings */
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent;
   }
 
   /* Glassmorphism elements */
@@ -224,12 +223,12 @@
   }
 
   .glass-card-dark {
-    @apply bg-blue-900/80 backdrop-blur-md border border-blue-700/30 text-white shadow-lg rounded-xl;
+    @apply bg-red-900/80 backdrop-blur-md border border-red-700/30 text-white shadow-lg rounded-xl;
   }
 
   /* Buttons */
   .btn-primary-gradient {
-    @apply bg-gradient-to-r from-blue-600 to-primary hover:from-blue-700 hover:to-primary-dark transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-blue-400/30 text-white;
+    @apply bg-gradient-to-r from-red-600 to-primary hover:from-red-700 hover:to-primary-dark transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl border border-red-400/30 text-white;
   }
 
   .btn-secondary-gradient {
@@ -238,16 +237,16 @@
 
   /* Filters */
   .filter-header {
-    @apply bg-gradient-to-r from-blue-700 to-blue-900 text-white rounded-t-lg p-4;
+    @apply bg-gradient-to-r from-red-700 to-red-900 text-white rounded-t-lg p-4;
   }
 
   .filter-content {
-    @apply bg-gradient-to-b from-white to-blue-50 p-5 rounded-b-lg border-blue-100;
+    @apply bg-gradient-to-b from-white to-red-50 p-5 rounded-b-lg border-red-100;
   }
 
   /* Section headers with decorative elements */
   .decorated-header {
-    @apply relative inline-block pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/4 after:w-1/2 after:h-1 after:bg-gradient-to-r after:from-blue-500 after:to-primary after:rounded-full;
+    @apply relative inline-block pb-2 after:content-[''] after:absolute after:bottom-0 after:left-1/4 after:w-1/2 after:h-1 after:bg-gradient-to-r after:from-red-500 after:to-primary after:rounded-full;
   }
 }
 
