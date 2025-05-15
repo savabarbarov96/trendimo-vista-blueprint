@@ -47,7 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <div className="bg-white/95 backdrop-blur-sm border-b border-neutral sticky top-0 z-50 shadow-sm">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <img src={logo} alt="Trendimo Logo" width="40" height="40" />
@@ -61,10 +61,10 @@ const Navbar = () => {
               key={item.href}
               to={item.href}
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
+                `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
                   isActive 
                     ? "text-primary border-b-2 border-primary shadow-sm" 
-                    : "text-gray-700 hover:text-primary"
+                    : "text-secondary hover:text-primary"
                 }`
               }
             >
@@ -103,8 +103,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-2">
             <Link to="/auth">
               <Button 
-                variant="secondary" 
-                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all" 
+                variant="modern" 
                 size="sm"
               >
                 Вход
@@ -127,8 +126,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                      isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                     }`
                   }
                 >
@@ -138,16 +137,16 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <NavLink to="/profile" className={({ isActive }) =>
-                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                      isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                    `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                      isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                     }`
                   }>
                     Профил
                   </NavLink>
                   {isAdmin && (
                     <NavLink to="/admin" className={({ isActive }) =>
-                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-blue-50 ${
-                        isActive ? "text-primary bg-blue-50 font-bold" : "text-gray-700 hover:text-primary"
+                      `block p-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-neutral-light ${
+                        isActive ? "text-primary bg-neutral-light font-bold" : "text-secondary hover:text-primary"
                       }`
                     }>
                       Администрация
@@ -160,9 +159,9 @@ const Navbar = () => {
               ) : location.pathname === "/auth" ? null : (
                 <Link to="/auth">
                   <Button 
-                    variant="secondary" 
+                    variant="modern" 
                     size="sm" 
-                    className="w-full justify-start bg-primary text-white hover:bg-primary-dark shadow-md"
+                    className="w-full justify-start"
                   >
                     Вход
                   </Button>
