@@ -156,8 +156,16 @@ const Index = () => {
       </section>
       
       {/* Sell Your Property CTA Form */}
-      <section className="bg-gradient-to-b from-red-50 to-red-100">
-        <PropertySellForm />
+      <section className="bg-gradient-to-b from-red-50 to-red-100 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-floating p-8 border border-red-100">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-red-900">Продай своя имот с нас</h2>
+              <p className="text-lg text-neutral-700">Попълни формата и наш агент ще се свърже с теб за безплатна консултация</p>
+            </div>
+            <PropertySellForm />
+          </div>
+        </div>
       </section>
 
       {/* Footer */}

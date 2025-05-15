@@ -66,7 +66,8 @@ const SearchBar = () => {
     if (filters.bedrooms) queryParams.append('bedrooms', filters.bedrooms.toString());
     if (filters.bathrooms) queryParams.append('bathrooms', filters.bathrooms.toString());
     
-    // Redirect to properties page with filters
+    // Navigate to properties page with query parameters
+    console.log('Redirecting with filters:', filters);
     navigate(`/properties?${queryParams.toString()}`);
   };
 

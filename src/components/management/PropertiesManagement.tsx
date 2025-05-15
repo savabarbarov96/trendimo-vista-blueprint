@@ -41,6 +41,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useUser } from '@/hooks/auth/use-user';
 import ImageUploader from '@/components/ImageUploader';
+import { supabase } from '@/integrations/supabase/client';
+import { cities, propertyTypes } from '@/data/content';
 import { 
   useProperties, 
   useCreateProperty, 
@@ -75,13 +77,14 @@ const PropertiesManagement = () => {
     bedrooms: 0,
     bathrooms: 0,
     area: 0,
-    property_type: 'Апартамент',
+    property_type: propertyTypes[0],
     listing_type: 'sale',
     is_featured: false,
     is_published: true,
     images: []
   });
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [tempId] = useState<string>(`temp_${Date.now()}`);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -117,7 +120,7 @@ const PropertiesManagement = () => {
       bedrooms: 0,
       bathrooms: 0,
       area: 0,
-      property_type: 'Апартамент',
+      property_type: propertyTypes[0],
       listing_type: 'sale',
       is_featured: false,
       is_published: true,
@@ -163,32 +166,86 @@ const PropertiesManagement = () => {
     }));
   };
 
-  // Handle create property
-  const handleCreateProperty = () => {
-    if (!user) return;
-    
-    const newProperty: PropertyFormData = {
-      ...formData as PropertyFormData,
-      owner_id: user.id
-    };
-    
-    createProperty.mutate(newProperty, {
-      onSuccess: () => {
+  // Handle create property form submission
+  const handleCreateProperty = async () => {
+    try {
+      // Validate form
+      if (!formData.title || !formData.price || !formData.address || !formData.city) {
         toast({
-          title: "Имотът е създаден успешно!",
-          description: "Имотът беше добавен в системата.",
-        });
-        setIsCreateDialogOpen(false);
-        resetForm();
-      },
-      onError: (error) => {
-        toast({
-          title: "Грешка при създаване на имота",
-          description: error.message,
+          title: "Невалидна форма",
+          description: "Моля, попълнете всички задължителни полета.",
           variant: "destructive",
         });
+        return;
       }
-    });
+
+      // Add owner ID and create property
+      const data = {
+        ...formData,
+        owner_id: user?.id,
+      } as PropertyFormData;
+
+      const property = await createProperty.mutateAsync(data);
+
+      // If we have uploaded images to a temporary folder, update their paths in the database
+      if (uploadedImages.length > 0) {
+        // Store the uploaded images with correct paths in the database
+        // We'll keep the same URLs since we're storing public URLs that should work regardless of folder structure
+        await updateProperty.mutateAsync({
+          id: property.id,
+          property: {
+            images: uploadedImages
+          }
+        });
+        
+        // Move each image from the temporary folder to the property's permanent folder
+        const { data: storageData, error: storageError } = await supabase.storage
+          .from('trendimo')
+          .list(`property_media/${tempId}/`);
+          
+        if (!storageError && storageData) {
+          for (const file of storageData) {
+            if (file.name) {
+              // 1. Download the file
+              const { data: fileData, error: downloadError } = await supabase.storage
+                .from('trendimo')
+                .download(`property_media/${tempId}/${file.name}`);
+                
+              if (!downloadError && fileData) {
+                // 2. Upload to new location with property ID
+                const { error: uploadError } = await supabase.storage
+                  .from('trendimo')
+                  .upload(`property_media/${property.id}/${file.name}`, fileData, {
+                    cacheControl: '3600',
+                    upsert: true
+                  });
+                  
+                if (!uploadError) {
+                  // 3. Delete the file from the temporary location (optional, but good for cleanup)
+                  await supabase.storage
+                    .from('trendimo')
+                    .remove([`property_media/${tempId}/${file.name}`]);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      toast({
+        title: "Имотът е създаден успешно!",
+        description: "Имотът е добавен в базата данни.",
+      });
+      
+      setIsCreateDialogOpen(false);
+      resetForm();
+    } catch (error: any) {
+      toast({
+        title: "Грешка при създаване на имота",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   // Handle update property
@@ -368,12 +425,20 @@ const PropertiesManagement = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="city">Град</Label>
-                  <Input
+                  <select
                     id="city"
                     name="city"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={formData.city}
                     onChange={handleInputChange}
-                  />
+                  >
+                    <option value="">Изберете град</option>
+                    {cities.map((city, index) => (
+                      <option key={index} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -420,13 +485,11 @@ const PropertiesManagement = () => {
                     value={formData.property_type}
                     onChange={handleInputChange}
                   >
-                    <option value="Апартамент">Апартамент</option>
-                    <option value="Къща">Къща</option>
-                    <option value="Вила">Вила</option>
-                    <option value="Офис">Офис</option>
-                    <option value="Магазин">Магазин</option>
-                    <option value="Склад">Склад</option>
-                    <option value="Парцел">Парцел</option>
+                    {propertyTypes.map((type, index) => (
+                      <option key={index} value={type}>
+                        {type}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="space-y-2">
@@ -472,8 +535,8 @@ const PropertiesManagement = () => {
               <div>
                 <Label htmlFor="images" className="block mb-2">Снимки на имота</Label>
                 <ImageUploader
-                  bucketName="property_images"
-                  folderPath={`images/`}
+                  bucketName="trendimo"
+                  folderPath={`property_media/${tempId}/`}
                   onUploadComplete={handleImageUpload}
                   maxFiles={5}
                   className="mb-2"
@@ -669,12 +732,20 @@ const PropertiesManagement = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-city">Град</Label>
-                <Input
+                <select
                   id="edit-city"
                   name="city"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   value={formData.city}
                   onChange={handleInputChange}
-                />
+                >
+                  <option value="">Изберете град</option>
+                  {cities.map((city, index) => (
+                    <option key={index} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -721,13 +792,11 @@ const PropertiesManagement = () => {
                   value={formData.property_type}
                   onChange={handleInputChange}
                 >
-                  <option value="Апартамент">Апартамент</option>
-                  <option value="Къща">Къща</option>
-                  <option value="Вила">Вила</option>
-                  <option value="Офис">Офис</option>
-                  <option value="Магазин">Магазин</option>
-                  <option value="Склад">Склад</option>
-                  <option value="Парцел">Парцел</option>
+                  {propertyTypes.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="space-y-2">
@@ -773,8 +842,8 @@ const PropertiesManagement = () => {
             <div>
               <Label htmlFor="edit-images" className="block mb-2">Снимки на имота</Label>
               <ImageUploader
-                bucketName="property_images"
-                folderPath={`images/`}
+                bucketName="trendimo"
+                folderPath={`property_media/${currentProperty?.id || tempId}/`}
                 onUploadComplete={handleImageUpload}
                 maxFiles={5}
                 className="mb-2"
