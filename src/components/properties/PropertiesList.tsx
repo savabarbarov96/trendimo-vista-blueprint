@@ -33,14 +33,16 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
     bedrooms: null,
     bathrooms: null
   });
-  const isInitialFetchRef = useRef(true);
+  const prevInitialFiltersRef = useRef<FilterState | undefined>(initialFilters);
 
   const { mapSupabasePropertyToProperty } = usePropertyMapper();
 
-  // Update filters when initialFilters change, but only on first load or significant changes
+  // Update filters when initialFilters change
   useEffect(() => {
-    if (initialFilters && JSON.stringify(initialFilters) !== JSON.stringify(filters)) {
-      console.log('Initial filters received:', initialFilters);
+    // Only update if initialFilters actually changed
+    if (initialFilters && 
+        JSON.stringify(initialFilters) !== JSON.stringify(prevInitialFiltersRef.current)) {
+      console.log('Initial filters changed:', initialFilters);
       
       // Validate the filter values before setting
       const validatedFilters = {
@@ -50,6 +52,7 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
       };
       
       setFilters(validatedFilters);
+      prevInitialFiltersRef.current = initialFilters;
     }
   }, [initialFilters]);
 
@@ -57,11 +60,6 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
   useEffect(() => {
     console.log('Filters changed, fetching properties:', filters);
     fetchProperties();
-
-    // Mark that initial fetch is completed after first run
-    return () => {
-      isInitialFetchRef.current = false;
-    };
   }, [filters]);
 
   const fetchProperties = async () => {

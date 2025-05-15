@@ -134,25 +134,34 @@ const CareersManagement = () => {
   const handleDelete = async (id: string) => {
     try {
       setIsSubmitting(true);
+      
       const { error } = await supabase
         .from('careers')
         .delete()
         .eq('id', id);
 
       if (error) {
-        throw error;
+        console.error("Supabase delete error:", error);
+        const errorMessage = error.message || "Неопределена грешка от базата данни.";
+        toast({
+          title: "Грешка при изтриване",
+          description: `Проблем: ${errorMessage}`,
+          variant: "destructive",
+        });
+        return;
       }
 
-      setPositions(positions.filter(position => position.id !== id));
+      await fetchPositions(); // Fetch positions again to ensure consistency
+      
       toast({
         title: "Успешно",
         description: "Позицията беше изтрита.",
       });
-    } catch (error) {
-      console.error('Error deleting position:', error);
+    } catch (error: any) {
+      console.error('Error deleting position (catch block):', error);
       toast({
         title: "Грешка",
-        description: "Възникна проблем при изтриването на позицията.",
+        description: error.message || "Възникна неочакван проблем при изтриването на позицията.",
         variant: "destructive",
       });
     } finally {
@@ -163,6 +172,7 @@ const CareersManagement = () => {
   };
 
   const confirmDelete = (id: string) => {
+    console.log("Confirming delete for position ID:", id);
     setPositionToDelete(id);
     setIsDeleteDialogOpen(true);
   };
@@ -197,10 +207,7 @@ const CareersManagement = () => {
           throw error;
         }
 
-        // Update local state
-        setPositions(positions.map(position => 
-          position.id === editingId ? { ...position, ...careerData } : position
-        ));
+        await fetchPositions(); // Fetch positions to reflect changes
 
         toast({
           title: "Успешно",
@@ -208,19 +215,16 @@ const CareersManagement = () => {
         });
       } else {
         // Create new position
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('careers')
           .insert(careerData)
-          .select('*');
+          .select('*'); // select('*') is fine, or just rely on fetchPositions
 
         if (error) {
           throw error;
         }
 
-        // Update local state
-        if (data && data.length > 0) {
-          setPositions([data[0], ...positions]);
-        }
+        await fetchPositions(); // Fetch positions to include the new one
 
         toast({
           title: "Успешно",
@@ -238,11 +242,11 @@ const CareersManagement = () => {
         is_active: true,
       });
       setEditingId(null);
-    } catch (error) {
+    } catch (error: any) { // Added : any for error type
       console.error('Error submitting position:', error);
       toast({
         title: "Грешка",
-        description: "Възникна проблем при запазването на позицията.",
+        description: `Възникна проблем при запазването на позицията: ${error.message}`,
         variant: "destructive",
       });
     } finally {
@@ -404,7 +408,125 @@ const CareersManagement = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[625px]">
-                {/* Reuse the same form content */}
+                <DialogHeader>
+                  <DialogTitle>Добави нова позиция</DialogTitle>
+                  <DialogDescription>
+                    Попълнете информацията за позицията. Натиснете запази, когато сте готови.
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Заглавие</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Брокер недвижими имоти" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="department"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Отдел</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Продажби" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Локация</FormLabel>
+                            <FormControl>
+                              <Input placeholder="София" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Описание</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Подробно описание на позицията и отговорностите..." 
+                              className="min-h-[100px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="requirements"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Изисквания</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Необходими умения и квалификация..." 
+                              className="min-h-[100px]"
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="is_active"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>Активна позиция</FormLabel>
+                            <FormDescription>
+                              Само активните позиции се показват на страницата за кариери
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline" type="button" onClick={() => {
+                          form.reset();
+                          setEditingId(null);
+                        }}>
+                          Отказ
+                        </Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Запази
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </CardContent>
@@ -457,13 +579,134 @@ const CareersManagement = () => {
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[625px]">
-                            {/* Reuse the same form content */}
+                            <DialogHeader>
+                              <DialogTitle>Редактирай позиция</DialogTitle>
+                              <DialogDescription>
+                                Попълнете информацията за позицията. Натиснете запази, когато сте готови.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Form {...form}>
+                              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                                <FormField
+                                  control={form.control}
+                                  name="title"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Заглавие</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="Брокер недвижими имоти" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <div className="grid grid-cols-2 gap-4">
+                                  <FormField
+                                    control={form.control}
+                                    name="department"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Отдел</FormLabel>
+                                        <FormControl>
+                                          <Input placeholder="Продажби" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name="location"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Локация</FormLabel>
+                                        <FormControl>
+                                          <Input placeholder="София" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                                <FormField
+                                  control={form.control}
+                                  name="description"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Описание</FormLabel>
+                                      <FormControl>
+                                        <Textarea 
+                                          placeholder="Подробно описание на позицията и отговорностите..." 
+                                          className="min-h-[100px]"
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="requirements"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Изисквания</FormLabel>
+                                      <FormControl>
+                                        <Textarea 
+                                          placeholder="Необходими умения и квалификация..." 
+                                          className="min-h-[100px]"
+                                          {...field} 
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <FormField
+                                  control={form.control}
+                                  name="is_active"
+                                  render={({ field }) => (
+                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                      <FormControl>
+                                        <Checkbox
+                                          checked={field.value}
+                                          onCheckedChange={field.onChange}
+                                        />
+                                      </FormControl>
+                                      <div className="space-y-1 leading-none">
+                                        <FormLabel>Активна позиция</FormLabel>
+                                        <FormDescription>
+                                          Само активните позиции се показват на страницата за кариери
+                                        </FormDescription>
+                                      </div>
+                                    </FormItem>
+                                  )}
+                                />
+                                <DialogFooter>
+                                  <DialogClose asChild>
+                                    <Button variant="outline" type="button" onClick={() => {
+                                      form.reset();
+                                      setEditingId(null);
+                                    }}>
+                                      Отказ
+                                    </Button>
+                                  </DialogClose>
+                                  <Button type="submit" disabled={isSubmitting}>
+                                    {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Запази
+                                  </Button>
+                                </DialogFooter>
+                              </form>
+                            </Form>
                           </DialogContent>
                         </Dialog>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => confirmDelete(position.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            confirmDelete(position.id);
+                          }}
                         >
                           <Trash2Icon className="h-4 w-4 text-red-600" />
                         </Button>
@@ -492,7 +735,11 @@ const CareersManagement = () => {
             </Button>
             <Button 
               variant="destructive" 
-              onClick={() => positionToDelete && handleDelete(positionToDelete)}
+              onClick={() => {
+                if (positionToDelete) {
+                  handleDelete(positionToDelete);
+                }
+              }}
               disabled={isSubmitting}
             >
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

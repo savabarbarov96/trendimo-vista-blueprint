@@ -1,67 +1,61 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PropertiesList } from '@/components/properties/PropertiesList';
 import PropertyFilter from '@/components/PropertyFilter';
 import PropertySellForm from '@/components/PropertySellForm';
 import { FilterState } from '@/components/properties/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const PropertiesPage = () => {
   const location = useLocation();
-  const [filters, setFilters] = useState<FilterState>({
-    listingType: '',
-    propertyType: '',
-    city: '',
-    minPrice: null,
-    maxPrice: null,
-    bedrooms: null,
-    bathrooms: null
+  const navigate = useNavigate();
+  const [filters, setFilters] = useState<FilterState>(() => {
+    // Initialize filters directly from URL search params on initial load
+    const queryParams = new URLSearchParams(location.search);
+    return {
+      listingType: queryParams.get('listingType') || '',
+      propertyType: queryParams.get('propertyType') || '',
+      city: queryParams.get('city') || '',
+      minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
+      maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
+      bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
+      bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
+    };
   });
-  const [initialLoad, setInitialLoad] = useState(true);
-  const processedUrlParams = useRef(false);
 
-  // Parse URL query parameters when the page loads or URL changes
+  // Update filters when location.search changes (e.g., from direct URL navigation or handleFilterChange)
   useEffect(() => {
-    if (location.search && !processedUrlParams.current) {
-      const queryParams = new URLSearchParams(location.search);
-      
-      const newFilters: FilterState = {
-        listingType: queryParams.get('listingType') || '',
-        propertyType: queryParams.get('propertyType') || '',
-        city: queryParams.get('city') || '',
-        minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
-        maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
-        bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
-        bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
-      };
-      
-      console.log('URL params parsed into filters:', newFilters);
-      setFilters(newFilters);
-      processedUrlParams.current = true;
-      setInitialLoad(false);
-    } else if (!location.search) {
-      // Reset if there are no URL params
-      processedUrlParams.current = false;
-      if (!initialLoad) {
-        setFilters({
-          listingType: '',
-          propertyType: '',
-          city: '',
-          minPrice: null,
-          maxPrice: null,
-          bedrooms: null,
-          bathrooms: null
-        });
-      }
+    const queryParams = new URLSearchParams(location.search);
+    const newFilters: FilterState = {
+      listingType: queryParams.get('listingType') || '',
+      propertyType: queryParams.get('propertyType') || '',
+      city: queryParams.get('city') || '',
+      minPrice: queryParams.get('minPrice') ? parseInt(queryParams.get('minPrice')!) : null,
+      maxPrice: queryParams.get('maxPrice') ? parseInt(queryParams.get('maxPrice')!) : null,
+      bedrooms: queryParams.get('bedrooms') ? parseInt(queryParams.get('bedrooms')!) : null,
+      bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
+    };
+    
+    // Only set if they are actually different to avoid potential loops if stringify is slow
+    // or if other effects depend on `filters` identity.
+    if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
+        setFilters(newFilters);
     }
-  }, [location.search]);
+  }, [location.search, filters]); // Added filters to dependencies to compare for actual change
 
-  const handleFilterChange = (newFilters: FilterState) => {
-    console.log('Filter changed:', newFilters);
-    setFilters(newFilters);
-    // Updating filters through sidebar doesn't need to be marked as URL params
-    processedUrlParams.current = true;
+  const handleFilterChange = (changedFilters: FilterState) => {
+    const queryParams = new URLSearchParams();
+    if (changedFilters.city) queryParams.append('city', changedFilters.city);
+    if (changedFilters.propertyType) queryParams.append('propertyType', changedFilters.propertyType);
+    if (changedFilters.listingType) queryParams.append('listingType', changedFilters.listingType);
+    if (changedFilters.minPrice) queryParams.append('minPrice', changedFilters.minPrice.toString());
+    if (changedFilters.maxPrice) queryParams.append('maxPrice', changedFilters.maxPrice.toString());
+    if (changedFilters.bedrooms) queryParams.append('bedrooms', changedFilters.bedrooms.toString());
+    if (changedFilters.bathrooms) queryParams.append('bathrooms', changedFilters.bathrooms.toString());
+    
+    // Navigate, which will trigger the useEffect above due to location.search changing.
+    navigate(`/properties?${queryParams.toString()}`, { replace: true });
   };
 
   return (

@@ -7,6 +7,8 @@ import PropertiesManagement from '@/components/management/PropertiesManagement';
 import InquiriesManagement from '@/components/management/InquiriesManagement';
 import SellRequestsManagement from '@/components/management/SellRequestsManagement';
 import CareersManagement from '@/components/management/CareersManagement';
+import TeamMembersManagement from '@/components/management/TeamMembersManagement';
+import BlogManagement from '@/components/management/BlogManagement';
 import { useUser } from '@/hooks/auth/use-user';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,6 +46,7 @@ const ManagementPage = () => {
             <TabsTrigger value="inquiries">Запитвания</TabsTrigger>
             <TabsTrigger value="careers">Отворени Позиции</TabsTrigger>
             <TabsTrigger value="team">Нашият Екип</TabsTrigger>
+            <TabsTrigger value="blog">Блог</TabsTrigger>
           </TabsList>
           
           <TabsContent value="properties">
@@ -63,7 +66,11 @@ const ManagementPage = () => {
           </TabsContent>
           
           <TabsContent value="team">
-
+            <TeamMembersManagement />
+          </TabsContent>
+          
+          <TabsContent value="blog">
+            <BlogManagement />
           </TabsContent>
         </Tabs>
       </main>
