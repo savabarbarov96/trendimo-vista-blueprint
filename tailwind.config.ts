@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -27,27 +26,35 @@ export default {
 				'floating': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
 			},
 			colors: {
-				border: 'hsl(var(--border))',
-				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
-				background: 'hsl(var(--background))',
-				foreground: 'hsl(var(--foreground))',
-				primary: {
-					DEFAULT: '#3b82f6', // blue-500
-					dark: '#1d4ed8', // blue-700
-					light: '#60a5fa', // blue-400
-					foreground: 'hsl(var(--primary-foreground))'
+				primary: '#C10206',
+				'primary-hover': '#A50113',
+				accent: '#A50113',
+				dark: '#211D21',
+				light: '#FFFBF2',
+				neutral: '#DFE2DB',
+				
+				border: 'var(--border)',
+				input: 'var(--input)',
+				ring: 'var(--ring)',
+				background: 'var(--background)',
+				foreground: 'var(--foreground)',
+				
+				'primary': {
+					DEFAULT: '#C10206',
+					dark: '#A50113',
+					light: '#E0383C',
+					foreground: '#FFFBF2'
 				},
-				secondary: {
-					DEFAULT: '#f97316', // orange-500
-					dark: '#ea580c', // orange-600
-					light: '#fb923c', // orange-400
-					foreground: 'hsl(var(--secondary-foreground))'
+				'secondary': {
+					DEFAULT: '#A50113',
+					dark: '#830110',
+					light: '#C82836',
+					foreground: '#FFFBF2'
 				},
-				neutral: {
-					DEFAULT: '#6b7280', // gray-500
-					dark: '#374151', // gray-700
-					light: '#9ca3af', // gray-400
+				'neutral': {
+					DEFAULT: '#DFE2DB',
+					dark: '#211D21',
+					light: '#F2F3F0',
 				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
@@ -58,8 +65,8 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: '#A50113',
+					foreground: '#FFFBF2'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
