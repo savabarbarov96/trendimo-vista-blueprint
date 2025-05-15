@@ -37,7 +37,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-900/90 to-blue-700/90 backdrop-blur-md border border-blue-400/30 rounded-lg shadow-lg p-6 mb-4">
+    <div className="bg-[#211D21]/95 backdrop-blur-md border border-[#3a3a3a] rounded-lg shadow-lg p-6 mb-4">
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col md:flex-row gap-4">
           <div 
@@ -45,13 +45,13 @@ const SearchBar = () => {
           >
             <select
               name="location"
-              className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               onChange={handleChange}
               value={searchParams.location}
             >
               <option value="">{home.search.filters.location}</option>
               {cities.map((city, index) => (
-                <option key={index} value={city} className="text-blue-900">
+                <option key={index} value={city} className="text-white">
                   {city}
                 </option>
               ))}
@@ -63,13 +63,13 @@ const SearchBar = () => {
           >
             <select
               name="propertyType"
-              className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               onChange={handleChange}
               value={searchParams.propertyType}
             >
               <option value="">{home.search.filters.propertyType}</option>
               {propertyTypes.map((type, index) => (
-                <option key={index} value={type} className="text-blue-900">
+                <option key={index} value={type} className="text-white">
                   {type}
                 </option>
               ))}
@@ -81,7 +81,7 @@ const SearchBar = () => {
           >
             <select
               name="priceRange"
-              className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               onChange={handleChange}
               value={searchParams.priceRange}
             >
@@ -97,7 +97,7 @@ const SearchBar = () => {
           <div
             className={`${shouldAnimate ? 'transition-all duration-200 hover:scale-103 active:scale-97' : ''}`}
           >
-            <Button type="submit" className="bg-white hover:bg-blue-50 text-blue-900 border border-blue-200 shadow-md hover:shadow-lg">
+            <Button type="submit" className="bg-[#C10206] hover:bg-[#A50113] text-white border-none shadow-md hover:shadow-lg">
               <Search className="mr-2 h-4 w-4" />
               {home.search.buttonText}
             </Button>
@@ -111,7 +111,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="bedrooms"
-                className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               >
                 <option value="">{home.search.filters.bedrooms}</option>
                 <option value="1">1+</option>
@@ -125,7 +125,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="bathrooms"
-                className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               >
                 <option value="">{home.search.filters.bathrooms}</option>
                 <option value="1">1+</option>
@@ -138,7 +138,7 @@ const SearchBar = () => {
             <div className={`${shouldAnimate ? 'transition-transform duration-200 active:scale-98' : ''}`}>
               <select
                 name="area"
-                className="w-full bg-white/90 text-blue-900 border border-blue-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#2a2a2a] text-white border border-[#3a3a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#C10206]"
               >
                 <option value="">{home.search.filters.area}</option>
                 <option value="0-50">До 50 кв.м</option>
@@ -155,7 +155,7 @@ const SearchBar = () => {
           <button 
             type="button"
             onClick={toggleAdvanced}
-            className={`text-white hover:text-blue-200 font-medium text-sm flex items-center ${shouldAnimate ? 'transition-transform duration-200 hover:scale-105 active:scale-95' : ''}`}
+            className={`text-white hover:text-[#C10206] font-medium text-sm flex items-center ${shouldAnimate ? 'transition-transform duration-200 hover:scale-105 active:scale-95' : ''}`}
           >
             {home.search.advancedSearch} 
             <span 
