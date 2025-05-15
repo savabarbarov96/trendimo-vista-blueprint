@@ -11,9 +11,9 @@ interface TestimonialProps {
 
 const TestimonialCard = ({ quote, author, position, image }: TestimonialProps) => {
   return (
-    <div className="bg-neutral-800 p-6 rounded-lg shadow-lg border border-neutral-700/30">
+    <div className="bg-white p-6 rounded-lg shadow-lg">
       <Quote className="h-10 w-10 text-primary opacity-20 mb-4" />
-      <p className="text-gray-300 mb-4 italic">{quote}</p>
+      <p className="text-neutral-dark mb-4 italic">{quote}</p>
       <div className="flex items-center">
         {image ? (
           <img 
@@ -29,9 +29,9 @@ const TestimonialCard = ({ quote, author, position, image }: TestimonialProps) =
           </div>
         )}
         <div>
-          <p className="font-semibold text-white">{author}</p>
+          <p className="font-semibold text-neutral-dark">{author}</p>
           {position && (
-            <p className="text-sm text-gray-400">{position}</p>
+            <p className="text-sm text-neutral">{position}</p>
           )}
         </div>
       </div>

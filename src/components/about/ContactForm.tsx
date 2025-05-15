@@ -22,61 +22,42 @@ const ContactForm: React.FC = () => {
   };
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-neutral-800 p-6 rounded-lg shadow-lg border border-neutral-700/30">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1 text-gray-200">
+          <label htmlFor="name" className="block text-sm font-medium mb-1">
             Име
           </label>
-          <Input 
-            id="name" 
-            required 
-            placeholder="Вашето име" 
-            className="bg-neutral-700 border-neutral-600 text-white placeholder:text-gray-400 focus:border-primary"
-          />
+          <Input id="name" required placeholder="Вашето име" />
         </div>
         <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1 text-gray-200">
+          <label htmlFor="email" className="block text-sm font-medium mb-1">
             Имейл
           </label>
-          <Input 
-            id="email" 
-            type="email" 
-            required 
-            placeholder="вашият@емейл.ком" 
-            className="bg-neutral-700 border-neutral-600 text-white placeholder:text-gray-400 focus:border-primary"
-          />
+          <Input id="email" type="email" required placeholder="вашият@емейл.ком" />
         </div>
       </div>
       
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium mb-1 text-gray-200">
+        <label htmlFor="subject" className="block text-sm font-medium mb-1">
           Тема
         </label>
-        <Input 
-          id="subject" 
-          required 
-          placeholder="Тема на съобщението" 
-          className="bg-neutral-700 border-neutral-600 text-white placeholder:text-gray-400 focus:border-primary"
-        />
+        <Input id="subject" required placeholder="Тема на съобщението" />
       </div>
       
       <div>
-        <label htmlFor="message" className="block text-sm font-medium mb-1 text-gray-200">
+        <label htmlFor="message" className="block text-sm font-medium mb-1">
           Съобщение
         </label>
         <Textarea 
           id="message" 
           required 
           placeholder="Вашето съобщение..." 
-          className="min-h-[120px] bg-neutral-700 border-neutral-600 text-white placeholder:text-gray-400 focus:border-primary" 
+          className="min-h-[120px]" 
         />
       </div>
       
-      <Button 
-        type="submit" 
-        className="w-full sm:w-auto bg-primary hover:bg-primary-dark text-white"
-      >
+      <Button type="submit" className="w-full sm:w-auto">
         Изпрати съобщение
       </Button>
     </form>
