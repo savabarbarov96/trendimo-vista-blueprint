@@ -124,7 +124,13 @@ const BlogManagement = () => {
         throw error;
       }
 
-      setPosts(data || []);
+      // Cast the data to ensure category is a valid enum value
+      const typedPosts = data?.map(post => ({
+        ...post,
+        category: post.category as "Market Analysis" | "Tips & News" | "Client Stories"
+      })) || [];
+      
+      setPosts(typedPosts);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       toast({
@@ -216,6 +222,7 @@ const BlogManagement = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "Грешка",
@@ -225,10 +232,12 @@ const BlogManagement = () => {
       return;
     }
 
-    if (!file.type.startsWith('image/')) {
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
       toast({
         title: "Грешка",
-        description: "Моля, изберете валиден файл с изображение.",
+        description: "Моля, изберете валиден файл с изображение (JPEG, PNG, GIF, WEBP).",
         variant: "destructive",
       });
       return;
@@ -239,6 +248,13 @@ const BlogManagement = () => {
     const reader = new FileReader();
     reader.onload = () => {
       setImagePreview(reader.result as string);
+    };
+    reader.onerror = () => {
+      toast({
+        title: "Грешка",
+        description: "Проблем при четенето на изображението.",
+        variant: "destructive",
+      });
     };
     reader.readAsDataURL(file);
   };
@@ -251,7 +267,8 @@ const BlogManagement = () => {
       setUploadProgress(0);
       
       const fileExt = imageFile.name.split('.').pop();
-      const filePath = `${id}/${Date.now()}.${fileExt}`;
+      const fileName = `${Date.now()}${fileExt ? `.${fileExt}` : ''}`;
+      const filePath = `${id}/${fileName}`;
       
       // Upload the file
       const { data, error } = await supabase.storage
@@ -262,7 +279,12 @@ const BlogManagement = () => {
         });
 
       if (error) {
+        console.error('Supabase storage upload error:', error);
         throw error;
+      }
+
+      if (!data?.path) {
+        throw new Error('Uploaded file path is undefined');
       }
 
       // Get the public URL
@@ -270,6 +292,11 @@ const BlogManagement = () => {
         .from(BUCKET_NAME)
         .getPublicUrl(data.path);
 
+      if (!urlData?.publicUrl) {
+        throw new Error('Failed to get public URL for uploaded image');
+      }
+
+      console.log('Uploaded image URL:', urlData.publicUrl);
       setUploadProgress(100);
       return urlData.publicUrl;
     } catch (error: any) {
@@ -397,6 +424,9 @@ const BlogManagement = () => {
           description: "Блог постът беше обновен.",
         });
       } else {
+        // For new posts, determine if we have an image to upload
+        const hasImageToUpload = !!imageFile;
+        
         // Create new post with required fields
         const { data, error } = await supabase
           .from('blog_posts')
@@ -407,6 +437,7 @@ const BlogManagement = () => {
             excerpt: values.excerpt,
             category: values.category,
             author_id: user.id,
+            image_url: null, // Will be updated after upload if image exists
             published_at: now,
             created_at: now,
             updated_at: now
@@ -417,14 +448,19 @@ const BlogManagement = () => {
         if (error) throw error;
 
         // If new image uploaded, update with the image URL
-        if (imageFile && data) {
+        if (hasImageToUpload && data) {
           const newImageUrl = await uploadImage(data.id);
           if (newImageUrl) {
             // Update the newly created post with the image URL
-            await supabase
+            const { error: updateError } = await supabase
               .from('blog_posts')
               .update({ image_url: newImageUrl })
               .eq('id', data.id);
+              
+            if (updateError) {
+              console.error('Error updating image URL:', updateError);
+              // Don't throw, but log the error
+            }
           }
         }
 
@@ -627,7 +663,15 @@ const BlogManagement = () => {
                           <span className="text-sm text-muted-foreground">
                             Качете изображение (макс. 5MB)
                           </span>
-                          <Button type="button" variant="secondary" size="sm">
+                          <Button 
+                            type="button" 
+                            variant="secondary" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              document.getElementById('blog-image-upload')?.click();
+                            }}
+                          >
                             Избери Файл
                           </Button>
                         </label>
