@@ -8,7 +8,7 @@ const PrivacyPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Privacy Policy | Trendimo</title>
+        <title>Политика за защита на лични данни | Trendimo</title>
       </Helmet>
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">

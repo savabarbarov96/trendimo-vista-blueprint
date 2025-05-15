@@ -43,7 +43,7 @@ const Index = () => {
           style={shouldAnimate ? { transform: `translateY(${-scrollY * 0.1}px)` } : undefined}
         >
           <div className="mb-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg bg-gradient-to-r from-white to-red-100 text-transparent bg-clip-text">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg gradient-text-light">
               Намерете своя перфектен дом
             </h1>
           </div>

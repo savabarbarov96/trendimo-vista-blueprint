@@ -214,7 +214,19 @@
 
   /* Gradient text headings */
   .gradient-text {
-    @apply bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-red-700 via-primary to-red-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-light {
+    @apply bg-gradient-to-r from-white via-red-100 to-white bg-clip-text text-transparent;
+  }
+
+  .gradient-heading {
+    @apply bg-gradient-to-r from-red-800 via-primary to-red-600 bg-clip-text text-transparent;
+  }
+
+  .gradient-heading-light {
+    @apply bg-gradient-to-r from-red-700 via-primary to-red-500 bg-clip-text text-transparent;
   }
 
   /* Glassmorphism elements */

@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu, User } from "lucide-react";
-import logo from "../assets/trendimo-logo.svg";
+import logo from "../assets/logo-footer_2.png";
 
 const mainNavItems = [
   { title: "Начало", href: "/" },
@@ -35,8 +35,7 @@ const Navbar = () => {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Check if user exists to determine authentication status
+
   const isAuthenticated = !!user;
   const isAdmin = profile?.role === 'admin';
 
@@ -48,11 +47,13 @@ const Navbar = () => {
   return (
     <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
-          <img src={logo} alt="Trendimo Logo" width="40" height="40" />
-          <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent transform hover:scale-105 transition-transform duration-300">
-            Trendimo
-          </span>
+        <Link to="/" className="flex items-center">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-18 w-auto md:h-21 transition-transform duration-300 hover:scale-105 drop-shadow-lg"
+            style={{ maxHeight: '150px' }}
+          />
         </Link>
         <div className="hidden md:flex items-center space-x-4">
           {mainNavItems.map((item) => (
@@ -61,8 +62,8 @@ const Navbar = () => {
               to={item.href}
               className={({ isActive }) =>
                 `px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 hover:bg-red-50 ${
-                  isActive 
-                    ? "text-primary border-b-2 border-primary shadow-sm" 
+                  isActive
+                    ? "text-primary border-b-2 border-primary shadow-sm"
                     : "text-gray-700 hover:text-primary"
                 }`
               }
@@ -101,9 +102,9 @@ const Navbar = () => {
         ) : location.pathname === "/auth" ? null : (
           <div className="hidden md:flex items-center space-x-2">
             <Link to="/auth">
-              <Button 
-                variant="secondary" 
-                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all" 
+              <Button
+                variant="secondary"
+                className="bg-primary hover:bg-primary-dark text-white font-medium shadow-md hover:shadow-lg transition-all"
                 size="sm"
               >
                 Вход
@@ -158,9 +159,9 @@ const Navbar = () => {
                 </>
               ) : location.pathname === "/auth" ? null : (
                 <Link to="/auth">
-                  <Button 
-                    variant="secondary" 
-                    size="sm" 
+                  <Button
+                    variant="secondary"
+                    size="sm"
                     className="w-full justify-start bg-primary text-white hover:bg-primary-dark shadow-md"
                   >
                     Вход
