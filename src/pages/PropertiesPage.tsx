@@ -6,6 +6,7 @@ import { FilterState } from '@/components/properties/types';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const PropertiesPage = () => {
   const location = useLocation();
@@ -64,9 +65,13 @@ const PropertiesPage = () => {
       
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 font-play bg-clip-text text-transparent bg-gradient-to-r from-red-700 to-red-600">
+          <TextShimmer 
+            as="h1"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+            duration={3}
+          >
             Нашите Имоти
-          </h1>
+          </TextShimmer>
           <p className="text-neutral-600 max-w-2xl mx-auto">
             Разгледайте нашата селекция от висококачествени имоти, отговарящи на всички ваши нужди
           </p>
@@ -98,7 +103,13 @@ const PropertiesPage = () => {
         <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-8 shadow-elegant">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="flex flex-col justify-center">
-              <h2 className="text-3xl font-bold mb-4 text-red-700">Искате да продадете имот?</h2>
+              <TextShimmer 
+                as="h2"
+                className="text-2xl md:text-3xl font-bold mb-4 [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+                duration={2.5}
+              >
+                Искате да продадете имот?
+              </TextShimmer>
               <p className="text-lg mb-6 text-neutral-700">
                 Нашите експерти ще ви помогнат да постигнете най-добрата цена за вашия имот. Попълнете формата 
                 и ще се свържем с вас за безплатна консултация.

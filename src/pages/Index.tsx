@@ -12,6 +12,7 @@ import BlogPreview from '@/components/BlogPreview';
 import PropertySellForm from '@/components/PropertySellForm';
 import Footer from '@/components/Footer';
 import { useAnimationSettings } from '@/lib/animations/motion';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const Index = () => {
   const [searchMode, setSearchMode] = useState<'buy' | 'rent'>('buy');
@@ -72,9 +73,13 @@ const Index = () => {
           style={shouldAnimate ? { transform: `translateY(${-scrollY * 0.1}px)` } : undefined}
         >
           <div className="mb-6 animate-fade-in">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg gradient-text-light">
+            <TextShimmer 
+              as="h1"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold drop-shadow-lg [--base-color:theme(colors.white)] [--base-gradient-color:theme(colors.red.200)]"
+              duration={3}
+            >
               Намерете своя перфектен дом
-            </h1>
+            </TextShimmer>
           </div>
           
           <div className="mb-8 animate-fade-in [animation-delay:0.1s]">
@@ -134,7 +139,13 @@ const Index = () => {
       <section className="py-16 bg-gradient-to-r from-red-50 to-red-100">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-red-900">Какво казват нашите клиенти</h2>
+            <TextShimmer 
+              as="h2"
+              className="text-3xl md:text-4xl font-bold mb-3 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+              duration={2.5}
+            >
+              Какво казват нашите клиенти
+            </TextShimmer>
             <p className="text-lg text-neutral-700 max-w-2xl mx-auto">Вижте какво споделят клиентите за опита си с Trendimo</p>
           </div>
           
@@ -160,7 +171,13 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-floating p-8 border border-red-100">
             <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-red-900">Продай своя имот с нас</h2>
+              <TextShimmer 
+                as="h2"
+                className="text-3xl md:text-4xl font-bold mb-3 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+                duration={2.5}
+              >
+                Продай своя имот с нас
+              </TextShimmer>
               <p className="text-lg text-neutral-700">Попълни формата и наш агент ще се свърже с теб за безплатна консултация</p>
             </div>
             <PropertySellForm />

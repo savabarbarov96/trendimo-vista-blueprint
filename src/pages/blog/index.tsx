@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useBlogPosts } from '@/hooks/use-blog-posts';
@@ -7,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const BlogIndexPage = () => {
   const { data: posts, isLoading, error } = useBlogPosts();
@@ -34,9 +34,13 @@ const BlogIndexPage = () => {
       
       <div className="container mx-auto py-12 px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-primary bg-clip-text text-transparent">
+          <TextShimmer 
+            as="h1"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+            duration={3}
+          >
             Нашият блог
-          </h1>
+          </TextShimmer>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Споделяме експертни съвети, пазарни анализи и статии от света на недвижимите имоти.
           </p>

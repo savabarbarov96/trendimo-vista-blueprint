@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { TeamMember } from '@/integrations/supabase/types';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -60,7 +61,13 @@ const AboutPage = () => {
         <section className="py-16 bg-gradient-to-r from-red-700 to-red-900 text-white">
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">За Trendimo</h1>
+              <TextShimmer 
+                as="h1"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 [--base-color:theme(colors.white)] [--base-gradient-color:theme(colors.red.200)]"
+                duration={3}
+              >
+                За Trendimo
+              </TextShimmer>
               <p className="text-xl max-w-3xl mx-auto">
                 Водеща компания за недвижими имоти с дългогодишен опит и отдадени професионалисти
               </p>
@@ -73,7 +80,13 @@ const AboutPage = () => {
           <div className="container mx-auto px-4">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Нашата История</h2>
+                <TextShimmer 
+                  as="h2"
+                  className="text-2xl md:text-3xl font-bold mb-6 [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+                  duration={2.5}
+                >
+                  Нашата История
+                </TextShimmer>
                 <p className="mb-4 text-gray-700">
                   Основана през 2010 година, Trendimo израстна от малка агенция до една от 
                   водещите компании за недвижими имоти в България. Нашият път е белязан от 
@@ -103,9 +116,13 @@ const AboutPage = () => {
         {/* Values Section */}
         <section className="py-16 bg-gradient-to-r from-red-50 to-pink-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-12 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
               Нашите ценности
-            </h2>
+            </TextShimmer>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
                 <GlowingEffect
@@ -161,9 +178,13 @@ const AboutPage = () => {
         {/* Team Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-12 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
               Запознайте се с екипа
-            </h2>
+            </TextShimmer>
             
             {loading ? (
               <div className="flex justify-center items-center py-12">
