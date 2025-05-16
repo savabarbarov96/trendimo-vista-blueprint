@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { TeamMember } from '@/integrations/supabase/types';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
+import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -37,6 +38,14 @@ const AboutPage = () => {
 
     fetchTeamMembers();
   }, []);
+
+  // Transform team members data for testimonials
+  const testimonialData = teamMembers.map(member => ({
+    quote: member.bio || '',
+    name: member.name,
+    designation: member.position,
+    src: member.image_url || '/placeholder.svg'
+  }));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex flex-col">
@@ -165,31 +174,11 @@ const AboutPage = () => {
                 Информацията за нашия екип скоро ще бъде достъпна.
               </p>
             ) : (
-              <div
-                className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-              >
-                {teamMembers.map((member) => (
-                  <div 
-                    key={member.id} 
-                    className="bg-white rounded-xl overflow-hidden shadow-elegant border border-red-100 transition-all hover:shadow-floating hover:translate-y-[-5px] group"
-                  >
-                    <div className="relative overflow-hidden h-72">
-                      <img 
-                        src={member.image_url || "/placeholder.svg"} 
-                        alt={member.name} 
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                        <p className="text-white text-sm line-clamp-3">{member.bio}</p>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-bold text-lg text-red-800">{member.name}</h3>
-                      <p className="text-red-600">{member.position}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <AnimatedTestimonials 
+                testimonials={testimonialData} 
+                autoplay={true}
+                className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl shadow-elegant" 
+              />
             )}
           </div>
         </section>
