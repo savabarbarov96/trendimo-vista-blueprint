@@ -5,6 +5,7 @@ import { useIntersectionObserver } from '@/lib/animations/intersection-observer'
 import { MotionImage } from '@/components/ui/motion';
 import { AnimatedSkeleton } from '@/components/ui/animated-skeleton';
 import { usePropertyModal } from '@/components/properties/PropertyModalProvider';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 interface PropertyCardProps {
   property: Property;
@@ -29,9 +30,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   return (
     <div
       ref={safeRef}
-      className={`bg-white rounded-lg overflow-hidden property-card-shadow transition-all duration-500 ${isIntersecting ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} hover:-translate-y-1 h-full cursor-pointer`}
+      className={`relative bg-white rounded-lg overflow-hidden property-card-shadow transition-all duration-500 ${isIntersecting ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} hover:-translate-y-1 h-full cursor-pointer`}
       onClick={handlePropertyClick}
     >
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
       <div className="relative">
         <MotionImage
           src={property.imageUrl}

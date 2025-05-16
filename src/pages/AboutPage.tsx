@@ -6,6 +6,10 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { TeamMember } from '@/integrations/supabase/types';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
+import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
+import { TextShimmer } from '@/components/ui/text-shimmer';
+import { StoryScroll } from '@/components/about/story-scroll';
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -37,6 +41,14 @@ const AboutPage = () => {
     fetchTeamMembers();
   }, []);
 
+  // Transform team members data for testimonials
+  const testimonialData = teamMembers.map(member => ({
+    quote: member.bio || '',
+    name: member.name,
+    designation: member.position,
+    src: member.image_url || '/placeholder.svg'
+  }));
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex flex-col">
       <Helmet>
@@ -50,7 +62,13 @@ const AboutPage = () => {
         <section className="py-16 bg-gradient-to-r from-red-700 to-red-900 text-white">
           <div className="container mx-auto px-4">
             <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">За Trendimo</h1>
+              <TextShimmer 
+                as="h1"
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 [--base-color:theme(colors.white)] [--base-gradient-color:theme(colors.red.200)]"
+                duration={3}
+              >
+                За Trendimo
+              </TextShimmer>
               <p className="text-xl max-w-3xl mx-auto">
                 Водеща компания за недвижими имоти с дългогодишен опит и отдадени професионалисти
               </p>
@@ -58,32 +76,19 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* Our Story Section */}
+        {/* Story Scroll Section - replaced the History section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Нашата История</h2>
-                <p className="mb-4 text-gray-700">
-                  Основана през 2010 година, Trendimo израстна от малка агенция до една от 
-                  водещите компании за недвижими имоти в България. Нашият път е белязан от 
-                  непрекъснато усъвършенстване и отдаденост към клиентите.
-                </p>
-                <p className="text-gray-700">
-                  Вярваме, че всеки заслужава перфектния дом или инвестиционна възможност, 
-                  и се стремим да предоставим персонализирана услуга, която отговаря на 
-                  уникалните нужди на всеки клиент.
-                </p>
-              </div>
-              <div className="bg-gradient-to-r from-red-100 to-white p-1 rounded-lg shadow-elegant">
-                <div className="bg-white rounded-lg overflow-hidden">
-                  <img 
-                    src="/placeholder.svg" 
-                    alt="Trendimo team" 
-                    className="w-full h-auto rounded-lg" 
-                  />
-                </div>
-              </div>
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
+              Нашата история
+            </TextShimmer>
+            
+            <div className="rounded-xl overflow-hidden shadow-elegant">
+              <StoryScroll />
             </div>
           </div>
         </section>
@@ -93,25 +98,53 @@ const AboutPage = () => {
         {/* Values Section */}
         <section className="py-16 bg-gradient-to-r from-red-50 to-pink-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-12 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
               Нашите ценности
-            </h2>
+            </TextShimmer>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Прозрачност</h3>
                 <p className="text-gray-700">
                   Работим с пълна прозрачност и честност, защото вярваме, че това 
                   е основата на всяка успешна сделка и дългосрочни отношения.
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Професионализъм</h3>
                 <p className="text-gray-700">
                   Нашите експерти са висококвалифицирани професионалисти, които следят 
                   последните тенденции и подходи в бизнеса с недвижими имоти.
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Клиентски фокус</h3>
                 <p className="text-gray-700">
                   Ние поставяме нуждите на клиентите на първо място и се стремим да 
@@ -127,9 +160,13 @@ const AboutPage = () => {
         {/* Team Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-12 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
               Запознайте се с екипа
-            </h2>
+            </TextShimmer>
             
             {loading ? (
               <div className="flex justify-center items-center py-12">
@@ -140,31 +177,11 @@ const AboutPage = () => {
                 Информацията за нашия екип скоро ще бъде достъпна.
               </p>
             ) : (
-              <div
-                className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-              >
-                {teamMembers.map((member) => (
-                  <div 
-                    key={member.id} 
-                    className="bg-white rounded-xl overflow-hidden shadow-elegant border border-red-100 transition-all hover:shadow-floating hover:translate-y-[-5px] group"
-                  >
-                    <div className="relative overflow-hidden h-72">
-                      <img 
-                        src={member.image_url || "/placeholder.svg"} 
-                        alt={member.name} 
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300" 
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                        <p className="text-white text-sm line-clamp-3">{member.bio}</p>
-                      </div>
-                    </div>
-                    <div className="p-5">
-                      <h3 className="font-bold text-lg text-red-800">{member.name}</h3>
-                      <p className="text-red-600">{member.position}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <AnimatedTestimonials 
+                testimonials={testimonialData} 
+                autoplay={true}
+                className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl shadow-elegant" 
+              />
             )}
           </div>
         </section>

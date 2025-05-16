@@ -6,6 +6,7 @@ import { useServices } from '@/hooks/use-services';
 import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const ServicesPage = () => {
   const { data: services, isLoading, error } = useServices();
@@ -25,7 +26,13 @@ const ServicesPage = () => {
       <div className="container mx-auto py-12 px-4">
         {/* Hero section */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Нашите услуги</h1>
+          <TextShimmer 
+            as="h1"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+            duration={3}
+          >
+            Нашите услуги
+          </TextShimmer>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Предлагаме пълен набор от професионални услуги, за да ви помогнем на всеки етап 
             от вашето пътуване в света на недвижимите имоти.
@@ -36,7 +43,13 @@ const ServicesPage = () => {
         {highlightedService && (
           <div className="mb-16">
             <div className="flex items-center gap-2 mb-8 justify-center">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Специална услуга</h2>
+              <TextShimmer 
+                as="h2"
+                className="text-2xl md:text-3xl font-bold [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+                duration={2.5}
+              >
+                Специална услуга
+              </TextShimmer>
               <Badge variant="default" className="bg-gradient-to-r from-primary to-red-700">Препоръчано</Badge>
             </div>
             <div className="max-w-4xl mx-auto">
@@ -52,7 +65,13 @@ const ServicesPage = () => {
 
         {/* Regular services */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-red-700 to-primary bg-clip-text text-transparent">Всички услуги</h2>
+          <TextShimmer 
+            as="h2"
+            className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+            duration={2.5}
+          >
+            Всички услуги
+          </TextShimmer>
           
           {isLoading && (
             <div className="text-center py-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-elegant p-6 border border-red-100">

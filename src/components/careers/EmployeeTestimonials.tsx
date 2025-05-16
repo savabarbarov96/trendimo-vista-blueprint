@@ -1,9 +1,9 @@
-
 import React from "react";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Quote } from "lucide-react";
+import { GlowingEffect } from "@/components/ui/glowing-effect";
 
 const testimonials = [
   {
@@ -50,7 +50,15 @@ const EmployeeTestimonials = () => {
       <CarouselContent className="-ml-4">
         {testimonials.map((testimonial, index) => (
           <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-            <Card className="h-full">
+            <Card className="relative h-full">
+              <GlowingEffect
+                spread={40}
+                glow={true}
+                disabled={false}
+                proximity={64}
+                inactiveZone={0.01}
+                borderWidth={3}
+              />
               <CardContent className="p-6 flex flex-col h-full">
                 <Quote className="h-8 w-8 text-primary mb-4 self-start" />
                 

@@ -1,6 +1,6 @@
-
 import React from 'react';
 import { Quote } from 'lucide-react';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 interface TestimonialProps {
   quote: string;
@@ -11,7 +11,15 @@ interface TestimonialProps {
 
 const TestimonialCard = ({ quote, author, position, image }: TestimonialProps) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg">
+    <div className="relative bg-white p-6 rounded-lg shadow-lg">
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
       <Quote className="h-10 w-10 text-primary opacity-20 mb-4" />
       <p className="text-neutral-dark mb-4 italic">{quote}</p>
       <div className="flex items-center">

@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Calendar, ArrowLeft } from 'lucide-react';
@@ -10,6 +9,7 @@ import { formatDate } from '@/utils/formatDate';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import ReactMarkdown from 'react-markdown';
+import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -40,7 +40,13 @@ const BlogPostPage = () => {
           <div className="text-center py-16">Зареждане...</div>
         ) : error || !post ? (
           <div className="text-center py-16">
-            <h1 className="text-2xl font-bold mb-4">Статията не беше намерена</h1>
+            <TextShimmer 
+              as="h1"
+              className="text-2xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+              duration={3}
+            >
+              Статията не беше намерена
+            </TextShimmer>
             <p>Съжаляваме, но търсената от вас статия не съществува или е преместена.</p>
             <Link to="/blog" className="mt-4 inline-block text-primary hover:underline">
               Разгледайте всички статии
@@ -54,9 +60,13 @@ const BlogPostPage = () => {
               </span>
             </div>
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <TextShimmer 
+              as="h1"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
+              duration={3}
+            >
               {post.title}
-            </h1>
+            </TextShimmer>
             
             <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
               <div className="flex items-center text-neutral">
