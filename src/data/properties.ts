@@ -1,4 +1,5 @@
 import { cities } from './content';
+import { TeamMember } from '@/integrations/supabase/types';
 
 export interface Property {
   id: string;
@@ -17,6 +18,14 @@ export interface Property {
   imageUrl: string;
   images: string[];
   createdAt: string;
+  agent?: {
+    id: string;
+    name: string;
+    position: string;
+    image_url?: string;
+    email?: string;
+    phone_number?: string;
+  };
 }
 
 // Sample property data for demonstration

@@ -2,6 +2,8 @@ import { getPropertyImages } from '@/utils/storageHelpers';
 import { Property } from '@/data/properties';
 import { SupabaseProperty } from './types';
 import { propertyTypes } from '@/data/content';
+import { supabase } from '@/integrations/supabase/client';
+import { TeamMember } from '@/integrations/supabase/types';
 
 export const usePropertyMapper = () => {
   // Helper function to get placeholder images
@@ -28,6 +30,36 @@ export const usePropertyMapper = () => {
     return 'Апартамент';
   };
 
+  // Function to fetch agent information
+  const fetchAgent = async (agentId: string) => {
+    if (!agentId) return null;
+    
+    try {
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('id', agentId)
+        .single();
+      
+      if (error || !data) {
+        console.error('Error fetching agent:', error);
+        return null;
+      }
+      
+      return {
+        id: data.id,
+        name: data.name,
+        position: data.position,
+        image_url: data.image_url,
+        email: data.email,
+        phone_number: data.phone_number
+      };
+    } catch (error) {
+      console.error('Error fetching agent:', error);
+      return null;
+    }
+  };
+
   // Function to convert SupabaseProperty to Property
   const mapSupabasePropertyToProperty = async (prop: SupabaseProperty): Promise<Property> => {
     // Try to get images from storage, fallback to placeholders
@@ -40,6 +72,12 @@ export const usePropertyMapper = () => {
     } catch (err) {
       console.error('Error fetching property images:', err);
       images = getPlaceholderImages();
+    }
+    
+    // Fetch agent info if agent_id is provided
+    let agent = null;
+    if (prop.agent_id) {
+      agent = await fetchAgent(prop.agent_id);
     }
 
     return {
@@ -58,7 +96,8 @@ export const usePropertyMapper = () => {
       featured: prop.is_featured || false,
       imageUrl: images[0] || getPlaceholderMainImage(),
       images: images,
-      createdAt: new Date().toISOString()
+      createdAt: prop.created_at || new Date().toISOString(),
+      agent: agent || undefined
     };
   };
 
@@ -66,6 +105,7 @@ export const usePropertyMapper = () => {
     mapSupabasePropertyToProperty,
     getPlaceholderImages,
     getPlaceholderMainImage,
-    getValidPropertyType
+    getValidPropertyType,
+    fetchAgent
   };
 };

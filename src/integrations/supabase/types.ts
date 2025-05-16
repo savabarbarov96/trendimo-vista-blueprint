@@ -183,6 +183,7 @@ export interface Database {
           is_featured: boolean | null
           is_published: boolean | null
           created_at: string | null
+          agent_id: string | null
         }
         Insert: {
           id?: string
@@ -199,6 +200,7 @@ export interface Database {
           is_featured?: boolean | null
           is_published?: boolean | null
           created_at?: string | null
+          agent_id?: string | null
         }
         Update: {
           id?: string
@@ -215,8 +217,16 @@ export interface Database {
           is_featured?: boolean | null
           is_published?: boolean | null
           created_at?: string | null
+          agent_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "properties_agent_id_fkey"
+            columns: ["agent_id"]
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {

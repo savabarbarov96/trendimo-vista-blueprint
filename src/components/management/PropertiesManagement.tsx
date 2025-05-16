@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Plus, 
   Edit, 
@@ -53,6 +53,7 @@ import {
   type Property, 
   type PropertyFormData
 } from '@/hooks/use-properties';
+import { TeamMember } from '@/integrations/supabase/types';
 
 const PropertiesManagement = () => {
   const { toast } = useToast();
@@ -68,6 +69,8 @@ const PropertiesManagement = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentProperty, setCurrentProperty] = useState<Property | null>(null);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [loadingTeamMembers, setLoadingTeamMembers] = useState(false);
   const [formData, setFormData] = useState<Partial<PropertyFormData>>({
     title: '',
     description: '',
@@ -81,10 +84,39 @@ const PropertiesManagement = () => {
     listing_type: 'sale',
     is_featured: false,
     is_published: true,
-    images: []
+    images: [],
+    agent_id: ''
   });
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [tempId] = useState<string>(`temp_${Date.now()}`);
+
+  // Fetch team members (agents)
+  useEffect(() => {
+    const fetchTeamMembers = async () => {
+      setLoadingTeamMembers(true);
+      try {
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('is_active', true)
+          .order('name');
+        
+        if (error) throw error;
+        setTeamMembers(data || []);
+      } catch (err) {
+        console.error('Error fetching team members:', err);
+        toast({
+          title: 'Грешка при зареждане на екипа',
+          description: 'Не можахме да заредим списъка с агенти.',
+          variant: 'destructive'
+        });
+      } finally {
+        setLoadingTeamMembers(false);
+      }
+    };
+
+    fetchTeamMembers();
+  }, [toast]);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -124,7 +156,8 @@ const PropertiesManagement = () => {
       listing_type: 'sale',
       is_featured: false,
       is_published: true,
-      images: []
+      images: [],
+      agent_id: ''
     });
     setUploadedImages([]);
   };
@@ -145,7 +178,8 @@ const PropertiesManagement = () => {
       listing_type: property.listing_type,
       is_featured: property.is_featured || false,
       is_published: property.is_published || true,
-      images: property.images || []
+      images: property.images || [],
+      agent_id: property.agent_id || ''
     });
     setUploadedImages(property.images || []);
     setIsEditDialogOpen(true);
@@ -507,6 +541,25 @@ const PropertiesManagement = () => {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="agent_id">Отговорен агент</Label>
+                <select
+                  id="agent_id"
+                  name="agent_id"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  value={formData.agent_id || ''}
+                  onChange={handleInputChange}
+                  disabled={loadingTeamMembers}
+                >
+                  <option value="">Няма избран агент</option>
+                  {teamMembers.map((member) => (
+                    <option key={member.id} value={member.id}>
+                      {member.name} ({member.position})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className="flex space-x-4">
                 <div className="flex items-center space-x-2">
                   <input
@@ -812,6 +865,25 @@ const PropertiesManagement = () => {
                   <option value="rent">Наем</option>
                 </select>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-agent_id">Отговорен агент</Label>
+              <select
+                id="edit-agent_id"
+                name="agent_id"
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={formData.agent_id || ''}
+                onChange={handleInputChange}
+                disabled={loadingTeamMembers}
+              >
+                <option value="">Няма избран агент</option>
+                {teamMembers.map((member) => (
+                  <option key={member.id} value={member.id}>
+                    {member.name} ({member.position})
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="flex space-x-4">

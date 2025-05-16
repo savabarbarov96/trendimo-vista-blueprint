@@ -136,7 +136,7 @@ const SearchBar = () => {
           <div
             className={`${shouldAnimate ? 'transition-all duration-200 hover:scale-103 active:scale-97' : ''}`}
           >
-            <Button type="submit" className="bg-white/90 hover:bg-white text-gray-900 border border-white/30 shadow-md hover:shadow-lg">
+            <Button type="submit" className="bg-red-700 hover:bg-red-800 text-white border border-white/30 shadow-md hover:shadow-lg">
               <Search className="mr-2 h-4 w-4" />
               {home.search.buttonText}
             </Button>

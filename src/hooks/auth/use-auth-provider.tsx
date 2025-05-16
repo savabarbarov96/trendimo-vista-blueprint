@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { useNavigate } from 'react-router-dom';
@@ -22,11 +21,14 @@ export function useAuthProvider() {
   const { profile } = useProfile(user);
 
   useEffect(() => {
+    let mounted = true;
     let isFirstLoad = true;
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
+      async (event, currentSession) => {
+        if (!mounted) return;
+
         // Update state regardless of event
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
@@ -56,17 +58,48 @@ export function useAuthProvider() {
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setLoading(false);
-      // First load is complete after initial session check
-      isFirstLoad = false;
-    });
+    // Check for existing session and persist it
+    const initializeAuth = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        
+        if (mounted) {
+          setSession(currentSession);
+          setUser(currentSession?.user ?? null);
+          
+          // If we have a session, ensure it's refreshed
+          if (currentSession?.user) {
+            await supabase.auth.refreshSession();
+          }
+          
+          setLoading(false);
+          isFirstLoad = false;
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    // Refresh session periodically to keep it alive
+    const refreshInterval = setInterval(async () => {
+      if (session?.user) {
+        try {
+          await supabase.auth.refreshSession();
+        } catch (error) {
+          console.error('Error refreshing session:', error);
+        }
+      }
+    }, 10 * 60 * 1000); // Refresh every 10 minutes
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
+      clearInterval(refreshInterval);
     };
   }, [navigate]);
 

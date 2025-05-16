@@ -1,4 +1,3 @@
-
 import { Property } from '@/data/properties';
 
 // Define the Supabase Property type based on the database schema
@@ -16,6 +15,8 @@ export interface SupabaseProperty {
   listing_type: string;
   is_featured: boolean | null;
   is_published: boolean | null;
+  created_at: string | null;
+  agent_id: string | null;
 }
 
 // Define the filter state

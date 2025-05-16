@@ -35,6 +35,20 @@ export interface Property {
   created_at: string | null;
   updated_at: string | null;
   images: string[] | null;
+  agent_id: string | null;
+  agent?: {
+    id: string;
+    name: string;
+    position: string;
+    bio: string | null;
+    image_url: string | null;
+    email: string | null;
+    phone_number: string | null;
+    order_index: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+  };
 }
 
 export interface PropertyFormData {
@@ -52,6 +66,7 @@ export interface PropertyFormData {
   is_published?: boolean;
   owner_id: string;
   images?: string[];
+  agent_id?: string;
 }
 
 // Hook to fetch all properties (including unpublished ones for agents)
@@ -61,7 +76,7 @@ export const useProperties = () => {
     queryFn: async (): Promise<Property[]> => {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select('*, agent:team_members(*)')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -81,7 +96,7 @@ export const useFeaturedProperties = (limit = 6) => {
     queryFn: async (): Promise<Property[]> => {
       const { data, error } = await supabase
         .from('properties')
-        .select('*')
+        .select('*, agent:team_members(*)')
         .eq('is_featured', true)
         .eq('is_published', true)
         .order('created_at', { ascending: false })
@@ -166,12 +181,17 @@ export const useUpdateProperty = () => {
           ? validatedProperty.images
           : [];
       }
+
+      // Handle agent_id - if it's an empty string, set it to null
+      if ('agent_id' in validatedProperty) {
+        validatedProperty.agent_id = validatedProperty.agent_id === '' ? null : validatedProperty.agent_id;
+      }
       
       const { data, error } = await supabase
         .from('properties')
         .update(validatedProperty)
         .eq('id', id)
-        .select()
+        .select('*, agent:team_members(*)')
         .single();
 
       if (error) {
