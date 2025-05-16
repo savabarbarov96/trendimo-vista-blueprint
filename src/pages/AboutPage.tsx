@@ -6,6 +6,7 @@ import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 import { TeamMember } from '@/integrations/supabase/types';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -97,21 +98,45 @@ const AboutPage = () => {
               Нашите ценности
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Прозрачност</h3>
                 <p className="text-gray-700">
                   Работим с пълна прозрачност и честност, защото вярваме, че това 
                   е основата на всяка успешна сделка и дългосрочни отношения.
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Професионализъм</h3>
                 <p className="text-gray-700">
                   Нашите експерти са висококвалифицирани професионалисти, които следят 
                   последните тенденции и подходи в бизнеса с недвижими имоти.
                 </p>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+              <div className="relative bg-white rounded-xl p-6 shadow-elegant border border-red-100">
+                <GlowingEffect
+                  spread={40}
+                  glow={true}
+                  disabled={false}
+                  proximity={64}
+                  inactiveZone={0.01}
+                  borderWidth={3}
+                />
                 <h3 className="text-xl font-bold mb-4 text-red-800">Клиентски фокус</h3>
                 <p className="text-gray-700">
                   Ние поставяме нуждите на клиентите на първо място и се стремим да 

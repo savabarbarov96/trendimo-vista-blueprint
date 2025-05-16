@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDate } from '@/utils/formatDate';
 import { BlogPost } from '@/hooks/use-blog-posts';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 interface BlogPostCardProps {
   post: BlogPost;
@@ -12,7 +12,15 @@ interface BlogPostCardProps {
 
 const BlogPostCard: React.FC<BlogPostCardProps> = ({ post }) => {
   return (
-    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
+    <Card className="relative h-full flex flex-col hover:shadow-lg transition-shadow duration-300">
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
       <Link to={`/blog/${post.slug}`} className="block">
         <div className="relative w-full h-52">
           <img 

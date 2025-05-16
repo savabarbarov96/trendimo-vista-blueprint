@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import * as LucideIcons from "lucide-react";
+import { GlowingEffect } from "@/components/ui/glowing-effect";
 
 interface ServiceCardProps {
   name: string;
@@ -21,7 +21,15 @@ const ServiceCard = ({ name, description, icon, isHighlighted = false }: Service
   }
   
   return (
-    <Card className={`h-full transition-all ${isHighlighted ? 'shadow-lg border-primary border-2' : 'hover:shadow-md'}`}>
+    <Card className={`relative h-full transition-all ${isHighlighted ? 'shadow-lg border-primary border-2' : 'hover:shadow-md'}`}>
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={3}
+      />
       <CardHeader className="pb-2">
         <div className={`mb-4 p-2 rounded-full w-12 h-12 flex items-center justify-center ${isHighlighted ? 'bg-primary text-white' : 'bg-muted'}`}>
           <IconComponent className="h-6 w-6" />
