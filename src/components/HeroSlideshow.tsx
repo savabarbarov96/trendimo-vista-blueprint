@@ -101,7 +101,7 @@ const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = tru
         <ImagesSlider 
           images={slideshowImages} 
           className="h-screen"
-          overlayClassName="bg-black/60 opacity-70 from-black/80 via-black/50 to-black/80 bg-gradient-to-b"
+          overlayClassName="bg-black/40 backdrop-blur-[2px] from-black/60 via-black/30 to-black/60 bg-gradient-to-b"
         >
           <div 
             className="container mx-auto px-4 z-50 text-center"
@@ -125,13 +125,13 @@ const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = tru
             
             {/* Toggle and Search Bar */}
             <div className="max-w-4xl mx-auto animate-fade-in [animation-delay:0.2s]">
-              <div className="rounded-lg p-4 bg-white/5 backdrop-blur-md border border-white/20 shadow-lg">
-                <div className="bg-gradient-to-r from-red-700 to-red-900 p-2 rounded-t-lg inline-flex mb-0">
+              <div className="rounded-lg p-4 bg-white/5 backdrop-blur-xl border border-white/20 shadow-lg">
+                <div className="bg-white/10 backdrop-blur-md p-2 rounded-t-lg inline-flex mb-0">
                   <button 
                     onClick={() => setSearchMode('buy')}
                     className={`px-6 py-3 font-medium rounded-lg transition-all duration-300 ${
                       searchMode === 'buy' 
-                        ? "bg-white text-red-900 shadow-md" 
+                        ? "bg-white/90 text-gray-900 shadow-md" 
                         : "text-white hover:bg-white/20"
                     }`}
                   >
@@ -141,7 +141,7 @@ const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = tru
                     onClick={() => setSearchMode('rent')}
                     className={`px-6 py-3 font-medium rounded-lg transition-all duration-300 ${
                       searchMode === 'rent' 
-                        ? "bg-white text-red-900 shadow-md" 
+                        ? "bg-white/90 text-gray-900 shadow-md" 
                         : "text-white hover:bg-white/20"
                     }`}
                   >

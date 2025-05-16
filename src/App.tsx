@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, useLocation } from 'react-router-dom';
 import { AuthProvider } from './hooks/use-auth';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
@@ -26,6 +26,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import CookiesPage from './pages/CookiesPage';
 import MakeAdmin from './pages/admin/make-admin';
 import ManagementPage from './pages/management';
+import TubelightNavbarDemo from './pages/TubelightNavbarDemo';
 
 // Admin pages
 import AdminLayout from './components/admin/AdminLayout';
@@ -39,11 +40,19 @@ import CareersAdmin from './pages/admin/CareersAdmin';
 import ServicesAdmin from './pages/admin/ServicesAdmin';
 import Settings from './pages/admin/Settings';
 
+// Import our enhanced navbar and navigation items
+import { EnhancedTubelightNavbar } from './components/ui/enhanced-tubelight-navbar';
+import { mainNavItems } from './data/navigation-items';
+
 // Root layout with providers
 const AppRoot = () => {
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/auth';
+
   return (
     <AuthProvider>
       <PropertyModalProvider>
+        {!isAuthPage && <EnhancedTubelightNavbar items={mainNavItems} />}
         <Outlet />
       </PropertyModalProvider>
     </AuthProvider>
@@ -166,6 +175,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<LoadingFallback />}>
             <MakeAdmin />
+          </Suspense>
+        ) 
+      },
+      { 
+        path: "tubelight-navbar-demo", 
+        element: (
+          <Suspense fallback={<LoadingFallback />}>
+            <TubelightNavbarDemo />
           </Suspense>
         ) 
       },

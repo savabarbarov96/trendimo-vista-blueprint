@@ -37,7 +37,7 @@ export function TextShimmer({
       animate={{ backgroundPosition: '0% center' }}
       transition={{
         repeat: Infinity,
-        duration,
+        duration: duration * 2,
         ease: 'linear',
       }}
       style={

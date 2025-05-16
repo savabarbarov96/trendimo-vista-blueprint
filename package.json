@@ -8,7 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:navbar": "echo 'Testing new navbar - make sure to check: (1) Desktop navbar with tubelight effect, (2) Mobile responsiveness, (3) Auth state handling, and (4) Correct admin/agent-specific UI'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
