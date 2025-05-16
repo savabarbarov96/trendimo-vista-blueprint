@@ -9,6 +9,7 @@ import { TeamMember } from '@/integrations/supabase/types';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { AnimatedTestimonials } from '@/components/ui/animated-testimonials';
 import { TextShimmer } from '@/components/ui/text-shimmer';
+import { StoryScroll } from '@/components/about/story-scroll';
 
 const AboutPage = () => {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -75,38 +76,19 @@ const AboutPage = () => {
           </div>
         </section>
 
-        {/* Our Story Section */}
+        {/* Story Scroll Section - replaced the History section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <TextShimmer 
-                  as="h2"
-                  className="text-2xl md:text-3xl font-bold mb-6 [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
-                  duration={2.5}
-                >
-                  Нашата История
-                </TextShimmer>
-                <p className="mb-4 text-gray-700">
-                  Основана през 2010 година, Trendimo израстна от малка агенция до една от 
-                  водещите компании за недвижими имоти в България. Нашият път е белязан от 
-                  непрекъснато усъвършенстване и отдаденост към клиентите.
-                </p>
-                <p className="text-gray-700">
-                  Вярваме, че всеки заслужава перфектния дом или инвестиционна възможност, 
-                  и се стремим да предоставим персонализирана услуга, която отговаря на 
-                  уникалните нужди на всеки клиент.
-                </p>
-              </div>
-              <div className="bg-gradient-to-r from-red-100 to-white p-1 rounded-lg shadow-elegant">
-                <div className="bg-white rounded-lg overflow-hidden">
-                  <img 
-                    src="/placeholder.svg" 
-                    alt="Trendimo team" 
-                    className="w-full h-auto rounded-lg" 
-                  />
-                </div>
-              </div>
+            <TextShimmer 
+              as="h2"
+              className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
+              duration={2.5}
+            >
+              Нашата история
+            </TextShimmer>
+            
+            <div className="rounded-xl overflow-hidden shadow-elegant">
+              <StoryScroll />
             </div>
           </div>
         </section>
