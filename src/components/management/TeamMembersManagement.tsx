@@ -58,12 +58,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { TeamMember } from '@/integrations/supabase/types';
 
-const BUCKET_NAME = 'team-members';
+const BUCKET_NAME = 'trendimo';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Името трябва да бъде поне 2 символа'),
   position: z.string().min(2, 'Позицията трябва да бъде поне 2 символа'),
   bio: z.string().optional(),
+  email: z.string().email('Невалиден имейл адрес').optional().nullable(),
+  phone_number: z.string().optional().nullable(),
   order_index: z.coerce.number().int().default(0),
   is_active: z.boolean().default(true),
   // image_url will be handled separately with file upload
@@ -90,6 +92,8 @@ const TeamMembersManagement = () => {
       name: '',
       position: '',
       bio: '',
+      email: '',
+      phone_number: '',
       order_index: 0,
       is_active: true,
     },
@@ -130,6 +134,8 @@ const TeamMembersManagement = () => {
       name: member.name,
       position: member.position,
       bio: member.bio || '',
+      email: member.email || '',
+      phone_number: member.phone_number || '',
       order_index: member.order_index,
       is_active: member.is_active,
     });
@@ -322,6 +328,8 @@ const TeamMembersManagement = () => {
             name: values.name,
             position: values.position,
             bio: values.bio || null,
+            email: values.email || null,
+            phone_number: values.phone_number || null,
             order_index: values.order_index,
             is_active: values.is_active,
             image_url: imageUrl,
@@ -346,6 +354,8 @@ const TeamMembersManagement = () => {
             name: values.name,
             position: values.position,
             bio: values.bio || null,
+            email: values.email || null,
+            phone_number: values.phone_number || null,
             order_index: values.order_index,
             is_active: values.is_active,
             image_url: null, // Will be updated after upload if image exists
@@ -385,6 +395,8 @@ const TeamMembersManagement = () => {
         name: '',
         position: '',
         bio: '',
+        email: '',
+        phone_number: '',
         order_index: 0,
         is_active: true,
       });
@@ -412,6 +424,8 @@ const TeamMembersManagement = () => {
       name: '',
       position: '',
       bio: '',
+      email: '',
+      phone_number: '',
       order_index: 0,
       is_active: true,
     });
@@ -457,6 +471,52 @@ const TeamMembersManagement = () => {
                         <FormControl>
                           <Input placeholder="Въведете позиция" {...field} />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Имейл</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email" 
+                            placeholder="Въведете имейл адрес" 
+                            {...field} 
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Контактен имейл на члена на екипа
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="phone_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Телефон</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="tel" 
+                            placeholder="Въведете телефонен номер" 
+                            {...field} 
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Контактен телефон на члена на екипа
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -638,6 +698,7 @@ const TeamMembersManagement = () => {
                         <TableHead className="w-12">Снимка</TableHead>
                         <TableHead>Име</TableHead>
                         <TableHead>Позиция</TableHead>
+                        <TableHead>Контакт</TableHead>
                         <TableHead className="text-center">Статус</TableHead>
                         <TableHead className="text-right">Действия</TableHead>
                       </TableRow>
@@ -663,6 +724,25 @@ const TeamMembersManagement = () => {
                           </TableCell>
                           <TableCell>{member.name}</TableCell>
                           <TableCell>{member.position}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-col text-sm">
+                              {member.email && (
+                                <span className="text-muted-foreground">
+                                  {member.email}
+                                </span>
+                              )}
+                              {member.phone_number && (
+                                <span className="text-muted-foreground">
+                                  {member.phone_number}
+                                </span>
+                              )}
+                              {!member.email && !member.phone_number && (
+                                <span className="text-muted-foreground italic">
+                                  Няма контактна информация
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
                           <TableCell className="text-center">
                             {member.is_active ? (
                               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">

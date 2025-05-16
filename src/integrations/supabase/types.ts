@@ -328,6 +328,8 @@ export interface Database {
           position: string
           bio: string | null
           image_url: string | null
+          email: string | null
+          phone_number: string | null
           order_index: number
           is_active: boolean
           created_at: string
@@ -339,6 +341,8 @@ export interface Database {
           position: string
           bio?: string | null
           image_url?: string | null
+          email?: string | null
+          phone_number?: string | null
           order_index?: number
           is_active?: boolean
           created_at?: string
@@ -350,6 +354,8 @@ export interface Database {
           position?: string
           bio?: string | null
           image_url?: string | null
+          email?: string | null
+          phone_number?: string | null
           order_index?: number
           is_active?: boolean
           created_at?: string
