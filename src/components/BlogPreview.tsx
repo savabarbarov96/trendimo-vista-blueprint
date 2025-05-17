@@ -1,39 +1,72 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from './ui/button';
-import BlogCard from './BlogCard';
+import { useBlogPosts, BlogPost } from '@/hooks/use-blog-posts';
+import { formatDate } from '@/utils/formatDate';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// Sample blog data
-const blogPosts = [
-  {
-    id: 1,
-    title: "5 съвета за успешно инвестиране в недвижими имоти в България",
-    excerpt: "Научете как да максимизирате възвръщаемостта на вашите инвестиции в недвижими имоти с тези проверени съвети от нашите експерти.",
-    imageUrl: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    date: "12 май 2023",
-    category: "Инвестиции"
-  },
-  {
-    id: 2,
-    title: "Тенденции на пазара на недвижими имоти през 2023 година",
-    excerpt: "Анализ на настоящите тенденции на пазара на недвижими имоти в България и прогнози за следващата година от нашия експертен екип.",
-    imageUrl: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    date: "23 април 2023",
-    category: "Пазарни анализи"
-  },
-  {
-    id: 3,
-    title: "Как да подготвите дома си за продажба и да увеличите неговата стойност",
-    excerpt: "Практически съвети за подготовка на вашия имот за продажба, които могат да повишат цената и да ускорят процеса на продажба.",
-    imageUrl: "https://images.unsplash.com/photo-1560185008-cde6dc93dd71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80",
-    date: "5 март 2023",
-    category: "Продажби"
-  }
-];
+// Updated BlogCard component to handle the BlogPost type
+const BlogCard = ({ post }: { post: BlogPost }) => {
+  return (
+    <div className="bg-white rounded-lg overflow-hidden shadow-lg h-full flex flex-col">
+      <Link to={`/blog/${post.slug}`}>
+        <img 
+          src={post.image_url || '/placeholder-blog.jpg'} 
+          alt={post.title} 
+          className="w-full h-48 object-cover"
+        />
+      </Link>
+      <div className="p-5 flex-grow flex flex-col">
+        <div className="flex items-center text-sm text-neutral mb-2">
+          <span>{formatDate(post.published_at)}</span>
+          {post.category && (
+            <>
+              <span className="mx-2">•</span>
+              <span className="text-primary">{
+                post.category === 'Market Analysis' ? 'Пазарен анализ' :
+                post.category === 'Tips & News' ? 'Съвети и новини' :
+                post.category === 'Client Stories' ? 'Истории на клиенти' :
+                post.category
+              }</span>
+            </>
+          )}
+        </div>
+        <Link to={`/blog/${post.slug}`}>
+          <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">
+            {post.title}
+          </h3>
+        </Link>
+        <p className="text-neutral-dark mb-4 line-clamp-3 flex-grow">{post.excerpt}</p>
+        <Link 
+          to={`/blog/${post.slug}`} 
+          className="text-primary font-medium hover:underline mt-auto inline-block"
+        >
+          Прочети повече
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+// Loading skeleton for blog cards
+const BlogCardSkeleton = () => (
+  <div className="bg-white rounded-lg overflow-hidden shadow-lg h-full flex flex-col">
+    <Skeleton className="w-full h-48" />
+    <div className="p-5 flex-grow flex flex-col">
+      <Skeleton className="h-4 w-1/3 mb-2" />
+      <Skeleton className="h-6 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-4" />
+      <Skeleton className="h-4 w-1/4 mt-auto" />
+    </div>
+  </div>
+);
 
 const BlogPreview = () => {
+  const { data: posts, isLoading, error } = useBlogPosts();
+
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -51,9 +84,25 @@ const BlogPreview = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
-            <BlogCard key={post.id} {...post} />
-          ))}
+          {isLoading ? (
+            <>
+              <BlogCardSkeleton />
+              <BlogCardSkeleton />
+              <BlogCardSkeleton />
+            </>
+          ) : error ? (
+            <div className="col-span-3 text-center p-8">
+              <p className="text-destructive">Грешка при зареждане на статиите.</p>
+            </div>
+          ) : posts && posts.length > 0 ? (
+            posts.slice(0, 3).map((post) => (
+              <BlogCard key={post.id} post={post} />
+            ))
+          ) : (
+            <div className="col-span-3 text-center p-8">
+              <p className="text-muted-foreground">Няма налични статии.</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

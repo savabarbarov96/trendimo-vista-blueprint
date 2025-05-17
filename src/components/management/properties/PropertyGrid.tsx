@@ -60,18 +60,29 @@ const PropertyGrid: React.FC<PropertyGridProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {properties.map((property) => (
-        <PropertyCard
-          key={property.id}
-          property={property}
-          teamMembers={teamMembers}
-          onEdit={onEditClick}
-          onDelete={onDeleteClick}
-          onToggleFeatured={onToggleFeatured}
-          onTogglePublished={onTogglePublished}
-        />
-      ))}
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button 
+          onClick={onCreateClick}
+          className="flex items-center gap-2"
+        >
+          <Plus size={16} />
+          <span>Добави имот</span>
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {properties.map((property) => (
+          <PropertyCard
+            key={property.id}
+            property={property}
+            teamMembers={teamMembers}
+            onEdit={onEditClick}
+            onDelete={onDeleteClick}
+            onToggleFeatured={onToggleFeatured}
+            onTogglePublished={onTogglePublished}
+          />
+        ))}
+      </div>
     </div>
   );
 };

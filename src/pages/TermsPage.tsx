@@ -15,7 +15,7 @@ const TermsAndConditionsPage = () => {
         
         <div className="prose max-w-none lg:prose-lg xl:prose-xl">
           <p className="mb-4">
-            Във връзка с предоставяните Услуги “ТРЕНДИМО” ООД обработва лични данни съгласно <a href="/privacy-policy" className="text-blue-600 hover:underline">Политиката за защита на личните данни</a> („Политика“), с която можете да се запознаете.
+            Във връзка с предоставяните Услуги “ТРЕНДИМО” ООД обработва лични данни съгласно <a href="/privacy" className="text-blue-600 hover:underline">Политиката за защита на личните данни</a> („Политика“), с която можете да се запознаете.
           </p>
           <p className="mb-8 font-semibold">
             Политиката е неразделна част от тези Условия.
