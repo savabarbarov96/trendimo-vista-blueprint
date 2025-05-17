@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { TextShimmer } from '@/components/ui/text-shimmer';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 // Use the same default images as the original HeroCarousel component
 const defaultImages = [
@@ -23,70 +24,60 @@ interface HeroSlideshowProps {
   shouldAnimate?: boolean;
 }
 
-const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = true }: HeroSlideshowProps) => {
-  const [slideshowImages, setSlideshowImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+const fetchSlideshowImages = async () => {
+  try {
+    // Try to fetch images from the 'hero_slideshow' folder
+    const { data: images, error } = await supabase.storage
+      .from('trendimo')
+      .list('hero_slideshow/', {
+        sortBy: { column: 'created_at', order: 'desc' },
+      });
 
-  // Fetch slideshow images from Supabase on component mount
-  useEffect(() => {
-    fetchSlideshowImages();
-  }, []);
-
-  const fetchSlideshowImages = async () => {
-    setIsLoading(true);
-    try {
-      // Try to fetch images from the 'hero_slideshow' folder
-      const { data: images, error } = await supabase.storage
-        .from('trendimo')
-        .list('hero_slideshow/', {
-          sortBy: { column: 'created_at', order: 'desc' },
-        });
-
-      if (error) {
-        console.error('Error fetching slideshow images:', error);
-        // Fall back to default images if there's an error
-        setSlideshowImages(defaultImages);
-        return;
-      }
-
-      // Filter for image files only
-      const imageFiles = images ? images.filter(item => 
-        !item.id.endsWith('/') && 
-        (item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-      ) : [];
-
-      // If we have images, get their public URLs
-      if (imageFiles.length > 0) {
-        const urls = imageFiles.map(file => {
-          const { data: { publicUrl } } = supabase
-            .storage
-            .from('trendimo')
-            .getPublicUrl('hero_slideshow/' + file.name);
-
-          return publicUrl;
-        });
-
-        if (urls.length > 0) {
-          console.log('Fetched slideshow images:', urls);
-          setSlideshowImages(urls);
-        } else {
-          // No uploaded images found, use defaults
-          console.log('No uploaded images found, using defaults');
-          setSlideshowImages(defaultImages);
-        }
-      } else {
-        // No uploaded images found, use defaults
-        console.log('No uploaded images found, using defaults');
-        setSlideshowImages(defaultImages);
-      }
-    } catch (error) {
-      console.error('Error in fetchSlideshowImages:', error);
-      // Fall back to default images if there's an error
-      setSlideshowImages(defaultImages);
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      console.error('Error fetching slideshow images:', error);
+      return defaultImages;
     }
-  };
+
+    // Filter for image files only
+    const imageFiles = images ? images.filter(item => 
+      !item.id.endsWith('/') && 
+      (item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+    ) : [];
+
+    // If we have images, get their public URLs
+    if (imageFiles.length > 0) {
+      const urls = imageFiles.map(file => {
+        const { data: { publicUrl } } = supabase
+          .storage
+          .from('trendimo')
+          .getPublicUrl('hero_slideshow/' + file.name);
+
+        return publicUrl;
+      });
+
+      if (urls.length > 0) {
+        console.log('Fetched slideshow images:', urls);
+        return urls;
+      }
+    }
+    
+    // No uploaded images found, use defaults
+    console.log('No uploaded images found, using defaults');
+    return defaultImages;
+  } catch (error) {
+    console.error('Error in fetchSlideshowImages:', error);
+    return defaultImages;
+  }
+};
+
+const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = true }: HeroSlideshowProps) => {
+  const { data: slideshowImages, isLoading } = useQuery({
+    queryKey: ['hero-slideshow'],
+    queryFn: fetchSlideshowImages,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <div className="relative h-screen">
@@ -97,7 +88,7 @@ const HeroSlideshow = ({ searchMode, setSearchMode, scrollY, shouldAnimate = tru
             <p>Зареждане на слайдшоу...</p>
           </div>
         </div>
-      ) : slideshowImages.length > 0 ? (
+      ) : slideshowImages && slideshowImages.length > 0 ? (
         <ImagesSlider 
           images={slideshowImages} 
           className="h-screen"

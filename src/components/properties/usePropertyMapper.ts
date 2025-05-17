@@ -4,6 +4,40 @@ import { SupabaseProperty } from './types';
 import { propertyTypes } from '@/data/content';
 import { supabase } from '@/integrations/supabase/client';
 import { TeamMember } from '@/integrations/supabase/types';
+import { useQuery } from '@tanstack/react-query';
+
+// Separate hook for fetching agent data
+export const useAgent = (agentId: string | null) => {
+  return useQuery({
+    queryKey: ['agent', agentId],
+    queryFn: async () => {
+      if (!agentId) return null;
+      
+      const { data, error } = await supabase
+        .from('team_members')
+        .select('*')
+        .eq('id', agentId)
+        .single();
+      
+      if (error || !data) {
+        console.error('Error fetching agent:', error);
+        return null;
+      }
+      
+      return {
+        id: data.id,
+        name: data.name,
+        position: data.position,
+        image_url: data.image_url,
+        email: data.email,
+        phone_number: data.phone_number
+      };
+    },
+    enabled: !!agentId,
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+};
 
 export const usePropertyMapper = () => {
   // Helper function to get placeholder images
@@ -30,36 +64,6 @@ export const usePropertyMapper = () => {
     return 'Апартамент';
   };
 
-  // Function to fetch agent information
-  const fetchAgent = async (agentId: string) => {
-    if (!agentId) return null;
-    
-    try {
-      const { data, error } = await supabase
-        .from('team_members')
-        .select('*')
-        .eq('id', agentId)
-        .single();
-      
-      if (error || !data) {
-        console.error('Error fetching agent:', error);
-        return null;
-      }
-      
-      return {
-        id: data.id,
-        name: data.name,
-        position: data.position,
-        image_url: data.image_url,
-        email: data.email,
-        phone_number: data.phone_number
-      };
-    } catch (error) {
-      console.error('Error fetching agent:', error);
-      return null;
-    }
-  };
-
   // Function to convert SupabaseProperty to Property
   const mapSupabasePropertyToProperty = async (prop: SupabaseProperty): Promise<Property> => {
     // Try to get images from storage, fallback to placeholders
@@ -73,15 +77,34 @@ export const usePropertyMapper = () => {
       console.error('Error fetching property images:', err);
       images = getPlaceholderImages();
     }
-    
-    // Fetch agent info if agent_id is provided
-    let agent = null;
+
+    // Fetch agent data directly (without React Query)
+    let agent = undefined;
     if (prop.agent_id) {
-      agent = await fetchAgent(prop.agent_id);
+      try {
+        const { data, error } = await supabase
+          .from('team_members')
+          .select('*')
+          .eq('id', prop.agent_id)
+          .single();
+        
+        if (!error && data) {
+          agent = {
+            id: data.id,
+            name: data.name,
+            position: data.position,
+            image_url: data.image_url,
+            email: data.email,
+            phone_number: data.phone_number
+          };
+        }
+      } catch (err) {
+        console.error('Error fetching agent:', err);
+      }
     }
 
     return {
-      id: prop.id, // Keep ID as string
+      id: prop.id,
       title: prop.title,
       description: prop.description || '',
       price: prop.price,
@@ -97,7 +120,7 @@ export const usePropertyMapper = () => {
       imageUrl: images[0] || getPlaceholderMainImage(),
       images: images,
       createdAt: prop.created_at || new Date().toISOString(),
-      agent: agent || undefined
+      agent: agent
     };
   };
 
@@ -105,7 +128,6 @@ export const usePropertyMapper = () => {
     mapSupabasePropertyToProperty,
     getPlaceholderImages,
     getPlaceholderMainImage,
-    getValidPropertyType,
-    fetchAgent
+    getValidPropertyType
   };
 };

@@ -22,13 +22,18 @@ const ManagementPage = () => {
   // Redirect if not authenticated or not authorized
   useEffect(() => {
     let mounted = true;
+    let hasAttemptedRedirect = false;
 
     const checkAuth = async () => {
-      // Only redirect if the component is still mounted and we're done loading
-      if (mounted && !loading) {
+      // Only redirect if the component is still mounted, we're done loading, and haven't attempted a redirect yet
+      if (mounted && !loading && !hasAttemptedRedirect) {
+        hasAttemptedRedirect = true;
+        
         if (!user) {
+          console.log("No user found, redirecting to login");
           navigate('/login', { replace: true });
         } else if (profile && !['admin', 'agent'].includes(profile.role)) {
+          console.log("User doesn't have required role, redirecting to home");
           navigate('/', { replace: true });
         }
       }

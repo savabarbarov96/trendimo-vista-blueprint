@@ -38,12 +38,11 @@ const PropertiesPage = () => {
       bathrooms: queryParams.get('bathrooms') ? parseInt(queryParams.get('bathrooms')!) : null
     };
     
-    // Only set if they are actually different to avoid potential loops if stringify is slow
-    // or if other effects depend on `filters` identity.
+    // Only set if they are actually different to avoid potential loops
     if (JSON.stringify(newFilters) !== JSON.stringify(filters)) {
         setFilters(newFilters);
     }
-  }, [location.search, filters]); // Added filters to dependencies to compare for actual change
+  }, [location.search]); // Removed filters dependency
 
   const handleFilterChange = (changedFilters: FilterState) => {
     const queryParams = new URLSearchParams();

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Bed, Bath, Maximize } from 'lucide-react';
 import { Property } from '@/data/properties';
@@ -13,29 +12,31 @@ const PropertyDetailsCard: React.FC<PropertyDetailsCardProps> = ({ property }) =
   return (
     <Card className="mb-8">
       <CardHeader>
-        <h2 className="text-2xl font-semibold">Property Details</h2>
+        <h2 className="text-2xl font-semibold">Детайли за имота</h2>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
           <div className="flex items-center">
             <Bed className="h-5 w-5 mr-2 text-primary" />
             <div>
-              <p className="text-sm text-muted-foreground">Bedrooms</p>
-              <p className="font-medium">{property.bedrooms}</p>
+              <p className="text-sm text-muted-foreground">Стаи</p>
+              <p className="font-medium">{property.bedrooms}-СТАЕН</p>
             </div>
           </div>
-          <div className="flex items-center">
-            <Bath className="h-5 w-5 mr-2 text-primary" />
-            <div>
-              <p className="text-sm text-muted-foreground">Bathrooms</p>
-              <p className="font-medium">{property.bathrooms}</p>
+          {property.bathrooms > 0 && (
+            <div className="flex items-center">
+              <Bath className="h-5 w-5 mr-2 text-primary" />
+              <div>
+                <p className="text-sm text-muted-foreground">Бани</p>
+                <p className="font-medium">{property.bathrooms}</p>
+              </div>
             </div>
-          </div>
+          )}
           <div className="flex items-center">
             <Maximize className="h-5 w-5 mr-2 text-primary" />
             <div>
-              <p className="text-sm text-muted-foreground">Area</p>
-              <p className="font-medium">{property.area} sq.m</p>
+              <p className="text-sm text-muted-foreground">Площ</p>
+              <p className="font-medium">{property.area} м²</p>
             </div>
           </div>
         </div>
@@ -44,7 +45,7 @@ const PropertyDetailsCard: React.FC<PropertyDetailsCardProps> = ({ property }) =
         
         {/* Description */}
         <div>
-          <h3 className="font-medium mb-2">Description</h3>
+          <h3 className="font-medium mb-2">Описание</h3>
           <p className="text-neutral-dark whitespace-pre-line">
             {property.description}
           </p>
@@ -54,23 +55,23 @@ const PropertyDetailsCard: React.FC<PropertyDetailsCardProps> = ({ property }) =
         
         {/* Features and amenities */}
         <div>
-          <h3 className="font-medium mb-3">Features & Amenities</h3>
+          <h3 className="font-medium mb-3">Характеристики</h3>
           <div className="grid grid-cols-2 gap-y-2">
             <div className="flex items-center">
               <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-              <span>Property Type: {property.propertyType}</span>
+              <span>Тип имот: {property.propertyType}</span>
             </div>
             <div className="flex items-center">
               <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-              <span>City: {property.city}</span>
+              <span>Град: {property.city}</span>
             </div>
             <div className="flex items-center">
               <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-              <span>Location: {property.location}</span>
+              <span>Локация: {property.location}</span>
             </div>
             <div className="flex items-center">
               <div className="h-2 w-2 rounded-full bg-primary mr-2"></div>
-              <span>Status: {property.status}</span>
+              <span>Статус: {property.status === 'available' ? 'Наличен' : 'Продаден'}</span>
             </div>
           </div>
         </div>

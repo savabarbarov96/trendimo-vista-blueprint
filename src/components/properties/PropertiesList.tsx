@@ -59,8 +59,16 @@ export const PropertiesList: React.FC<{ initialFilters?: FilterState }> = ({
   // Fetch properties whenever filters change
   useEffect(() => {
     console.log('Filters changed, fetching properties:', filters);
-    fetchProperties();
-  }, [filters]);
+    
+    // Debounce the fetch operation
+    const fetchTimeout = setTimeout(() => {
+      fetchProperties();
+    }, 100);
+    
+    return () => {
+      clearTimeout(fetchTimeout);
+    };
+  }, [JSON.stringify(filters)]); // Using JSON.stringify to only trigger when filters actually change
 
   const fetchProperties = async () => {
     try {

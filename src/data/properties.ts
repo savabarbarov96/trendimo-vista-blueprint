@@ -13,18 +13,13 @@ export interface Property {
   city: string;
   address: string;
   propertyType: string;
-  status: 'available' | 'sold' | 'rented';
+  status: string;
   featured: boolean;
   imageUrl: string;
   images: string[];
   createdAt: string;
   agent?: {
     id: string;
-    name: string;
-    position: string;
-    image_url?: string;
-    email?: string;
-    phone_number?: string;
   };
 }
 
@@ -172,8 +167,11 @@ export const getFeaturedProperties = (): Property[] => {
 // Helper function to format price
 export const formatPrice = (price: number): string => {
   return new Intl.NumberFormat('bg-BG', {
-    style: 'decimal',
+    style: 'currency',
+    currency: 'BGN',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price) + ' €';
+    maximumFractionDigits: 0
+  }).format(price)
+    .replace('BGN', 'лв.')
+    .replace(' ', ' '); // Ensure proper spacing
 };

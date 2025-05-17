@@ -478,7 +478,7 @@ const PropertiesManagement = () => {
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="bedrooms">Спални</Label>
+                  <Label htmlFor="bedrooms">Стаи</Label>
                   <Input
                     id="bedrooms"
                     name="bedrooms"
@@ -804,7 +804,7 @@ const PropertiesManagement = () => {
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-bedrooms">Спални</Label>
+                <Label htmlFor="edit-bedrooms">Стаи</Label>
                 <Input
                   id="edit-bedrooms"
                   name="bedrooms"
