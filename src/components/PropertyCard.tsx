@@ -28,68 +28,77 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     <Link to={`/properties/${property.id}`}>
       <div 
         ref={safeRef}
-        className="bg-white rounded-xl overflow-hidden shadow-elegant border border-red-100 hover:shadow-elegant-hover transition-shadow duration-300"
+        className={`bg-gradient-to-b from-white to-gray-50 backdrop-blur-sm rounded-2xl overflow-hidden 
+          shadow-[0_10px_30px_-15px_rgba(0,0,0,0.1),0_4px_6px_-2px_rgba(0,0,0,0.05)] 
+          border border-gray-100/60 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15),0_10px_10px_-5px_rgba(0,0,0,0.04)] 
+          transition-all duration-500 hover:-translate-y-1 
+          ${property.featured ? 'ring-2 ring-red-400/30 ring-offset-2 ring-offset-white/5' : ''}
+          h-full`}
       >
         {/* Property image */}
-        <div className="relative aspect-[4/3] overflow-hidden">
+        <div className="relative aspect-[4/3] overflow-hidden group">
           <MotionImage
             src={property.imageUrl}
             alt={property.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover absolute inset-0 transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
           />
           {property.featured && (
-            <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-              Препоръчан
-            </div>
+            <>
+              <div className="absolute top-3 left-3 bg-gradient-to-r from-red-600 to-red-500 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-md flex items-center">
+                <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-white animate-pulse"></span>
+                Препоръчан
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-red-600/10 to-transparent opacity-60 mix-blend-overlay"></div>
+            </>
           )}
-          <div className="absolute bottom-3 right-3 bg-white text-red-700 px-3 py-1 rounded-full font-semibold shadow-lg">
+          <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md text-red-700 px-3 py-1.5 rounded-full font-semibold shadow-lg">
             {formatPrice(property.price)}
           </div>
         </div>
 
         {/* Property details */}
-        <div className="p-4">
+        <div className="p-5">
           <h3 
-            className={`text-xl font-semibold mb-2 hover:text-red-700 transition-colors transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
+            className={`text-xl font-semibold mb-2.5 hover:text-red-700 transition-colors transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '0.1s' }}
           >
             {property.title}
           </h3>
           
           <div 
-            className={`flex items-center text-neutral mb-2 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
+            className={`flex items-center text-neutral mb-2.5 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '0.2s' }}
           >
-            <MapPin className="h-4 w-4 mr-1" />
+            <MapPin className="h-4 w-4 mr-1.5 text-red-500/80" />
             <span>{property.location}, {property.city}</span>
           </div>
 
           <p 
-            className={`text-neutral-dark mb-4 line-clamp-2 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
+            className={`text-neutral-dark mb-5 line-clamp-2 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '0.3s' }}
           >
             {property.description}
           </p>
 
           {/* Property features */}
-          <div className={`grid grid-cols-3 gap-2 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
+          <div className={`grid grid-cols-3 gap-3 bg-gray-50/80 p-3 rounded-xl transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
             style={{ transitionDelay: '0.4s' }}
           >
             {property.bedrooms > 0 && (
               <div className="flex items-center text-sm">
-                <Bed className="h-4 w-4 mr-1 text-primary" />
+                <Bed className="h-4 w-4 mr-1.5 text-primary" />
                 <span>{property.bedrooms}-СТАЕН</span>
               </div>
             )}
             {property.bathrooms > 0 && (
               <div className="flex items-center text-sm">
-                <Bath className="h-4 w-4 mr-1 text-primary" />
+                <Bath className="h-4 w-4 mr-1.5 text-primary" />
                 <span>{property.bathrooms} Бани</span>
               </div>
             )}
             <div className="flex items-center text-sm">
-              <Maximize className="h-4 w-4 mr-1 text-primary" />
+              <Maximize className="h-4 w-4 mr-1.5 text-primary" />
               <span>{property.area} m²</span>
             </div>
           </div>
@@ -97,10 +106,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           {/* Agent badge (if available) */}
           {agent && (
             <div 
-              className={`mt-3 flex items-center border-t pt-3 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
+              className={`mt-4 flex items-center border-t border-gray-100 pt-4 transition-opacity duration-300 ${isIntersecting ? 'opacity-100' : 'opacity-0'}`}
               style={{ transitionDelay: '0.5s' }}
             >
-              <div className="h-8 w-8 rounded-full overflow-hidden flex-shrink-0">
+              <div className="h-9 w-9 rounded-full overflow-hidden flex-shrink-0 shadow-md">
                 {agent.image_url ? (
                   <img 
                     src={agent.image_url} 
@@ -113,7 +122,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
                   </div>
                 )}
               </div>
-              <div className="ml-2 text-xs">
+              <div className="ml-2.5 text-xs">
                 <p className="font-semibold text-primary">{agent.name}</p>
                 <p className="text-neutral">{agent.position}</p>
               </div>

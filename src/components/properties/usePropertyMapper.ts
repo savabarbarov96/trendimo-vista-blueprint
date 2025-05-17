@@ -152,7 +152,15 @@ export const usePropertyMapper = () => {
       imageUrl: images[0] || getPlaceholderMainImage(),
       images: images,
       createdAt: prop.created_at || new Date().toISOString(),
-      agent: agent
+      virtual_tour_url: prop.virtual_tour_url || null,
+      agent: agent,
+      latitude: prop.latitude || null,
+      longitude: prop.longitude || null,
+      property_type: prop.property_type,
+      listing_type: prop.listing_type,
+      is_featured: prop.is_featured || false,
+      is_published: prop.is_published || false,
+      owner_id: prop.owner_id || ''
     };
   }, []);
 

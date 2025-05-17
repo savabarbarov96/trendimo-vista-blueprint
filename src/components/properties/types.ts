@@ -17,6 +17,10 @@ export interface SupabaseProperty {
   is_published: boolean | null;
   created_at: string | null;
   agent_id: string | null;
+  virtual_tour_url: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  owner_id?: string | null;
 }
 
 // Define the filter state

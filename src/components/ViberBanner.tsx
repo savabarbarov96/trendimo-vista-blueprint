@@ -1,29 +1,214 @@
+"use client";
 
-import React from 'react';
-import { Button } from './ui/button';
+import * as React from "react";
+import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { supabase } from '@/lib/supabase';
+import ViberIcon from './icons/ViberIcon';
+
+function Grid({
+  cellSize = 12,
+  strokeWidth = 1,
+  patternOffset = [0, 0],
+  className,
+}: {
+  cellSize?: number;
+  strokeWidth?: number;
+  patternOffset?: [number, number];
+  className?: string;
+}) {
+  const id = React.useId();
+
+  return (
+    <svg
+      className={cn(
+        "pointer-events-none absolute inset-0 text-black/10",
+        className,
+      )}
+      width="100%"
+      height="100%"
+    >
+      <defs>
+        <pattern
+          id={`grid-${id}`}
+          x={patternOffset[0] - 1}
+          y={patternOffset[1] - 1}
+          width={cellSize}
+          height={cellSize}
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d={`M ${cellSize} 0 L 0 0 0 ${cellSize}`}
+            fill="transparent"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+          />
+        </pattern>
+      </defs>
+      <rect fill={`url(#grid-${id})`} width="100%" height="100%" />
+    </svg>
+  );
+}
 
 const ViberBanner = () => {
+  const [show, setShow] = React.useState(true);
+  const [groupLink, setGroupLink] = React.useState('https://invite.viber.com/');
+  const [bannerText, setBannerText] = React.useState('Стани част от нашата Viber общност и получи достъп до най-новите предложения.');
+  const [buttonText, setButtonText] = React.useState('Присъедини се');
+  const [isEnabled, setIsEnabled] = React.useState(true);
+  
+  React.useEffect(() => {
+    fetchViberSettings();
+    
+    // Set up a real-time subscription to viber_settings changes
+    const subscription = supabase
+      .channel('viber_settings_changes')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'viber_settings' 
+      }, (payload) => {
+        console.log('Viber settings changed:', payload);
+        fetchViberSettings();
+      })
+      .subscribe();
+      
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const fetchViberSettings = async () => {
+    try {
+      console.log('ViberBanner: Fetching Viber settings...');
+      const { data, error } = await supabase
+        .from('viber_settings')
+        .select('group_link, description, button_text, enabled')
+        .single();
+
+      if (error) {
+        console.error('ViberBanner: Error fetching Viber settings:', error);
+        return;
+      }
+      
+      console.log('ViberBanner: Viber settings loaded:', data);
+      if (data) {
+        setGroupLink(data.group_link || 'https://invite.viber.com/');
+        if (data.description) {
+          setBannerText(data.description);
+        }
+        if (data.button_text) {
+          setButtonText(data.button_text);
+        }
+        setIsEnabled(data.enabled);
+      }
+    } catch (error) {
+      console.error('ViberBanner: Error fetching Viber settings:', error);
+    }
+  };
+  
+  if (!show || !isEnabled) return null;
+
   return (
-    <section className="bg-[#7360f2] text-white py-6">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center mb-4 md:mb-0">
-            <svg 
-              className="h-8 w-8 mr-3"
-              viewBox="0 0 24 24" 
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M11.4301 2.02572C13.3274 2.02572 14.3178 2.02572 14.8589 2.02572C16.7562 2.02572 18.1479 2.56686 19.1384 3.64914C20.1288 4.73142 20.6699 6.12284 20.6699 8.02112V15.9754C20.6699 17.8736 20.1288 19.2651 19.1384 20.3473C18.1479 21.4296 16.7562 21.9708 14.8589 21.9708H9.17671C7.27901 21.9708 5.8874 21.4296 4.89692 20.3473C3.90644 19.2651 3.36539 17.8736 3.36539 15.9754V8.02112C3.36539 6.12284 3.90644 4.73142 4.89692 3.64914C5.8874 2.56686 7.27901 2.02572 9.17671 2.02572H11.4301ZM17.0151 16.7578C17.0151 16.4867 16.9068 16.2695 16.7562 16.0986C16.6055 15.9277 16.3961 15.8196 16.125 15.8196C15.8539 15.8196 15.6445 15.9277 15.4939 16.0986C15.3432 16.2695 15.2349 16.4867 15.2349 16.7578C15.2349 17.0288 15.3432 17.2382 15.4939 17.3888C15.6445 17.5395 15.8539 17.6477 16.125 17.6477C16.3961 17.6477 16.6055 17.5395 16.7562 17.3888C16.9068 17.2382 17.0151 17.0288 17.0151 16.7578ZM16.125 7.85972C16.3961 7.85972 16.6055 7.75143 16.7562 7.58053C16.9068 7.40963 17.0151 7.20028 17.0151 6.92921C17.0151 6.65813 16.9068 6.44878 16.7562 6.27788C16.6055 6.10698 16.3961 6.00043 16.125 6.00043C15.8539 6.00043 15.6445 6.10698 15.4939 6.27788C15.3432 6.44878 15.2349 6.65813 15.2349 6.92921C15.2349 7.20028 15.3432 7.40963 15.4939 7.58053C15.6445 7.75143 15.8539 7.85972 16.125 7.85972ZM11.2197 16.0986C11.3704 16.2695 11.5787 16.3778 11.8498 16.3778C12.1209 16.3778 12.3302 16.2695 12.4809 16.0986C12.6315 15.9277 12.7398 15.7183 12.7398 15.4472C12.7398 15.1762 12.6315 14.9668 12.4809 14.8161C12.3302 14.6655 12.1209 14.5572 11.8498 14.5572C11.5787 14.5572 11.3704 14.6655 11.2197 14.8161C11.069 14.9668 10.9607 15.1762 10.9607 15.4472C10.9607 15.7183 11.069 15.9277 11.2197 16.0986ZM11.8498 9.28174C12.1209 9.28174 12.3302 9.17345 12.4809 9.00255C12.6315 8.83165 12.7398 8.6223 12.7398 8.35122C12.7398 8.08015 12.6315 7.8708 12.4809 7.6999C12.3302 7.529 12.1209 7.42245 11.8498 7.42245C11.5787 7.42245 11.3704 7.529 11.2197 7.6999C11.069 7.8708 10.9607 8.08015 10.9607 8.35122C10.9607 8.6223 11.069 8.83165 11.2197 9.00255C11.3704 9.17345 11.5787 9.28174 11.8498 9.28174ZM7.48245 14.5572C7.21137 14.5572 7.00202 14.6655 6.83112 14.8161C6.66022 14.9668 6.55368 15.1762 6.55368 15.4472C6.55368 15.7183 6.66022 15.9277 6.83112 16.0986C7.00202 16.2695 7.21137 16.3778 7.48245 16.3778C7.75352 16.3778 7.96288 16.2695 8.13377 16.0986C8.30467 15.9277 8.41296 15.7183 8.41296 15.4472C8.41296 15.1762 8.30467 14.9668 8.13377 14.8161C7.96288 14.6655 7.75352 14.5572 7.48245 14.5572ZM7.48245 9.28174C7.75352 9.28174 7.96288 9.17345 8.13377 9.00255C8.30467 8.83165 8.41296 8.6223 8.41296 8.35122C8.41296 8.08015 8.30467 7.8708 8.13377 7.6999C7.96288 7.529 7.75352 7.42245 7.48245 7.42245C7.21137 7.42245 7.00202 7.529 6.83112 7.6999C6.66022 7.8708 6.55368 8.08015 6.55368 8.35122C6.55368 8.6223 6.66022 8.83165 6.83112 9.00255C7.00202 9.17345 7.21137 9.28174 7.48245 9.28174Z"/>
-            </svg>
-            <p className="text-lg font-medium">Стани част от нашата Viber общност и получи достъп до най-новите предложения.</p>
+    <AnimatePresence>
+      {show && (
+        <motion.section
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          className="relative isolate bg-[#7360f2] text-white py-4 overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #7360f2, #8a70ff)",
+            boxShadow: "0 8px 32px rgba(115, 96, 242, 0.2)",
+          }}
+        >
+          <Grid
+            cellSize={13}
+            patternOffset={[0, -1]}
+            className="text-white/10 mix-blend-overlay [mask-image:linear-gradient(to_right,white,transparent)] md:[mask-image:linear-gradient(to_right,white_60%,transparent)]"
+          />
+
+          <motion.div
+            className="absolute inset-0 -z-10"
+            style={{ opacity: 0.15 }}
+            animate={{
+              background: [
+                "radial-gradient(circle at top left, rgba(255, 255, 255, 0.5), transparent 70%)",
+                "radial-gradient(circle at top right, rgba(255, 255, 255, 0.5), transparent 70%)",
+                "radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.5), transparent 70%)",
+              ],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+          />
+
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="flex items-center mb-4 md:mb-0">
+                <motion.div
+                  initial={{ rotate: -10, scale: 0.9 }}
+                  animate={{ rotate: 0, scale: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                  className="bg-white/15 rounded-full p-1.5 mr-3 backdrop-blur-sm"
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: [0, 5, 0, -5, 0],
+                    }}
+                    transition={{
+                      duration: 5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    {/* Official Viber logo */}
+                    <ViberIcon className="h-7 w-7" />
+                  </motion.div>
+                </motion.div>
+                <motion.p 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                  className="text-lg font-medium"
+                >
+                  {bannerText}
+                </motion.p>
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  className="bg-white text-[#7360f2] hover:bg-gray-100 font-medium shadow-lg"
+                  onClick={() => window.open(groupLink, '_blank')}
+                >
+                  {buttonText}
+                </Button>
+              </motion.div>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                className="absolute top-2 right-2 text-white/70 hover:text-white md:top-4 md:right-4"
+                onClick={() => setShow(false)}
+              >
+                <X className="h-5 w-5" />
+              </motion.button>
+            </div>
           </div>
-          <Button className="bg-white text-[#7360f2] hover:bg-gray-100">
-            Присъедини се
-          </Button>
-        </div>
-      </div>
-    </section>
+        </motion.section>
+      )}
+    </AnimatePresence>
   );
 };
 

@@ -4,7 +4,8 @@ import {
   Check, 
   ChevronDown,
   Calendar,
-  Home 
+  Home,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -106,8 +107,22 @@ const InquiriesManagement = () => {
 
   if (error) {
     return (
-      <div className="text-center p-4">
-        <p className="text-red-500">Грешка при зареждане на запитванията: {error.message}</p>
+      <div className="text-center p-8">
+        <div className="mb-4 flex flex-col items-center">
+          <div className="bg-red-100 text-red-800 p-3 rounded-full mb-4">
+            <X className="h-8 w-8" />
+          </div>
+          <h3 className="text-xl font-bold mb-2">Грешка при зареждане на запитванията</h3>
+          <p className="text-neutral-500 mb-4">
+            Възникна проблем при достъп до запитванията. Моля, опитайте отново.
+          </p>
+          <Button 
+            onClick={() => window.location.reload()} 
+            className="bg-red-700 hover:bg-red-800"
+          >
+            Опитайте отново
+          </Button>
+        </div>
       </div>
     );
   }

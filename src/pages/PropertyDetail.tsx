@@ -16,10 +16,8 @@ import { PropertyCarousel } from '@/components/properties/PropertyCarousel';
 import { toast } from "sonner";
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import TeamMemberCard from '@/components/about/TeamMemberCard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Phone, Mail, User } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 // Refactored components
 import PropertyDetailHeader from '@/components/properties/PropertyDetailHeader';
@@ -34,6 +32,7 @@ const PropertyDetail = () => {
   const { user } = useAuth();
   const [property, setProperty] = useState<Property | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isPropertyLoading, setIsPropertyLoading] = useState(true);
   
   // Fetch property data
   const { data: propertyData, isLoading, error } = useQuery({
@@ -78,11 +77,14 @@ const PropertyDetail = () => {
     if (propertyData) {
       const loadProperty = async () => {
         try {
+          setIsPropertyLoading(true);
           const mappedProperty = await mapSupabasePropertyToProperty(propertyData);
           setProperty(mappedProperty);
         } catch (error) {
           console.error('Error mapping property:', error);
           toast.error('Не можахме да заредим данните за имота');
+        } finally {
+          setIsPropertyLoading(false);
         }
       };
       
@@ -90,7 +92,7 @@ const PropertyDetail = () => {
     }
   }, [propertyData, mapSupabasePropertyToProperty]);
   
-  if (isLoading) {
+  if (isLoading || isPropertyLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-12 w-12 animate-spin text-red-600" />
@@ -98,7 +100,7 @@ const PropertyDetail = () => {
     );
   }
   
-  if (error || !property) {
+  if (error && !isPropertyLoading) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
         <h1 className="text-2xl font-bold mb-4">Грешка при зареждане на имота</h1>
@@ -112,6 +114,14 @@ const PropertyDetail = () => {
     );
   }
   
+  if (!property) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-12 w-12 animate-spin text-red-600" />
+      </div>
+    );
+  }
+  
   const isAgent = userRole === 'agent';
   
   // Format phone number for links
@@ -121,114 +131,68 @@ const PropertyDetail = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
       <div className="container mx-auto px-4 py-8">
-        {/* Property header section */}
+        {/* Sticky header with back button and actions */}
         <PropertyDetailHeader property={property} isAgent={isAgent} />
         
-        {/* Image carousel */}
-        <div className="mb-8">
-          {property && <PropertyCarousel images={property.images} />}
-        </div>
-        
-        {/* Main content grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main content area with image gallery and tabs */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
           {/* Left column with property details */}
-          <div className="lg:col-span-2">
-            {/* Basic info */}
-            <PropertyDetailsCard property={property} />
+          <div className="lg:col-span-2 space-y-8">
+            {/* Enhanced image carousel */}
+            <Card className="p-0 overflow-hidden shadow-sm border border-neutral-200">
+              {property && <PropertyCarousel images={property.images} />}
+            </Card>
             
-            {/* Map */}
-            <PropertyLocationCard 
-              address={property.address} 
-              location={property.location} 
-              city={property.city} 
-            />
-            
-            {/* Agent information */}
-            {property.agent && (
-              <Card className="mt-6 overflow-hidden border border-red-100 bg-white shadow-elegant rounded-xl">
-                <CardHeader className="bg-gradient-to-r from-red-50 to-white pb-4">
-                  <CardTitle className="flex items-center text-red-800">
-                    <User className="h-5 w-5 mr-2" />
-                    Агент на имота
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="aspect-square rounded-xl overflow-hidden md:col-span-1">
-                      {property.agent.image_url ? (
-                        <img 
-                          src={property.agent.image_url} 
-                          alt={property.agent.name}
-                          className="w-full h-full object-cover" 
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-red-50 flex items-center justify-center">
-                          <div className="h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-red-800">
-                              {property.agent.name.charAt(0)}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+            {/* Tabbed interface for property details */}
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList className="grid grid-cols-3 mb-6">
+                <TabsTrigger value="details">Детайли</TabsTrigger>
+                <TabsTrigger value="location">Локация</TabsTrigger>
+                <TabsTrigger value="features">Характеристики</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="details" className="mt-0">
+                <PropertyDetailsCard property={property} />
+              </TabsContent>
+              
+              <TabsContent value="location" className="mt-0">
+                <PropertyLocationCard 
+                  address={property.address} 
+                  location={property.location} 
+                  city={property.city} 
+                  latitude={property.latitude}
+                  longitude={property.longitude}
+                />
+              </TabsContent>
+              
+              <TabsContent value="features" className="mt-0">
+                <Card className="p-6">
+                  <h3 className="text-xl font-semibold mb-4">Характеристики на имота</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center p-3 bg-red-50 rounded-lg">
+                      <div className="h-2 w-2 rounded-full bg-red-600 mr-2"></div>
+                      <span>Тип имот: {property.propertyType}</span>
                     </div>
-                    
-                    <div className="md:col-span-2">
-                      <h3 className="text-xl font-bold text-red-900 mb-1">{property.agent.name}</h3>
-                      <Badge variant="outline" className="mb-4">{property.agent.position}</Badge>
-                      
-                      <div className="space-y-3 mt-4">
-                        {property.agent.phone_number && (
-                          <div className="flex items-center space-x-2">
-                            <Phone className="h-4 w-4 text-red-600" />
-                            <div className="flex flex-wrap gap-2">
-                              <a 
-                                href={`tel:${formatPhoneForLink(property.agent.phone_number)}`}
-                                className="text-neutral-800 hover:text-red-700 transition-colors"
-                              >
-                                {property.agent.phone_number}
-                              </a>
-                              
-                              <div className="flex space-x-2">
-                                <a 
-                                  href={`https://wa.me/${formatPhoneForLink(property.agent.phone_number)}`}
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
-                                >
-                                  WhatsApp
-                                </a>
-                                <a 
-                                  href={`viber://chat?number=${formatPhoneForLink(property.agent.phone_number)}`}
-                                  className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs hover:bg-purple-200 transition-colors"
-                                >
-                                  Viber
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {property.agent.email && (
-                          <div className="flex items-center space-x-2">
-                            <Mail className="h-4 w-4 text-red-600" />
-                            <a 
-                              href={`mailto:${property.agent.email}`}
-                              className="text-neutral-800 hover:text-red-700 transition-colors"
-                            >
-                              {property.agent.email}
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                    <div className="flex items-center p-3 bg-red-50 rounded-lg">
+                      <div className="h-2 w-2 rounded-full bg-red-600 mr-2"></div>
+                      <span>Град: {property.city}</span>
+                    </div>
+                    <div className="flex items-center p-3 bg-red-50 rounded-lg">
+                      <div className="h-2 w-2 rounded-full bg-red-600 mr-2"></div>
+                      <span>Локация: {property.location}</span>
+                    </div>
+                    <div className="flex items-center p-3 bg-red-50 rounded-lg">
+                      <div className="h-2 w-2 rounded-full bg-red-600 mr-2"></div>
+                      <span>Статус: {property.status === 'available' ? 'Наличен' : 'Продаден'}</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
           
           {/* Right column with inquiry form */}
@@ -236,16 +200,20 @@ const PropertyDetail = () => {
             <PropertyInquirySidebar 
               propertyId={property.id.toString()}
               propertyTitle={property.title} 
+              agent={property.agent}
+              formatPhoneForLink={formatPhoneForLink}
             />
           </div>
         </div>
         
-        {/* Similar Properties */}
-        <PropertySimilarListings 
-          propertyId={parseInt(property.id.toString())} 
-          location={property.location}
-          city={property.city}
-        />
+        {/* Similar Properties section */}
+        <div className="mt-16 bg-neutral-50 py-10 px-6 rounded-xl border border-neutral-100">
+          <PropertySimilarListings 
+            propertyId={parseInt(property.id.toString())} 
+            location={property.location}
+            city={property.city}
+          />
+        </div>
       </div>
       
       <Footer />

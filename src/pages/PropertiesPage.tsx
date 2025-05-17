@@ -59,7 +59,7 @@ const PropertiesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
+    <div className="min-h-screen bg-white">
       <Navbar />
       
       <div className="container mx-auto px-4 py-12">
@@ -80,7 +80,7 @@ const PropertiesPage = () => {
           {/* Left sidebar with filters */}
           <div className="lg:col-span-1">
             <div className="sticky top-4">
-              <div className="bg-gradient-to-r from-red-50 to-white rounded-xl shadow-elegant p-4 border border-red-100">
+              <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-4 border border-gray-100">
                 <h3 className="text-lg font-semibold mb-4 text-red-800">Филтри</h3>
                 <PropertyFilter onFilterChange={handleFilterChange} initialFilters={filters} />
               </div>
@@ -89,7 +89,7 @@ const PropertiesPage = () => {
 
           {/* Right area with property listings */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-xl shadow-elegant p-6 border border-red-100">
+            <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 border border-gray-100">
               <PropertiesList initialFilters={filters} />
             </div>
           </div>

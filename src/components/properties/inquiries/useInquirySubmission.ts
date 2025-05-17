@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from '@/hooks/use-toast';
@@ -9,8 +8,6 @@ import { InquiryFormData } from './types';
 export const useInquirySubmission = (propertyId: string) => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [isViewingRequest, setIsViewingRequest] = useState(false);
-  const [viewingDate, setViewingDate] = useState<Date | undefined>(undefined);
   
   const { register, handleSubmit, reset, formState: { errors } } = useForm<InquiryFormData>();
   
@@ -18,56 +15,40 @@ export const useInquirySubmission = (propertyId: string) => {
     setIsLoading(true);
     
     try {
-      const formData = {
+      // Prepare the inquiry data - only include user_id if the user is authenticated
+      const inquiryData = {
         property_id: propertyId,
         name: data.name,
         email: data.email,
         phone: data.phone,
         message: data.message,
-        user_id: user?.id || null,
+        responded: false,
       };
       
-      let result;
-      
-      if (isViewingRequest && viewingDate) {
-        // Create a viewing request
-        const { data: viewingData, error: viewingError } = await supabase
-          .from('viewings')
-          .insert({
-            ...formData,
-            viewing_date: viewingDate.toISOString(),
-          })
-          .select();
-        
-        if (viewingError) throw viewingError;
-        result = viewingData;
-        toast({
-          title: "Success",
-          description: "Viewing request submitted successfully!"
-        });
-      } else {
-        // Create a regular inquiry
-        const { data: inquiryData, error: inquiryError } = await supabase
-          .from('inquiries')
-          .insert(formData)
-          .select();
-        
-        if (inquiryError) throw inquiryError;
-        result = inquiryData;
-        toast({
-          title: "Success",
-          description: "Inquiry sent successfully!"
-        });
+      // Add user_id only if authenticated
+      if (user?.id) {
+        // @ts-ignore - Dynamically adding a property
+        inquiryData.user_id = user.id;
       }
       
+      // Submit the inquiry
+      const { error: inquiryError } = await supabase
+        .from('inquiries')
+        .insert(inquiryData);
+      
+      if (inquiryError) throw inquiryError;
+      
+      toast({
+        title: "Успешно",
+        description: "Запитването беше изпратено успешно!"
+      });
+      
       reset();
-      setViewingDate(undefined);
-      setIsViewingRequest(false);
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
-        title: "Error",
-        description: "Failed to submit your request. Please try again.",
+        title: "Грешка",
+        description: "Неуспешно изпращане на запитването. Моля, опитайте отново.",
         variant: "destructive"
       });
     } finally {
@@ -77,10 +58,6 @@ export const useInquirySubmission = (propertyId: string) => {
   
   return {
     isLoading,
-    isViewingRequest,
-    setIsViewingRequest,
-    viewingDate,
-    setViewingDate,
     register,
     handleSubmit,
     errors,
