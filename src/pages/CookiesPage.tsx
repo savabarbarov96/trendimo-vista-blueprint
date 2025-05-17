@@ -18,7 +18,7 @@ const CookiePolicyPage = () => {
       </Helmet>
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl lg:text-4xl font-bold mb-6 text-center">Политика за използване на бисквитки</h1>
+        <h1 className="text-3xl lg:text-4xl font-bold mb-6 text-center mt-20">Политика за използване на бисквитки</h1>
         
         <div className="prose max-w-none lg:prose-lg xl:prose-xl">
           <p className="mb-4 text-center font-semibold text-lg">
