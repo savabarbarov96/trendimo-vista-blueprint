@@ -15,7 +15,7 @@ const ServicesPage = () => {
   const regularServices = services?.filter(service => !service.is_highlighted);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white">
+    <div className="min-h-screen bg-white">
       <Helmet>
         <title>Услуги | Trendimo</title>
         <meta name="description" content="Професионални услуги в областта на недвижимите имоти от Trendimo. Продажба, отдаване под наем, консултации и още." />
@@ -25,7 +25,7 @@ const ServicesPage = () => {
 
       <div className="container mx-auto py-12 px-4">
         {/* Hero section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
           <TextShimmer 
             as="h1"
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
@@ -41,7 +41,7 @@ const ServicesPage = () => {
 
         {/* Highlighted service */}
         {highlightedService && (
-          <div className="mb-16">
+          <div className="mb-16 bg-white rounded-xl shadow-lg border border-gray-200 p-8 hover:shadow-xl transition-shadow duration-300">
             <div className="flex items-center gap-2 mb-8 justify-center">
               <TextShimmer 
                 as="h2"
@@ -74,13 +74,13 @@ const ServicesPage = () => {
           </TextShimmer>
           
           {isLoading && (
-            <div className="text-center py-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-elegant p-6 border border-red-100">
+            <div className="text-center py-8 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
               <p className="text-muted-foreground">Зареждане на услуги...</p>
             </div>
           )}
           
           {error && (
-            <div className="text-center py-8 bg-white/50 backdrop-blur-sm rounded-xl shadow-elegant p-6 border border-red-100">
+            <div className="text-center py-8 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
               <p className="text-destructive">
                 Възникна грешка при зареждане на услугите. Моля, опитайте отново по-късно.
               </p>
@@ -90,19 +90,22 @@ const ServicesPage = () => {
           {!isLoading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {regularServices?.map((service) => (
-                <ServiceCard
-                  key={service.id}
-                  name={service.name}
-                  description={service.description}
-                  icon={service.icon}
-                />
+                <div key={service.id} className="bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                  <ServiceCard
+                    name={service.name}
+                    description={service.description}
+                    icon={service.icon}
+                  />
+                </div>
               ))}
             </div>
           )}
         </div>
 
         {/* Contact CTA section */}
-        <ServicesContactCTA />
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+          <ServicesContactCTA />
+        </div>
       </div>
 
       <Footer />

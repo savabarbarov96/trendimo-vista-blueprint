@@ -11,7 +11,7 @@ import { TextShimmer } from '@/components/ui/text-shimmer';
 
 const CareersPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-white">
       <Helmet>
         <title>Кариери | Trendimo</title>
         <meta 
@@ -24,7 +24,7 @@ const CareersPage = () => {
       
       <div className="container mx-auto py-12 px-4">
         {/* Hero Section */}
-        <div className="text-center mb-16 bg-gradient-to-r from-blue-100 to-white p-8 rounded-xl shadow-elegant border border-blue-100">
+        <div className="text-center mb-16 bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
           <TextShimmer 
             as="h1"
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 [--base-color:theme(colors.red.900)] [--base-gradient-color:theme(colors.red.500)]"
@@ -42,7 +42,7 @@ const CareersPage = () => {
         <CompanyCulture />
 
         {/* Employee Testimonials */}
-        <section className="mb-20 bg-gradient-to-r from-blue-50 to-indigo-50 py-12 rounded-xl shadow-elegant">
+        <section className="mb-20 bg-white py-12 rounded-xl shadow-lg border border-gray-200">
           <TextShimmer 
             as="h2"
             className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
@@ -50,11 +50,13 @@ const CareersPage = () => {
           >
             Нашите служители споделят
           </TextShimmer>
-          <EmployeeTestimonials />
+          <div className="px-6">
+            <EmployeeTestimonials />
+          </div>
         </section>
 
         {/* Open Positions */}
-        <section className="mb-20">
+        <section id="open-positions" className="mb-20">
           <TextShimmer 
             as="h2"
             className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
@@ -62,13 +64,13 @@ const CareersPage = () => {
           >
             Отворени позиции
           </TextShimmer>
-          <div className="bg-white rounded-xl shadow-elegant p-6 border border-blue-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
             <CareersList />
           </div>
         </section>
 
         {/* Apply Form */}
-        <section className="mb-20 bg-gradient-to-r from-blue-100 to-white rounded-xl shadow-elegant p-8 border border-blue-100">
+        <section className="mb-20 bg-white rounded-xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
           <TextShimmer 
             as="h2"
             className="text-2xl md:text-3xl font-bold mb-8 text-center [--base-color:theme(colors.red.800)] [--base-gradient-color:theme(colors.red.400)]"
@@ -88,7 +90,7 @@ const CareersPage = () => {
           >
             Често задавани въпроси
           </TextShimmer>
-          <div className="bg-white rounded-xl shadow-elegant p-6 border border-blue-100">
+          <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
             <CareersFAQ />
           </div>
         </section>
