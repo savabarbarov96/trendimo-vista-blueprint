@@ -145,90 +145,9 @@ const PropertyDetail = () => {
               address={property.address} 
               location={property.location} 
               city={property.city} 
+              latitude={property.latitude}
+              longitude={property.longitude}
             />
-            
-            {/* Agent information */}
-            {property.agent && (
-              <Card className="mt-6 overflow-hidden border border-red-100 bg-white shadow-elegant rounded-xl">
-                <CardHeader className="bg-gradient-to-r from-red-50 to-white pb-4">
-                  <CardTitle className="flex items-center text-red-800">
-                    <User className="h-5 w-5 mr-2" />
-                    Агент на имота
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="aspect-square rounded-xl overflow-hidden md:col-span-1">
-                      {property.agent.image_url ? (
-                        <img 
-                          src={property.agent.image_url} 
-                          alt={property.agent.name}
-                          className="w-full h-full object-cover" 
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-red-50 flex items-center justify-center">
-                          <div className="h-20 w-20 rounded-full bg-red-100 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-red-800">
-                              {property.agent.name.charAt(0)}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="md:col-span-2">
-                      <h3 className="text-xl font-bold text-red-900 mb-1">{property.agent.name}</h3>
-                      <Badge variant="outline" className="mb-4">{property.agent.position}</Badge>
-                      
-                      <div className="space-y-3 mt-4">
-                        {property.agent.phone_number && (
-                          <div className="flex items-center space-x-2">
-                            <Phone className="h-4 w-4 text-red-600" />
-                            <div className="flex flex-wrap gap-2">
-                              <a 
-                                href={`tel:${formatPhoneForLink(property.agent.phone_number)}`}
-                                className="text-neutral-800 hover:text-red-700 transition-colors"
-                              >
-                                {property.agent.phone_number}
-                              </a>
-                              
-                              <div className="flex space-x-2">
-                                <a 
-                                  href={`https://wa.me/${formatPhoneForLink(property.agent.phone_number)}`}
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors"
-                                >
-                                  WhatsApp
-                                </a>
-                                <a 
-                                  href={`viber://chat?number=${formatPhoneForLink(property.agent.phone_number)}`}
-                                  className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs hover:bg-purple-200 transition-colors"
-                                >
-                                  Viber
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {property.agent.email && (
-                          <div className="flex items-center space-x-2">
-                            <Mail className="h-4 w-4 text-red-600" />
-                            <a 
-                              href={`mailto:${property.agent.email}`}
-                              className="text-neutral-800 hover:text-red-700 transition-colors"
-                            >
-                              {property.agent.email}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
           
           {/* Right column with inquiry form */}
@@ -236,6 +155,8 @@ const PropertyDetail = () => {
             <PropertyInquirySidebar 
               propertyId={property.id.toString()}
               propertyTitle={property.title} 
+              agent={property.agent}
+              formatPhoneForLink={formatPhoneForLink}
             />
           </div>
         </div>

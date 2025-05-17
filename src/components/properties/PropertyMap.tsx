@@ -1,25 +1,99 @@
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Loader2 } from 'lucide-react';
+
+// Add window type declaration for maplibregl
+declare global {
+  interface Window {
+    maplibregl: any;
+  }
+}
 
 interface PropertyMapProps {
   address: string;
   location: string;
   city: string;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
-const PropertyMap: React.FC<PropertyMapProps> = ({ address, location, city }) => {
+const PropertyMap: React.FC<PropertyMapProps> = ({ 
+  address, 
+  location, 
+  city,
+  latitude,
+  longitude
+}) => {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<any>(null);
+  const marker = useRef<any>(null);
   const [loading, setLoading] = useState(true);
   
-  // Create a Google Maps embed URL with the address
-  const encodedAddress = encodeURIComponent(`${address}, ${location}, ${city}, Bulgaria`);
-  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBMH3v7YdXV-jbSGGgRXXsgRRaOr-nrD0U&q=${encodedAddress}&zoom=15`;
-  
-  // Handle iframe loading
-  const handleIframeLoad = () => {
-    setLoading(false);
+  // Default coordinates for Bulgaria if no coordinates are provided
+  const coords = {
+    lat: latitude || 42.7339,
+    lng: longitude || 25.4858,
+    zoom: latitude && longitude ? 15 : 7
   };
+
+  useEffect(() => {
+    // Load MapLibre GL JS script dynamically
+    const loadMapLibre = async () => {
+      if (!window.maplibregl) {
+        const mapScript = document.createElement('script');
+        mapScript.src = 'https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.js';
+        mapScript.async = true;
+        
+        const mapCss = document.createElement('link');
+        mapCss.href = 'https://unpkg.com/maplibre-gl@5.0.1/dist/maplibre-gl.css';
+        mapCss.rel = 'stylesheet';
+        
+        document.head.appendChild(mapScript);
+        document.head.appendChild(mapCss);
+        
+        mapScript.onload = initializeMap;
+      } else {
+        initializeMap();
+      }
+    };
+    
+    const initializeMap = () => {
+      if (map.current || !window.maplibregl) return;
+      
+      // Stadia Maps API key
+      const apiKey = 'dac160e6-80ee-4604-98ec-8817dbf3a635';
+      
+      map.current = new window.maplibregl.Map({
+        container: mapContainer.current!,
+        style: `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${apiKey}`,
+        center: [coords.lng, coords.lat],
+        zoom: coords.zoom
+      });
+      
+      // Add navigation controls (zoom in/out)
+      map.current.addControl(new window.maplibregl.NavigationControl());
+      
+      map.current.on('load', () => {
+        // Add a marker
+        marker.current = new window.maplibregl.Marker({
+          color: '#d90429'
+        })
+          .setLngLat([coords.lng, coords.lat])
+          .addTo(map.current);
+          
+        setLoading(false);
+      });
+    };
+    
+    loadMapLibre();
+    
+    return () => {
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, [coords.lat, coords.lng, coords.zoom]);
 
   return (
     <div className="relative rounded-lg overflow-hidden border">
@@ -29,16 +103,10 @@ const PropertyMap: React.FC<PropertyMapProps> = ({ address, location, city }) =>
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
-        <iframe
-          title="Property Location"
-          src={mapUrl}
+        <div 
+          ref={mapContainer} 
           className="w-full h-full"
-          frameBorder="0"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          onLoad={handleIframeLoad}
-        ></iframe>
+        />
       </AspectRatio>
     </div>
   );

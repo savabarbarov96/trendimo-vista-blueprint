@@ -6,12 +6,16 @@ interface PropertyLocationCardProps {
   address: string;
   location: string;
   city: string;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 const PropertyLocationCard: React.FC<PropertyLocationCardProps> = ({ 
   address, 
   location, 
-  city 
+  city,
+  latitude,
+  longitude
 }) => {
   return (
     <Card className="mb-8">
@@ -23,6 +27,8 @@ const PropertyLocationCard: React.FC<PropertyLocationCardProps> = ({
           address={address} 
           location={location} 
           city={city} 
+          latitude={latitude}
+          longitude={longitude}
         />
       </CardContent>
     </Card>

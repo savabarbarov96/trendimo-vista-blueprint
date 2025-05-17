@@ -17,57 +17,9 @@ const validateCity = (city: string): string => {
   return cities.includes(city) ? city : '';
 };
 
-export interface Property {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  address: string;
-  city: string;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  area: number | null;
-  property_type: string;
-  listing_type: string;
-  is_featured: boolean | null;
-  is_published: boolean | null;
-  owner_id: string;
-  created_at: string | null;
-  updated_at: string | null;
-  images: string[] | null;
-  agent_id: string | null;
-  agent?: {
-    id: string;
-    name: string;
-    position: string;
-    bio: string | null;
-    image_url: string | null;
-    email: string | null;
-    phone_number: string | null;
-    order_index: number;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  };
-}
+export interface Property {  id: string;  title: string;  description: string | null;  price: number;  address: string;  city: string;  bedrooms: number | null;  bathrooms: number | null;  area: number | null;  property_type: string;  listing_type: string;  is_featured: boolean | null;  is_published: boolean | null;  owner_id: string;  created_at: string | null;  updated_at: string | null;  images: string[] | null;  agent_id: string | null;  virtual_tour_url: string | null;  latitude: number | null;  longitude: number | null;  agent?: {    id: string;    name: string;    position: string;    bio: string | null;    image_url: string | null;    email: string | null;    phone_number: string | null;    order_index: number;    is_active: boolean;    created_at: string;    updated_at: string;  };}
 
-export interface PropertyFormData {
-  title: string;
-  description?: string;
-  price: number;
-  address: string;
-  city: string;
-  bedrooms?: number;
-  bathrooms?: number;
-  area?: number;
-  property_type: string;
-  listing_type: string;
-  is_featured?: boolean;
-  is_published?: boolean;
-  owner_id: string;
-  images?: string[];
-  agent_id?: string;
-}
+export interface PropertyFormData {  title: string;  description?: string;  price: number;  address: string;  city: string;  bedrooms?: number;  bathrooms?: number;  area?: number;  property_type: string;  listing_type: string;  is_featured?: boolean;  is_published?: boolean;  owner_id: string;  images?: string[];  agent_id?: string;  virtual_tour_url?: string;  latitude?: number;  longitude?: number;}
 
 // Hook to fetch all properties (including unpublished ones for agents)
 export const useProperties = () => {

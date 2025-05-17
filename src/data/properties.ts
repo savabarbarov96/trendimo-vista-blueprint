@@ -18,9 +18,22 @@ export interface Property {
   imageUrl: string;
   images: string[];
   createdAt: string;
+  virtual_tour_url?: string | null;
   agent?: {
     id: string;
+    name?: string;
+    position?: string;
+    image_url?: string;
+    email?: string;
+    phone_number?: string;
   };
+  latitude?: number | null;
+  longitude?: number | null;
+  property_type?: string;
+  listing_type?: string;
+  is_featured?: boolean;
+  is_published?: boolean;
+  owner_id?: string;
 }
 
 // Sample property data for demonstration
