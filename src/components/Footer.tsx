@@ -5,6 +5,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { siteContent } from '../data/content';
 import logo from '@/assets/logo-footer_2.png';
+import { createClient } from '@supabase/supabase-js';
 
 // Custom TikTok icon since it's not available in lucide-react
 const TikTokIcon = () => (
@@ -28,13 +29,11 @@ const TikTokIcon = () => (
   </svg>
 );
 
-// Default social media links (used as fallback)
+// Default social media links (used as fallback if Supabase fetch fails)
 const defaultSocialLinks = [
-  { id: '1', platform: "Facebook", url: "https://facebook.com", icon: "Facebook", is_active: true, display_order: 1 },
-  { id: '2', platform: "Instagram", url: "https://instagram.com", icon: "Instagram", is_active: true, display_order: 2 },
-  { id: '3', platform: "TikTok", url: "https://tiktok.com", icon: "TikTok", is_active: true, display_order: 3 },
-  { id: '4', platform: "Twitter", url: "https://twitter.com", icon: "Twitter", is_active: true, display_order: 4 },
-  { id: '5', platform: "LinkedIn", url: "https://linkedin.com", icon: "Linkedin", is_active: true, display_order: 5 },
+  { id: 'default-1', platform: "Facebook", url: "https://facebook.com", icon: "Facebook", is_active: true, display_order: 1 },
+  { id: 'default-2', platform: "Instagram", url: "https://instagram.com", icon: "Instagram", is_active: true, display_order: 2 },
+  { id: 'default-3', platform: "TikTok", url: "https://tiktok.com", icon: "TikTok", is_active: true, display_order: 3 },
 ];
 
 // Icons mapping
@@ -56,29 +55,53 @@ interface SocialMediaLink {
   display_order: number;
 }
 
+// Initialize Supabase client (consider moving to a shared config if used in multiple places)
+const supabaseUrl = 'https://zanfdpuiblradrbtfzhl.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmZkcHVpYmxyYWRyYnRmemhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2NDMwMTksImV4cCI6MjA2MjIxOTAxOX0.vOGXgtT7M4Vlrwt5vXIXW69VARao80gZCSfl2kgliZ0';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 const Footer = () => {
   const { footer, nav } = siteContent;
   const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>(defaultSocialLinks);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch social media links
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
-        // Fetch from our Edge Function
-        const response = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links');
+        setLoading(true);
+        setError(null);
+
+        const { data, error: dbError } = await supabase
+          .from('social_media_links')
+          .select('*')
+          .eq('is_active', true) // Fetch only active links
+          .order('display_order', { ascending: true });
         
-        if (response.ok) {
-          const data = await response.json();
-          setSocialLinks(data);
+        if (dbError) {
+          throw dbError;
         }
-      } catch (error) {
-        console.error('Error fetching social media links:', error);
-        // Default links are already set as initial state
+        
+        if (data && data.length > 0) {
+          setSocialLinks(data);
+        } else {
+          console.warn('No active social media links found in database, using defaults.');
+          setSocialLinks(defaultSocialLinks); // Keep defaults if no active links from DB
+        }
+      } catch (error: any) {
+        console.error('Error fetching social media links for footer:', error.message);
+        setError(error.message || 'Unknown error fetching links');
+        setSocialLinks(defaultSocialLinks); // Fallback to defaults on any error
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSocialLinks();
   }, []);
+
+  // No need to re-filter and sort here as it's done in the fetch or set by defaultSocialLinks
+  // const activeSocialLinks = socialLinks;
 
   return (
     <footer className="bg-gradient-to-b from-white to-gray-200 text-gray-800">
@@ -97,21 +120,26 @@ const Footer = () => {
               {footer.aboutText}
             </p>
             <div className="flex space-x-4">
-              {socialLinks
-                .filter(link => link.is_active)
-                .sort((a, b) => a.display_order - b.display_order)
-                .map((link) => (
-                <a 
-                  key={link.id}
-                  href={link.url} 
-                  className="text-gray-600 hover:text-primary transition-colors" 
-                  aria-label={link.platform}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {iconComponents[link.icon] || link.platform}
-                </a>
-              ))}
+              {loading ? (
+                <div className="text-sm text-gray-400">Зареждане...</div>
+              ) : error ? (
+                <div className="text-sm text-red-500">Грешка: {error}</div>
+              ) : socialLinks.length === 0 ? (
+                <div className="text-sm text-gray-400">Няма активни социални мрежи.</div>
+              ) : (
+                socialLinks.map((link) => (
+                  <a 
+                    key={link.id}
+                    href={link.url} 
+                    className="text-gray-600 hover:text-primary transition-colors" 
+                    aria-label={link.platform}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {iconComponents[link.icon] || link.platform}
+                  </a>
+                ))
+              )}
             </div>
           </div>
 

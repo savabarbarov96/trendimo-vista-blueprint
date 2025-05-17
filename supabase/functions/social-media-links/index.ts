@@ -159,9 +159,10 @@ serve(async (req) => {
       console.log("[social-media-links] Processing PUT request");
       // Parse the request body
       const requestData = await req.json();
+      console.log(`[social-media-links] Raw request data: ${JSON.stringify(requestData)}`);
+      
       const id = requestData.id;
       console.log(`[social-media-links] Updating link with ID: ${id}`);
-      console.log("[social-media-links] Update data:", JSON.stringify(requestData));
       
       if (!id) {
         console.error("[social-media-links] Missing ID in PUT request");
@@ -171,25 +172,46 @@ serve(async (req) => {
         });
       }
       
-      // Update an existing social media link
-      const { data, error } = await supabaseAdmin
-        .from('social_media_links')
-        .update(requestData)
-        .eq('id', id)
-        .select();
+      // Ensure required fields are present
+      const validatedData = {
+        id: id,
+        platform: requestData.platform || '',
+        url: requestData.url || '',
+        icon: requestData.icon || '',
+        is_active: typeof requestData.is_active === 'boolean' ? requestData.is_active : true,
+        display_order: typeof requestData.display_order === 'number' ? requestData.display_order : 0,
+        updated_at: new Date().toISOString()
+      };
+      
+      console.log(`[social-media-links] Validated data: ${JSON.stringify(validatedData)}`);
 
-      if (error) {
-        console.error("[social-media-links] Error updating:", error);
-        return new Response(JSON.stringify({ error: error.message }), {
-          status: 400,
+      // Update an existing social media link
+      try {
+        const { data, error } = await supabaseAdmin
+          .from('social_media_links')
+          .update(validatedData)
+          .eq('id', id)
+          .select();
+
+        if (error) {
+          console.error("[social-media-links] Database error on update:", error);
+          return new Response(JSON.stringify({ error: error.message, details: error }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+          });
+        }
+
+        console.log("[social-media-links] Successfully updated link:", data);
+        return new Response(JSON.stringify(data), {
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        });
+      } catch (updateError) {
+        console.error("[social-media-links] Unexpected error during update:", updateError);
+        return new Response(JSON.stringify({ error: 'Server error during update', details: updateError.message }), {
+          status: 500,
           headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
         });
       }
-
-      console.log("[social-media-links] Successfully updated link");
-      return new Response(JSON.stringify(data), {
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      });
     }
     else if (req.method === 'DELETE') {
       console.log("[social-media-links] Processing DELETE request");

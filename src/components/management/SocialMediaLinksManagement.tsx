@@ -29,6 +29,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { createClient } from '@supabase/supabase-js';
 import {
   Facebook,
   Instagram,
@@ -85,15 +86,14 @@ const iconComponents: Record<string, React.ReactNode> = {
   TikTok: <TikTokIcon />,
 };
 
+// Initialize Supabase client
+const supabaseUrl = 'https://zanfdpuiblradrbtfzhl.supabase.co';
+// IMPORTANT: This is an ANON KEY. RLS policies MUST be in place for security.
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphbmZkcHVpYmxyYWRyYnRmemhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2NDMwMTksImV4cCI6MjA2MjIxOTAxOX0.vOGXgtT7M4Vlrwt5vXIXW69VARao80gZCSfl2kgliZ0';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
 const SocialMediaLinksManagement = () => {
-  const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([
-    // Default values will be replaced when data is loaded
-    { id: '1', platform: 'Facebook', url: 'https://facebook.com', icon: 'Facebook', is_active: true, display_order: 1 },
-    { id: '2', platform: 'Instagram', url: 'https://instagram.com', icon: 'Instagram', is_active: true, display_order: 2 },
-    { id: '3', platform: 'TikTok', url: 'https://tiktok.com', icon: 'TikTok', is_active: true, display_order: 3 },
-    { id: '4', platform: 'Twitter', url: 'https://twitter.com', icon: 'Twitter', is_active: true, display_order: 4 },
-    { id: '5', platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'Linkedin', is_active: true, display_order: 5 },
-  ]);
+  const [socialLinks, setSocialLinks] = useState<SocialMediaLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -109,18 +109,19 @@ const SocialMediaLinksManagement = () => {
   });
 
   useEffect(() => {
-    // Fetch social media links from edge function
     const fetchSocialLinks = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links');
+        const { data, error } = await supabase
+          .from('social_media_links')
+          .select('*')
+          .order('display_order', { ascending: true });
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (error) {
+          throw error;
         }
         
-        const data = await response.json();
-        if (data && data.length > 0) {
+        if (data) {
           setSocialLinks(data);
         }
       } catch (error: any) {
@@ -134,7 +135,6 @@ const SocialMediaLinksManagement = () => {
     fetchSocialLinks();
   }, []);
 
-  // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -143,7 +143,6 @@ const SocialMediaLinksManagement = () => {
     });
   };
 
-  // Open edit dialog with selected link
   const handleEditClick = (link: SocialMediaLink) => {
     setCurrentLink(link);
     setFormData({
@@ -156,235 +155,158 @@ const SocialMediaLinksManagement = () => {
     setIsEditDialogOpen(true);
   };
 
-  // Open delete dialog with selected link
   const handleDeleteClick = (link: SocialMediaLink) => {
     setCurrentLink(link);
     setIsDeleteDialogOpen(true);
   };
 
-  // Open create dialog
   const handleCreateClick = () => {
     setFormData({
       platform: '',
       url: '',
       icon: '',
       is_active: true,
-      display_order: socialLinks.length + 1,
+      display_order: socialLinks.length > 0 ? Math.max(...socialLinks.map(l => l.display_order)) + 1 : 1,
     });
     setIsCreateDialogOpen(true);
   };
 
-  // Update link order using edge function
   const moveLink = async (id: string, direction: 'up' | 'down') => {
     try {
-      const newLinks = [...socialLinks];
-      const currentIndex = newLinks.findIndex(link => link.id === id);
-      
-      if (
-        (direction === 'up' && currentIndex <= 0) ||
-        (direction === 'down' && currentIndex >= newLinks.length - 1)
-      ) {
-        return; // Can't move further
-      }
+      const linksCopy = [...socialLinks];
+      const currentIndex = linksCopy.findIndex(link => link.id === id);
 
-      const swapIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-      
-      // Swap the display orders
-      const currentDisplayOrder = newLinks[currentIndex].display_order;
-      newLinks[currentIndex].display_order = newLinks[swapIndex].display_order;
-      newLinks[swapIndex].display_order = currentDisplayOrder;
-      
-      // Sort the array by display_order
-      newLinks.sort((a, b) => a.display_order - b.display_order);
-      
-      // Update the local state immediately for better UX
-      setSocialLinks(newLinks);
-      
-      // Update in the database via edge function
-      const currentLink = newLinks[currentIndex];
-      const swapLink = newLinks[swapIndex];
-      
-      // Check if we have an authentication token
-      if (!session?.access_token) {
-        throw new Error('Не сте влезли в профила си');
-      }
-      
-      // Update first link
-      const response1 = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(currentLink),
-      });
-      
-      // Update second link
-      const response2 = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(swapLink),
-      });
+      if (currentIndex === -1) return;
 
-      if (!response1.ok || !response2.ok) {
-        throw new Error('Failed to update links order');
-      }
+      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+      if (targetIndex < 0 || targetIndex >= linksCopy.length) return;
+
+      // Swap display_order values
+      const tempOrder = linksCopy[currentIndex].display_order;
+      linksCopy[currentIndex].display_order = linksCopy[targetIndex].display_order;
+      linksCopy[targetIndex].display_order = tempOrder;
+      
+      // Update local state for immediate feedback, then sort by new display_order
+      const updatedStateLinks = linksCopy.map(link => ({...link})); // Create new array of new objects
+      updatedStateLinks.sort((a, b) => a.display_order - b.display_order);
+      setSocialLinks(updatedStateLinks);
+
+      // Update both affected links in Supabase
+      const { error: error1 } = await supabase
+        .from('social_media_links')
+        .update({ display_order: linksCopy[currentIndex].display_order, updated_at: new Date().toISOString() })
+        .eq('id', linksCopy[currentIndex].id);
+
+      const { error: error2 } = await supabase
+        .from('social_media_links')
+        .update({ display_order: linksCopy[targetIndex].display_order, updated_at: new Date().toISOString() })
+        .eq('id', linksCopy[targetIndex].id);
+
+      if (error1) throw error1;
+      if (error2) throw error2;
       
       toast.success("Редът е променен успешно");
     } catch (error: any) {
       toast.error(`Грешка при промяна на реда: ${error.message}`);
+      // Re-fetch to ensure consistency if error occurs
+      const { data, error: fetchError } = await supabase.from('social_media_links').select('*').order('display_order', { ascending: true });
+      if (data) setSocialLinks(data.sort((a,b) => a.display_order - b.display_order)); // Ensure sorted after re-fetch
+      else if(fetchError) console.error('Error re-fetching links:', fetchError.message);
     }
   };
 
-  // Create new social media link with edge function
   const createSocialLink = async () => {
     try {
-      // Validate form
       if (!formData.platform || !formData.url || !formData.icon) {
         toast.error("Моля, попълнете всички полета");
         return;
       }
 
-      // Check if we have an authentication token
-      if (!session?.access_token) {
-        throw new Error('Не сте влезли в профила си');
+      const newLinkData = {
+        platform: formData.platform,
+        url: formData.url,
+        icon: formData.icon,
+        is_active: formData.is_active,
+        display_order: formData.display_order || (socialLinks.length > 0 ? Math.max(...socialLinks.map(l => l.display_order)) + 1 : 1),
+      };
+
+      const { data, error } = await supabase
+        .from('social_media_links')
+        .insert(newLinkData)
+        .select();
+
+      if (error) throw error;
+
+      if (data && data[0]) {
+        setSocialLinks([...socialLinks, data[0]].sort((a,b) => a.display_order - b.display_order));
+        toast.success("Социалната връзка е създадена успешно");
+        setIsCreateDialogOpen(false);
+      } else {
+        throw new Error("Неуспешно създаване на връзка - няма върнати данни.");
       }
-
-      // Create via edge function
-      const response = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({
-          platform: formData.platform,
-          url: formData.url,
-          icon: formData.icon,
-          is_active: formData.is_active,
-          display_order: formData.display_order,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create link');
-      }
-
-      const data = await response.json();
-      
-      // Add the new link to the local state
-      setSocialLinks([...socialLinks, data[0]]);
-      
-      toast.success("Социалната връзка е създадена успешно");
-      setIsCreateDialogOpen(false);
     } catch (error: any) {
       toast.error(`Грешка при създаване: ${error.message}`);
     }
   };
 
-  // Update social media link with edge function
   const updateSocialLink = async () => {
     try {
       if (!currentLink) return;
-
-      // Validate form
       if (!formData.platform || !formData.url || !formData.icon) {
         toast.error("Моля, попълнете всички полета");
         return;
       }
 
-      // Check if we have an authentication token
-      if (!session?.access_token) {
-        throw new Error('Не сте влезли в профила си');
-      }
-
-      // Update data
-      const updatedLink = {
-        id: currentLink.id,
+      const updatedLinkData = {
         platform: formData.platform,
         url: formData.url,
         icon: formData.icon,
         is_active: formData.is_active,
-        display_order: formData.display_order,
+        display_order: Number(formData.display_order), // Ensure display_order is a number
+        updated_at: new Date().toISOString(),
       };
+      
+      console.log('Updating link with data:', updatedLinkData); // Keep for debugging
 
-      // Update via edge function
-      const response = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(updatedLink),
-      });
+      const { data, error } = await supabase
+        .from('social_media_links')
+        .update(updatedLinkData)
+        .eq('id', currentLink.id)
+        .select();
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update link');
+      if (error) throw error;
+
+      if (data && data[0]) {
+        setSocialLinks(
+          socialLinks.map(link => (link.id === currentLink.id ? data[0] : link))
+          .sort((a,b) => a.display_order - b.display_order)
+        );
+        toast.success("Социалната връзка е обновена успешно");
+        setIsEditDialogOpen(false);
+      } else {
+         throw new Error("Неуспешно обновяване на връзка - няма върнати данни.");
       }
-
-      // Update in local state
-      const updatedLinks = socialLinks.map(link => 
-        link.id === currentLink.id ? updatedLink : link
-      );
-
-      setSocialLinks(updatedLinks);
-      toast.success("Социалната връзка е обновена успешно");
-      setIsEditDialogOpen(false);
     } catch (error: any) {
       toast.error(`Грешка при обновяване: ${error.message}`);
     }
   };
 
-  // Delete social media link with edge function
   const deleteSocialLink = async () => {
     try {
       if (!currentLink) return;
 
-      // Check if we have an authentication token
-      if (!session?.access_token) {
-        throw new Error('Не сте влезли в профила си');
-      }
+      const { error } = await supabase
+        .from('social_media_links')
+        .delete()
+        .eq('id', currentLink.id);
 
-      // Delete via edge function
-      const response = await fetch(`https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links?id=${currentLink.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`
-        }
-      });
+      if (error) throw error;
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete link');
-      }
-
-      // Remove from local state
       const filteredLinks = socialLinks.filter(link => link.id !== currentLink.id);
-      
-      // Update display order for remaining links
-      const updatedLinks = filteredLinks.map((link, index) => ({
-        ...link,
-        display_order: index + 1
-      }));
-
-      // Update each link's display order
-      for (const link of updatedLinks) {
-        await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`
-          },
-          body: JSON.stringify(link),
-        });
-      }
-
-      setSocialLinks(updatedLinks);
+      // No need to update display_order of other links here unless specified as a requirement.
+      // If re-ordering is needed, it should be a separate batch update or a backend trigger.
+      setSocialLinks(filteredLinks);
       toast.success("Социалната връзка е изтрита успешно");
       setIsDeleteDialogOpen(false);
     } catch (error: any) {
@@ -392,46 +314,29 @@ const SocialMediaLinksManagement = () => {
     }
   };
 
-  // Toggle active status with edge function
   const toggleActiveStatus = async (id: string, currentStatus: boolean) => {
     try {
-      // Find the link to update
       const linkToUpdate = socialLinks.find(link => link.id === id);
       if (!linkToUpdate) return;
+
+      const newStatus = !currentStatus;
+      const { data, error } = await supabase
+        .from('social_media_links')
+        .update({ is_active: newStatus, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select();
+
+      if (error) throw error;
       
-      // Check if we have an authentication token
-      if (!session?.access_token) {
-        throw new Error('Не сте влезли в профила си');
+      if (data && data[0]) {
+         setSocialLinks(
+          socialLinks.map(link => (link.id === id ? data[0] : link))
+          .sort((a,b) => a.display_order - b.display_order)
+        );
+        toast.success("Статусът е променен успешно");
+      } else {
+        throw new Error("Неуспешна промяна на статус - няма върнати данни.");
       }
-      
-      // Create updated link object
-      const updatedLink = {
-        ...linkToUpdate,
-        is_active: !currentStatus
-      };
-      
-      // Update via edge function
-      const response = await fetch('https://zanfdpuiblradrbtfzhl.supabase.co/functions/v1/social-media-links', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify(updatedLink),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update status');
-      }
-
-      // Update in local state
-      const updatedLinks = socialLinks.map(link => 
-        link.id === id ? updatedLink : link
-      );
-
-      setSocialLinks(updatedLinks);
-      toast.success("Статусът е променен успешно");
     } catch (error: any) {
       toast.error(`Грешка при промяна на статуса: ${error.message}`);
     }
