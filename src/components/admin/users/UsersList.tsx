@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Loader2, MoreHorizontal } from 'lucide-react';
+import { Loader2, MoreHorizontal, Trash2 } from 'lucide-react';
 import { UserWithProfile } from './types';
 import {
   Table,
@@ -24,9 +23,10 @@ interface UsersListProps {
   users: UserWithProfile[];
   isLoading: boolean;
   onEditUser: (user: UserWithProfile) => void;
+  onDeleteUser: (userId: string) => void;
 }
 
-const UsersList: React.FC<UsersListProps> = ({ users, isLoading, onEditUser }) => {
+const UsersList: React.FC<UsersListProps> = ({ users, isLoading, onEditUser, onDeleteUser }) => {
   return (
     <div className="border rounded-md">
       <Table>
@@ -65,12 +65,9 @@ const UsersList: React.FC<UsersListProps> = ({ users, isLoading, onEditUser }) =
                 </TableCell>
                 <TableCell>
                   <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium 
-                    ${user.role === 'admin' ? 'bg-red-100 text-red-800' : 
-                    user.role === 'agent' ? 'bg-green-100 text-green-800' : 
-                    user.role === 'authenticated' ? 'bg-blue-100 text-blue-800' : 
-                    'bg-gray-100 text-gray-800'}`}
+                    ${user.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
                   >
-                    {user.role}
+                    {user.role === 'admin' ? 'Administrator' : 'Regular User'}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -89,6 +86,13 @@ const UsersList: React.FC<UsersListProps> = ({ users, isLoading, onEditUser }) =
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => onEditUser(user)}>
                         <span>Промени роля</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onDeleteUser(user.id)}
+                        className="text-red-600 focus:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        <span>Изтрий потребител</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
