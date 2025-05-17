@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, MapPin, Bed, Bath, Maximize, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { usePropertyMapper } from './usePropertyMapper';
+import { usePropertyMapper, useAgent } from './usePropertyMapper';
 import { Property, formatPrice } from '@/data/properties';
 import { toast } from "sonner";
 import { useNavigate } from 'react-router-dom';
@@ -56,10 +56,17 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
     enabled: !!propertyId && isOpen,
   });
 
+  // Fetch agent data
+  const { data: agent } = useAgent(property?.agent?.id || null);
+
   const handleCallAgent = () => {
-    toast.success("Свързваме Ви с нашия агент");
-    onOpenChange(false); // Close the modal
-    navigate('/about'); // Navigate to the about page
+    if (agent?.phone_number) {
+      window.location.href = `tel:${agent.phone_number}`;
+    } else {
+      toast.success("Свързваме Ви с нашия агент");
+      onOpenChange(false); // Close the modal
+      navigate('/about'); // Navigate to the about page
+    }
   };
 
   return (
@@ -108,16 +115,20 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
 
             {/* Property basic info */}
             <div className="grid grid-cols-3 gap-4 mt-6">
-              <div className="flex flex-col items-center">
-                <Bed className="h-5 w-5 text-primary mb-1" />
-                <span className="text-sm text-muted-foreground">Спални</span>
-                <span className="font-medium">{property.bedrooms}</span>
-              </div>
-              <div className="flex flex-col items-center">
-                <Bath className="h-5 w-5 text-primary mb-1" />
-                <span className="text-sm text-muted-foreground">Бани</span>
-                <span className="font-medium">{property.bathrooms}</span>
-              </div>
+              {property.bedrooms > 0 && (
+                <div className="flex flex-col items-center">
+                  <Bed className="h-5 w-5 text-primary mb-1" />
+                  <span className="text-sm text-muted-foreground">Стаи</span>
+                  <span className="font-medium">{property.bedrooms}-СТАЕН</span>
+                </div>
+              )}
+              {property.bathrooms > 0 && (
+                <div className="flex flex-col items-center">
+                  <Bath className="h-5 w-5 text-primary mb-1" />
+                  <span className="text-sm text-muted-foreground">Бани</span>
+                  <span className="font-medium">{property.bathrooms}</span>
+                </div>
+              )}
               <div className="flex flex-col items-center">
                 <Maximize className="h-5 w-5 text-primary mb-1" />
                 <span className="text-sm text-muted-foreground">Площ</span>
@@ -157,6 +168,38 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Agent info */}
+            {agent && (
+              <>
+                <Separator className="my-4" />
+                <div>
+                  <h3 className="font-medium mb-2">Агент</h3>
+                  <div className="flex items-center">
+                    <div className="h-12 w-12 rounded-full overflow-hidden flex-shrink-0">
+                      {agent.image_url ? (
+                        <img 
+                          src={agent.image_url} 
+                          alt={agent.name}
+                          className="w-full h-full object-cover" 
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-bold text-primary">
+                          {agent.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="ml-3">
+                      <p className="font-semibold text-primary">{agent.name}</p>
+                      <p className="text-sm text-neutral-dark">{agent.position}</p>
+                      {agent.phone_number && (
+                        <p className="text-sm text-primary mt-1">{agent.phone_number}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
 
             <DialogFooter className="mt-6">
               <Button 

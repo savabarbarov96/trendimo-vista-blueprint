@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { UserProfile } from '@/hooks/auth/types';
@@ -54,11 +53,9 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
             <div className="col-span-3">
               <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium 
                 ${currentUser?.role === 'admin' ? 'bg-red-100 text-red-800' : 
-                currentUser?.role === 'agent' ? 'bg-green-100 text-green-800' : 
-                currentUser?.role === 'authenticated' ? 'bg-blue-100 text-blue-800' : 
-                'bg-gray-100 text-gray-800'}`}
+                'bg-blue-100 text-blue-800'}`}
               >
-                {currentUser?.role}
+                {currentUser?.role === 'admin' ? 'Administrator' : 'Regular User'}
               </div>
             </div>
           </div>
@@ -72,10 +69,8 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
                 <SelectValue placeholder="Изберете роля" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="public">public</SelectItem>
-                <SelectItem value="authenticated">authenticated</SelectItem>
-                <SelectItem value="agent">agent</SelectItem>
-                <SelectItem value="admin">admin</SelectItem>
+                <SelectItem value="authenticated">Regular User</SelectItem>
+                <SelectItem value="admin">Administrator</SelectItem>
               </SelectContent>
             </Select>
           </div>

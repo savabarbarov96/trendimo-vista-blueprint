@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import InquiryFormFields from './inquiries/InquiryFormFields';
@@ -25,8 +24,8 @@ const PropertyInquiryForm = ({ propertyId, propertyTitle }: InquirySubmissionPro
       <CardContent className="p-4">
         <h3 className="text-lg font-semibold mb-4">
           {isViewingRequest 
-            ? `Schedule a viewing for: ${propertyTitle}` 
-            : `Inquire about: ${propertyTitle}`}
+            ? `Запазване на оглед за: ${propertyTitle}` 
+            : `Запитване за: ${propertyTitle}`}
         </h3>
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -183,6 +183,7 @@ export interface Database {
           is_featured: boolean | null
           is_published: boolean | null
           created_at: string | null
+          agent_id: string | null
         }
         Insert: {
           id?: string
@@ -199,6 +200,7 @@ export interface Database {
           is_featured?: boolean | null
           is_published?: boolean | null
           created_at?: string | null
+          agent_id?: string | null
         }
         Update: {
           id?: string
@@ -215,8 +217,16 @@ export interface Database {
           is_featured?: boolean | null
           is_published?: boolean | null
           created_at?: string | null
+          agent_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "properties_agent_id_fkey"
+            columns: ["agent_id"]
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
@@ -328,6 +338,8 @@ export interface Database {
           position: string
           bio: string | null
           image_url: string | null
+          email: string | null
+          phone_number: string | null
           order_index: number
           is_active: boolean
           created_at: string
@@ -339,6 +351,8 @@ export interface Database {
           position: string
           bio?: string | null
           image_url?: string | null
+          email?: string | null
+          phone_number?: string | null
           order_index?: number
           is_active?: boolean
           created_at?: string
@@ -350,6 +364,8 @@ export interface Database {
           position?: string
           bio?: string | null
           image_url?: string | null
+          email?: string | null
+          phone_number?: string | null
           order_index?: number
           is_active?: boolean
           created_at?: string

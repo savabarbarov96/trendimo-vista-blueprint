@@ -10,23 +10,56 @@ import CareersManagement from '@/components/management/CareersManagement';
 import TeamMembersManagement from '@/components/management/TeamMembersManagement';
 import BlogManagement from '@/components/management/BlogManagement';
 import SlideshowManagement from '@/components/management/SlideshowManagement';
-import { useUser } from '@/hooks/auth/use-user';
+import { useAuth } from '@/hooks/use-auth';
 import { useNavigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 
 const ManagementPage = () => {
   const [activeTab, setActiveTab] = useState('properties');
-  const { data: user, isLoading } = useUser();
+  const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if not authenticated
+  // Redirect if not authenticated or not authorized
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate('/login');
-    }
-  }, [user, isLoading, navigate]);
+    let mounted = true;
+    let hasAttemptedRedirect = false;
 
-  // Show loading or nothing while checking authentication
-  if (isLoading || (!isLoading && !user)) {
+    const checkAuth = async () => {
+      // Only redirect if the component is still mounted, we're done loading, and haven't attempted a redirect yet
+      if (mounted && !loading && !hasAttemptedRedirect) {
+        hasAttemptedRedirect = true;
+        
+        if (!user) {
+          console.log("No user found, redirecting to login");
+          navigate('/login', { replace: true });
+        } else if (profile && !['admin', 'agent'].includes(profile.role)) {
+          console.log("User doesn't have required role, redirecting to home");
+          navigate('/', { replace: true });
+        }
+      }
+    };
+
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
+  }, [user, profile, loading, navigate]);
+
+  // Show loading state while checking authentication
+  if (loading || !user || !profile) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Проверка на достъп...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If not authorized, don't render anything (redirect will happen)
+  if (!['admin', 'agent'].includes(profile.role)) {
     return null;
   }
 
@@ -40,7 +73,7 @@ const ManagementPage = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Управление на имоти</h1>
         
-        <Tabs defaultValue="properties" value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-8">
             <TabsTrigger value="properties">Имоти</TabsTrigger>
             <TabsTrigger value="sell-requests">Заявки за продажба</TabsTrigger>

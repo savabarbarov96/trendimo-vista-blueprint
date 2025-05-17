@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Search, Filter } from 'lucide-react';
 import { Input } from "@/components/ui/input";
@@ -38,15 +37,16 @@ const UsersFilter: React.FC<UsersFilterProps> = ({
         <SelectTrigger className="w-full sm:w-[180px]">
           <div className="flex items-center">
             <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span>{selectedRole || 'Всички роли'}</span>
+            <span>{selectedRole === 'all' ? 'Всички роли' :
+                   selectedRole === 'authenticated' ? 'Regular Users' :
+                   selectedRole === 'admin' ? 'Administrators' :
+                   'Всички роли'}</span>
           </div>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">Всички роли</SelectItem>
-          <SelectItem value="public">public</SelectItem>
-          <SelectItem value="authenticated">authenticated</SelectItem>
-          <SelectItem value="agent">agent</SelectItem>
-          <SelectItem value="admin">admin</SelectItem>
+          <SelectItem value="all">Всички роли</SelectItem>
+          <SelectItem value="authenticated">Regular Users</SelectItem>
+          <SelectItem value="admin">Administrators</SelectItem>
         </SelectContent>
       </Select>
     </div>

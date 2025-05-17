@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Edit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Property, formatPrice } from '@/data/properties';
 import { MapPin } from 'lucide-react';
+import { useAgent } from './usePropertyMapper';
 
 interface PropertyDetailHeaderProps {
   property: Property;
@@ -15,6 +15,9 @@ const PropertyDetailHeader: React.FC<PropertyDetailHeaderProps> = ({
   property, 
   isAgent 
 }) => {
+  // Fetch agent data
+  const { data: agent } = useAgent(property.agent?.id || null);
+
   return (
     <>
       {/* Back button and edit controls */}
@@ -47,6 +50,11 @@ const PropertyDetailHeader: React.FC<PropertyDetailHeaderProps> = ({
           <span className="text-3xl font-bold text-primary">
             {formatPrice(property.price)}
           </span>
+          {agent && (
+            <div className="mt-2 text-neutral-dark">
+              Агент: {agent.name} ({agent.position})
+            </div>
+          )}
         </div>
       </div>
     </>
