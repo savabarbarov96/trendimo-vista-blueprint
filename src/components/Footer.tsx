@@ -113,7 +113,7 @@ const Footer = () => {
               <img 
                 src={logo} 
                 alt="Trendimo Logo" 
-                className="h-16 w-auto"
+                className="h-32 w-auto"
               />
             </div>
             <p className="text-gray-600 mb-4">
