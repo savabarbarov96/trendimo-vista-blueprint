@@ -11,25 +11,47 @@ export interface Inquiry {
   message: string | null;
   created_at: string;
   responded: boolean;
+  properties?: {
+    title: string;
+  };
 }
 
 // Hook to fetch all inquiries
 export const useInquiries = () => {
   return useQuery({
     queryKey: ['inquiries'],
-    queryFn: async (): Promise<Inquiry[]> => {
-      const { data, error } = await supabase
-        .from('inquiries')
-        .select('*, properties:property_id(title)')
-        .order('created_at', { ascending: false });
+    queryFn: async () => {
+      try {
+        // First, try to fetch inquiries with property join
+        const { data, error } = await supabase
+          .from('inquiries')
+          .select('*, properties:property_id(title)')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching inquiries with join:', error);
+          
+          // If that fails, try without the join
+          const { data: basicData, error: basicError } = await supabase
+            .from('inquiries')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+          if (basicError) {
+            console.error('Error fetching basic inquiries:', basicError);
+            throw new Error(`Failed to fetch inquiries: ${basicError.message}`);
+          }
+          
+          return basicData;
+        }
 
-      if (error) {
-        console.error('Error fetching inquiries:', error);
-        throw new Error('Failed to fetch inquiries');
+        return data;
+      } catch (err) {
+        console.error('Unhandled error in useInquiries:', err);
+        throw new Error('Failed to fetch inquiries. Please check your access permissions.');
       }
-
-      return data as unknown as Inquiry[];
     },
+    retry: 1,
   });
 };
 
@@ -38,7 +60,7 @@ export const useMarkInquiryResponded = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async ({ id, responded }: { id: string, responded: boolean }): Promise<Inquiry> => {
+    mutationFn: async ({ id, responded }: { id: string, responded: boolean }) => {
       const { data, error } = await supabase
         .from('inquiries')
         .update({ responded })
@@ -48,10 +70,10 @@ export const useMarkInquiryResponded = () => {
 
       if (error) {
         console.error('Error marking inquiry as responded:', error);
-        throw new Error('Failed to mark inquiry as responded');
+        throw new Error(`Failed to mark inquiry as responded: ${error.message}`);
       }
 
-      return data as Inquiry;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inquiries'] });
@@ -64,7 +86,7 @@ export const useDeleteInquiry = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (id: string): Promise<void> => {
+    mutationFn: async (id: string) => {
       const { error } = await supabase
         .from('inquiries')
         .delete()
@@ -72,7 +94,7 @@ export const useDeleteInquiry = () => {
 
       if (error) {
         console.error('Error deleting inquiry:', error);
-        throw new Error('Failed to delete inquiry');
+        throw new Error(`Failed to delete inquiry: ${error.message}`);
       }
     },
     onSuccess: () => {
