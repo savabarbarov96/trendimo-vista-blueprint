@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from 'react';import { Session, User } from '@supabase/supabase-js';import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Session, User } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { 
   signInWithEmailPassword, 
   signUpWithEmailPassword, 
-  signOutUser,
-  signInWithProvider
+  signOutUser
 } from './auth-utils';
 import { useProfile } from './use-profile';
 
@@ -169,24 +170,6 @@ export function useAuthProvider() {
     }
   };
 
-  const signInWithGoogle = async () => {
-    setLoading(true);
-    try {
-      await signInWithProvider('google');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signInWithFacebook = async () => {
-    setLoading(true);
-    try {
-      await signInWithProvider('facebook');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return {
     session,
     user,
@@ -194,8 +177,6 @@ export function useAuthProvider() {
     loading,
     signIn,
     signUp,
-    signOut,
-    signInWithGoogle,
-    signInWithFacebook,
+    signOut
   };
 }
